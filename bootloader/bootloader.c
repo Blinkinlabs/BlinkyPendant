@@ -33,21 +33,19 @@
 extern uint32_t boot_token;
 static __attribute__ ((section(".appvectors"))) uint32_t appVectors[64];
 
-const uint32_t led_bit =      1 << 6;  // LED is on Port D6
-const uint32_t button_1_bit = 1 << 7;  // Button 1 on D7
-const uint32_t button_2_bit = 1 << 5;  // Button 2 on D3
+const uint32_t button_1_bit = 1 << 3;  // Button 1 on A3
 
 static void led_init()
 {
-    // Set the status LED on PD6, as an indication that we're in bootloading mode.
-    PORTD_PCR6 = PORT_PCR_MUX(1) | PORT_PCR_DSE | PORT_PCR_SRE;
-    GPIOD_PDDR |= led_bit;
-    GPIOD_PDOR |= led_bit;
+//    // Set the status LED on PD6, as an indication that we're in bootloading mode.
+//    PORTD_PCR6 = PORT_PCR_MUX(1) | PORT_PCR_DSE | PORT_PCR_SRE;
+//    GPIOD_PDDR |= led_bit;
+//    GPIOD_PDOR |= led_bit;
 }
 
 static void led_toggle()
 {
-    GPIOD_PTOR = led_bit;
+//    GPIOD_PTOR = led_bit;
 }
 
 static bool test_boot_token()
@@ -74,17 +72,16 @@ static bool test_app_missing()
 
 static bool test_user_buttons() {
     /*
-     * At startup we test to see if both user buttons are pressed down. If they are,
+     * At startup we test to see if the user button is pressed down. If they are,
      * we enter DFU mode no matter what. This is intended to be a recovery mechanism
      * for a misbehaving application that prevents DFU mode.
      */
 
-    // Read the two status pins.
-    PORTD_PCR6 = PORT_PCR_MUX(1) | PORT_PCR_PS | PORT_PCR_PE | PORT_PCR_SRE;
-    PORTD_PCR7 = PORT_PCR_MUX(1) | PORT_PCR_PS | PORT_PCR_PE | PORT_PCR_SRE;
+    // Read the status pin.
+    PORTA_PCR3 = PORT_PCR_MUX(1) | PORT_PCR_PS | PORT_PCR_PE | PORT_PCR_SRE;
 
-    GPIOD_PDDR = GPIOD_PDDR & (~button_1_bit) & (~button_2_bit);
-    uint32_t status = GPIOD_PDIR & (button_1_bit | button_2_bit);
+    GPIOA_PDDR = GPIOA_PDDR & (~button_1_bit);
+    uint32_t status = GPIOA_PDIR & (button_1_bit);
 
     return status == 0;
 }

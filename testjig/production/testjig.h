@@ -8,6 +8,8 @@ static const unsigned ledPin = 13;                  // Ok
 static const unsigned ledPassPin = 11;              // Ok
 static const unsigned ledFailPin = 12;              // Ok
 
+static const unsigned resetPin = 2;
+
 
 // Debug port
 static const unsigned swclkPin = 3;                 // Ok

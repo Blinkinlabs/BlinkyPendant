@@ -19,12 +19,15 @@ ElectricalTest etest(target);
 
 void setup()
 {
-    pinMode(ledPin, OUTPUT);
+  pinMode(ledPin, OUTPUT);
     pinMode(ledPassPin, OUTPUT);
     pinMode(ledFailPin, OUTPUT);
-    pinMode(buttonPin, INPUT_PULLUP);
+//    pinMode(buttonPin, INPUT_PULLUP);
     analogReference(INTERNAL);
     Serial.begin(115200);
+
+    pinMode(resetPin, OUTPUT);
+    digitalWrite(resetPin, HIGH);
 }
 
 void waitForButton()
@@ -32,17 +35,21 @@ void waitForButton()
     // Wait for button press, with debounce
 
     Serial.println("");
-    Serial.println("----------------------------------------------");
-    Serial.println(" Blinkinlabs Test Jig : Press button to start");
-    Serial.println("----------------------------------------------");
+    Serial.println("--------------------------------------------");
+    Serial.println(" Fadecandy Test Jig : Press button to start");
+    Serial.println("--------------------------------------------");
     Serial.println("");
 
-    while (digitalRead(buttonPin) == LOW);
-    delay(20);
-    while (digitalRead(buttonPin) == HIGH) {
-        // While we're waiting, blink the LED to indicate we're alive
-        digitalWrite(ledPin, (millis() % 1000) < 150);
+//    while (digitalRead(buttonPin) == LOW);
+//    delay(20);
+//    while (digitalRead(buttonPin) == HIGH) {
+//        // While we're waiting, blink the LED to indicate we're alive
+//        digitalWrite(ledPin, (millis() % 1000) < 150);
+//    }
+    while(Serial.available() < 1) {
     }
+    Serial.read();
+    
     digitalWrite(ledPin, HIGH);
 }
 
@@ -71,53 +78,57 @@ void loop()
     // Keep target power supply off when we're not using it
     etest.powerOff();
     
-    // Set the status LEDs
-    if(testState == TEST_FAIL) {
-      digitalWrite(ledPassPin, LOW);
-      digitalWrite(ledFailPin, HIGH);
-    }
-    else if(testState == TEST_PASS) {
-      digitalWrite(ledPassPin, HIGH);
-      digitalWrite(ledFailPin, LOW);
-    }
-    else {
-      digitalWrite(ledPassPin, HIGH);
-      digitalWrite(ledFailPin, HIGH);
-    }      
+//    // Set the status LEDs
+//    if(testState == TEST_FAIL) {
+//      digitalWrite(ledPassPin, LOW);
+//      digitalWrite(ledFailPin, HIGH);
+//    }
+//    else if(testState == TEST_PASS) {
+//      digitalWrite(ledPassPin, HIGH);
+//      digitalWrite(ledFailPin, LOW);
+//    }
+//    else {
+//      digitalWrite(ledPassPin, HIGH);
+//      digitalWrite(ledFailPin, HIGH);
+//    }      
       
     // Button press starts the test
     waitForButton();
     
-    testState = TEST_FAIL;
-    digitalWrite(ledPassPin, HIGH);
-    digitalWrite(ledFailPin, HIGH);
+//    testState = TEST_FAIL;
+//    digitalWrite(ledPassPin, HIGH);
+//    digitalWrite(ledFailPin, HIGH);
 
-    // Turn on the target power supply
-    if (!etest.powerOn())
-        return;
+//    // Turn on the target power supply
+//    if (!etest.powerOn())
+//        return;
         
+    // Force a reset to enable the TAP interface
+    digitalWrite(resetPin, LOW);
+    digitalWrite(resetPin, HIGH);
+    
     // Start debugging the target
     if (!target.begin())
         return;
     if (!target.startup())
         return;
 
-    // Run an electrical test, to verify that the target board is okay
-    if (!etest.runAll())
-        return;
-
-    // Test for the presence of the flash chip
-    if (!remote.testExternalFlash())
-        return;
+//    // Run an electrical test, to verify that the target board is okay
+//    if (!etest.runAll())
+//        return;
+//
+//    // Test for the presence of the flash chip
+//    if (!remote.testExternalFlash())
+//        return;
 
     // Program firmware, blinking both LEDs in unison for status.
     if (!remote.installFirmware())
         return;
         
         
-    // Test that the user buttons work
-    if (!remote.testUserButtons())
-        return;
+//    // Test that the user buttons work
+//    if (!remote.testUserButtons())
+//        return;
 
     // Boot the target
     if (!remote.boot())
