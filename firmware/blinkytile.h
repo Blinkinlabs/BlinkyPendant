@@ -25,7 +25,7 @@
 #define BLINKYTILE_H
 
 
-#define LED_COLS 4          // Number of columns that the LED matrix has
+#define LED_COLS 4*3        // Number of columns that the LED matrix has
 #define LED_ROWS 2          // Number of rows that the LED matrix has
 
 #define LED_COUNT           (LED_COLS*LED_ROWS)  // Number of LEDs we are controlling
