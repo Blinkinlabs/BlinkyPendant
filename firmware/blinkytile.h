@@ -24,20 +24,17 @@
 #ifndef BLINKYTILE_H
 #define BLINKYTILE_H
 
-#define LED_COUNT           170  // Number of LEDs we are controlling
-//#define LED_COUNT           40 // Number of LEDs we are controlling
+
+#define LED_COLS 4          // Number of columns that the LED matrix has
+#define LED_ROWS 2          // Number of rows that the LED matrix has
+
+#define LED_COUNT           (LED_COLS*LED_ROWS)  // Number of LEDs we are controlling
 #define BYTES_PER_PIXEL     3
 
-#define BUTTON_COUNT        2   // Two input buttons
+#define BUTTON_COUNT        1   // Two input buttons
 #define BUTTON_A            0   // First button
-#define BUTTON_B            1   // First button
 
-#define BUTTON_A_PIN        5   // Button A: Port D7
-#define BUTTON_B_PIN        20  // Button B: Port D5
-#define STATUS_LED_PIN      21  // Status LED: Port D6
-#define POWER_ENABLE_PIN    6   // Output power enable resistor: Port D4
-#define ADDRESS_PIN         9   // Address program pin: Port C3
-#define DATA_PIN            10  // Data output pin: Port C4
+#define BUTTON_A_PIN        12   // Button A: Port A3  //TODO
 
 
 // File types
@@ -58,15 +55,6 @@
 // Initialize the board hardware (buttons, status led, LED control pins)
 extern void initBoard();
 
-// Set the brightness of the status LED
-// @param value LED brightness 0 = off, 255 = on
-extern void setStatusLed(uint8_t value);
-
-// Turn on the LED power output
-extern void enableOutputPower();
-
-// Turn off the LED power output
-extern void disableOutputPower();
 
 // Refresh the watchdog, so that the board doesn't reset
 static inline void watchdog_refresh(void)

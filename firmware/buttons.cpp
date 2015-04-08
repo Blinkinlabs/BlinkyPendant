@@ -6,7 +6,6 @@
 // Button definitions
 button buttons[BUTTON_COUNT] = {
     {BUTTON_A_PIN,     0},  // Button A, PD4
-    {BUTTON_B_PIN,     0},  // Button B, PD6
 };
 
 void Buttons::setup() {

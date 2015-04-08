@@ -49,10 +49,10 @@ bool fcBuffers::finalizeFrame()
 
     if (flags & CFLAG_NO_ACTIVITY_LED) {
         // LED under manual control
-        digitalWriteFast(STATUS_LED_PIN, flags & CFLAG_LED_CONTROL);
+        //digitalWriteFast(STATUS_LED_PIN, flags & CFLAG_LED_CONTROL);
     } else {
         // Use the built-in LED as a USB activity indicator.
-        digitalWriteFast(STATUS_LED_PIN, handledAnyPacketsThisFrame);
+        //digitalWriteFast(STATUS_LED_PIN, handledAnyPacketsThisFrame);
     }
     handledAnyPacketsThisFrame = false;
 

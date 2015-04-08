@@ -37,6 +37,7 @@
 #include "patterns.h"
 #include "serialloop.h"
 #include "buttons.h"
+#include "matrix.h"
 
 // USB data buffers
 static fcBuffers buffers;
@@ -101,9 +102,7 @@ extern "C" int main()
 
     userButtons.setup();
 
-    //dmxSetup();
-
-    enableOutputPower();
+    matrixSetup();
 
     serialReset();
 
@@ -117,10 +116,6 @@ extern "C" int main()
        
         // TODO: put this in an ISR? Make the buttons do pin change interrupts?
         userButtons.buttonTask();
-
-        #define BRIGHTNESS_COUNT 5
-        //static int brightnessLevels[BRIGHTNESS_COUNT] = {30,60,100,150,255};
-        static int brightnessStep = BRIGHTNESS_COUNT-1;
 
         static bool streaming_mode;
 
@@ -144,7 +139,7 @@ extern "C" int main()
             // If the flash wasn't initialized, show a default flashing pattern
             if(animations.getCount() == 0) {
                 count_up_loop();
-                //dmxShow();
+                show();
             }
             else {
 
@@ -163,7 +158,7 @@ extern "C" int main()
                         nextTime = millis() + animations.getAnimation(animation)->speed;
                     }
     
-                    //dmxShow();
+                    show();
                 }
             }
         }
@@ -178,7 +173,7 @@ extern "C" int main()
                                    *(buffers.fbNext->pixel(i)+1),
                                    *(buffers.fbNext->pixel(i)));
                 }
-                dmxShow();
+                show();
             }
 */
         }
@@ -195,10 +190,6 @@ extern "C" int main()
             if(button == BUTTON_A) {
                 animation = (animation + 1)%animations.getCount();
                 frame = 0;
-            }
-            else if(button == BUTTON_B) {
-                brightnessStep = (brightnessStep + 1) % BRIGHTNESS_COUNT;
-                //dmxSetBrightness(brightnessLevels[brightnessStep]);
             }
         }
 

@@ -43,6 +43,7 @@ CPP_FILES = \
 	serialloop.cpp \
 	buttons.cpp \
         animation.cpp \
+        matrix.cpp \
 	fc_usb.cpp
 
 # Headers

@@ -2,8 +2,7 @@
 #define BUTTONS_H
 
 // Button names
-#define BUTTON_A      0 // Start/stop logging
-#define BUTTON_B      1 // Set logging interval
+#define BUTTON_A    0
 
 
 struct button {
