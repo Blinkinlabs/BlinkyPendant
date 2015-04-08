@@ -22,6 +22,9 @@
  */
 
 #include "fc_usb.h"
+#include "blinkytile.h"
+#include "usb_desc.h"
+#include "usb_dev.h"
 #include <algorithm>
 
 // USB protocol definitions
@@ -34,46 +37,59 @@
 #define TYPE_LUT            0x40
 #define TYPE_CONFIG         0x80
 
+static usb_packet_t *rx_packet=NULL;
 
-void fcBuffers::finalizeFrame()
+bool fcBuffers::finalizeFrame()
 {
+    bool newFrame = false;
+
     // Called in main loop context.
     // Finalize any frames received during the course of this loop iteration,
     // and update the status LED.
 
     if (flags & CFLAG_NO_ACTIVITY_LED) {
         // LED under manual control
-        digitalWriteFast(LED_BUILTIN, flags & CFLAG_LED_CONTROL);
+        digitalWriteFast(STATUS_LED_PIN, flags & CFLAG_LED_CONTROL);
     } else {
         // Use the built-in LED as a USB activity indicator.
-        digitalWriteFast(LED_BUILTIN, handledAnyPacketsThisFrame);
+        digitalWriteFast(STATUS_LED_PIN, handledAnyPacketsThisFrame);
     }
     handledAnyPacketsThisFrame = false;
 
     if (pendingFinalizeFrame) {
         finalizeFramebuffer();
         pendingFinalizeFrame = false;
+        active = true;
+        newFrame = true;
     }
-
+/*
     if (pendingFinalizeLUT) {
         finalizeLUT();
         pendingFinalizeLUT = false;
     }
+*/
 
     // Let the USB driver know we may be able to process buffers that were previously deferred
-    usb_rx_resume();
+    //process_fc_buffer();
+
+    return newFrame;
 }
 
 
-bool fcBuffers::handleUSB(usb_packet_t *packet)
+int fcBuffers::handleUSB()
 {
-    unsigned control = packet->buf[0];
+    if (!rx_packet) {
+        if (!usb_configuration) return -1;
+	rx_packet = usb_rx_no_int(FC_OUT_ENDPOINT);
+	if (!rx_packet) return -1;
+    }
+
+    unsigned control = rx_packet->buf[0];
     unsigned type = control & TYPE_BITS;
     unsigned final = control & FINAL_BIT;
     unsigned index = control & INDEX_BITS;
 
     switch (type) {
-
         case TYPE_FRAMEBUFFER:
 
             // Framebuffer updates are synchronized; if we're waiting to finalize fbNew,
@@ -82,30 +98,34 @@ bool fcBuffers::handleUSB(usb_packet_t *packet)
                 return false;
             }
 
-            fbNew->store(index, packet);
+            fbNew->store(index, rx_packet);
+	    rx_packet = NULL;
             if (final) {
                 pendingFinalizeFrame = true;
             }
             break;
-
+/*
         case TYPE_LUT:
             // LUT accesses are not synchronized
-            lutNew.store(index, packet);
+            lutNew.store(index, rx_packet);
+	    rx_packet = NULL;
 
             if (final) {
                 // Finalize the LUT on the main thread, it's less async than doing it in the ISR.
                 pendingFinalizeLUT = true;
             }
             break;
-
+*/
         case TYPE_CONFIG:
             // Config changes take effect immediately.
-            flags = packet->buf[1];
-            usb_free(packet);
+            flags = rx_packet->buf[1];
+            usb_free(rx_packet);
+	    rx_packet = NULL;
             break;
 
         default:
-            usb_free(packet);
+            usb_free(rx_packet);
+	    rx_packet = NULL;
             break;
     }
 
@@ -121,7 +141,11 @@ void fcBuffers::finalizeFramebuffer()
     fbPrev = fbNext;
     fbNext = fbNew;
     fbNew = recycle;
-    perf_receivedKeyframeCounter++;
+}
+
+bool fcBuffers::isActive()
+{
+    return active;
 }
 
 void fcBuffers::finalizeLUT()

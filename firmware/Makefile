@@ -11,12 +11,15 @@ OBJDUMP = arm-none-eabi-objdump
 SIZE = arm-none-eabi-size
 
 # Bootloader to include in whole-chip .hex image
-FCBOOT_IMAGE = ../bin/fc-boot-v101.hex
+FCBOOT_IMAGE = ../bin/povpendant-boot-v090.hex
+
+# Configuration options
+OPTIONS += -DF_CPU=48000000 -D__MK20DN64__ -DUSB_SERIAL_FC_DFU
 
 #######################################################
 
 # The name of your project (used to name the compiled .dfu file)
-TARGET = fc-firmware
+TARGET = lightbuddy-firmware
 
 # Temporary .hex file for application image only, without bootloader
 APP_HEX = app-image.hex
@@ -28,20 +31,26 @@ C_FILES = \
 	usb_desc.c \
 	usb_dev.c \
 	usb_mem.c \
-	serial1.c
+	usb_serial.c \
+	nonstd.c \
+	yield.c
 
 CPP_FILES = \
 	main.cpp \
-	fc_usb.cpp \
-        matrix.cpp \
-        flash.cpp
+	spi4teensy3.cpp \
+	blinkytile.cpp \
+	patterns.cpp \
+	serialloop.cpp \
+	buttons.cpp \
+        animation.cpp \
+	fc_usb.cpp
 
 # Headers
 INCLUDES = -I.
 
 # CPPFLAGS = compiler options for C and C++
 CPPFLAGS = -Wall -Wno-sign-compare -Wno-strict-aliasing -g -Os -mcpu=cortex-m4 \
-	-mthumb -nostdlib -MMD -Werror $(OPTIONS) $(INCLUDES)
+	-mthumb -MMD -Werror $(OPTIONS) $(INCLUDES)
 
 # compiler options for C++ only
 CXXFLAGS = -std=gnu++0x -felide-constructors -fno-exceptions -fno-rtti
@@ -53,10 +62,10 @@ CFLAGS =
 LDSCRIPT = fcb-app.ld
 
 # linker options
-LDFLAGS = -Os -Wl,--gc-sections -mcpu=cortex-m4 -mthumb -nostdlib -T$(LDSCRIPT)
+LDFLAGS = -Os -Wl,--gc-sections -mcpu=cortex-m4 -mthumb -T$(LDSCRIPT)
 
 # additional libraries to link
-LIBS = -lm
+LIBS = -lgcc -lc -lm
 
 OBJS := $(C_FILES:.c=.o) $(CPP_FILES:.cpp=.o)
 

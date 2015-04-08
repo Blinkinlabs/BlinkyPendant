@@ -1,8 +1,4 @@
-/*
- * Fadecandy firmware
- * Copyright (c) 2013 Micah Elizabeth Scott
- *
- * Teensyduino Core Library
+/* Teensyduino Core Library
  * http://www.pjrc.com/teensy/
  * Copyright (c) 2013 PJRC.COM, LLC.
  *
@@ -14,10 +10,10 @@
  * permit persons to whom the Software is furnished to do so, subject to
  * the following conditions:
  *
- * 1. The above copyright notice and this permission notice shall be 
+ * 1. The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
  *
- * 2. If the Software is incorporated into a build system that allows 
+ * 2. If the Software is incorporated into a build system that allows
  * selection among a list of target devices, then similar target
  * devices manufactured by PJRC.COM must be included in the list of
  * target devices and selectable in the same manner.
@@ -35,6 +31,10 @@
 #ifndef _usb_dev_h_
 #define _usb_dev_h_
 
+#include <stdbool.h>
+
+#if F_CPU >= 20000000
+
 // This header is NOT meant to be included when compiling
 // user sketches in Arduino.  The low-level functions
 // provided by usb_dev.c are meant to be called only by
@@ -50,29 +50,53 @@ extern "C" {
 void usb_init(void);
 void usb_init_serialnumber(void);
 void usb_isr(void);
-
-// External handler for received USB packets. Called in ISR context or main loop context.
-// Returns true if the packet can be handled immediately, or false if it must be deferred.
-int usb_rx_handler(usb_packet_t *packet);
-
-// Called to retry packets that have been deferred.
-void usb_rx_resume();
-
+bool usb_rx_available(uint32_t endpoint);
+usb_packet_t *usb_rx(uint32_t endpoint);
+usb_packet_t *usb_rx_no_int(uint32_t endpoint);
+uint32_t usb_tx_byte_count(uint32_t endpoint);
+uint32_t usb_tx_packet_count(uint32_t endpoint);
+void usb_tx(uint32_t endpoint, usb_packet_t *packet);
+void usb_tx_isr(uint32_t endpoint, usb_packet_t *packet);
 
 extern volatile uint8_t usb_configuration;
+
+extern uint16_t usb_rx_byte_count_data[NUM_ENDPOINTS];
+static inline uint32_t usb_rx_byte_count(uint32_t endpoint) __attribute__((always_inline));
+static inline uint32_t usb_rx_byte_count(uint32_t endpoint)
+{
+        endpoint--;
+        if (endpoint >= NUM_ENDPOINTS) return 0;
+        return usb_rx_byte_count_data[endpoint];
+}
+
+#ifdef CDC_DATA_INTERFACE
+extern uint32_t usb_cdc_line_coding[2];
+extern volatile uint8_t usb_cdc_line_rtsdtr;
+extern volatile uint8_t usb_cdc_transmit_flush_timer;
+extern void usb_serial_flush_callback(void);
+#endif
+
+#ifdef FC_INTERFACE
+extern void process_fc_buffer();
+int usb_fc_rx_handler();
+#endif
+
+#ifdef DFU_INTERFACE
 extern volatile uint8_t usb_dfu_state;
 
 // DFU states
 #define DFU_appIDLE    0
 #define DFU_appDETACH  1
 
-// Performance counters
-extern volatile uint32_t perf_frameCounter;
-extern volatile uint32_t perf_receivedKeyframeCounter;
+#endif
+
 
 
 #ifdef __cplusplus
 }
 #endif
+
+
+#endif // F_CPU >= 20 MHz
 
 #endif

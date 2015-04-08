@@ -34,7 +34,7 @@
  * SOFTWARE.
  */
 
-#include "mk20dx128.h"
+#include "mk20dn64.h"
 
 typedef void (*initFunc_t)(void);
 
@@ -45,8 +45,8 @@ extern unsigned long _edata;
 extern unsigned long _sbss;
 extern unsigned long _ebss;
 extern unsigned long _estack;
-extern unsigned long _flexram_begin;
-extern unsigned long _flexram_end;
+//extern unsigned long _flexram_begin;
+//extern unsigned long _flexram_end;
 extern initFunc_t __init_array_start;
 extern initFunc_t __init_array_end;
 
@@ -57,7 +57,14 @@ void _init_Teensyduino_internal_(void);
 
 void fault_isr(void)
 {
-        while (1); // die
+	while (1) {
+		// keep polling some communication while in fault
+		// mode, so we don't completely die.
+		if (SIM_SCGC4 & SIM_SCGC4_USBOTG) usb_isr();
+		if (SIM_SCGC4 & SIM_SCGC4_UART0) uart0_status_isr();
+		if (SIM_SCGC4 & SIM_SCGC4_UART1) uart1_status_isr();
+		if (SIM_SCGC4 & SIM_SCGC4_UART2) uart2_status_isr();
+	}
 }
 
 void unused_isr(void)
@@ -71,61 +78,97 @@ void systick_default_isr(void)
     systick_millis_count++;
 }
 
-void nmi_isr(void)      __attribute__ ((weak, alias("unused_isr")));
-void hard_fault_isr(void)   __attribute__ ((weak, alias("unused_isr")));
-void memmanage_fault_isr(void)  __attribute__ ((weak, alias("unused_isr")));
-void bus_fault_isr(void)    __attribute__ ((weak, alias("unused_isr")));
-void usage_fault_isr(void)  __attribute__ ((weak, alias("unused_isr")));
-void svcall_isr(void)       __attribute__ ((weak, alias("unused_isr")));
-void debugmonitor_isr(void) __attribute__ ((weak, alias("unused_isr")));
-void pendablesrvreq_isr(void)   __attribute__ ((weak, alias("unused_isr")));
-void systick_isr(void)      __attribute__ ((weak, alias("systick_default_isr")));
+void nmi_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void hard_fault_isr(void)	__attribute__ ((weak, alias("unused_isr")));
+void memmanage_fault_isr(void)	__attribute__ ((weak, alias("unused_isr")));
+void bus_fault_isr(void)	__attribute__ ((weak, alias("unused_isr")));
+void usage_fault_isr(void)	__attribute__ ((weak, alias("unused_isr")));
+void svcall_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void debugmonitor_isr(void)	__attribute__ ((weak, alias("unused_isr")));
+void pendablesrvreq_isr(void)	__attribute__ ((weak, alias("unused_isr")));
+void systick_isr(void)		__attribute__ ((weak, alias("systick_default_isr")));
 
-void dma_ch0_isr(void)      __attribute__ ((weak, alias("unused_isr")));
-void dma_ch1_isr(void)      __attribute__ ((weak, alias("unused_isr")));
-void dma_ch2_isr(void)      __attribute__ ((weak, alias("unused_isr")));
-void dma_ch3_isr(void)      __attribute__ ((weak, alias("unused_isr")));
-void dma_error_isr(void)    __attribute__ ((weak, alias("unused_isr")));
-void flash_cmd_isr(void)    __attribute__ ((weak, alias("unused_isr")));
-void flash_error_isr(void)  __attribute__ ((weak, alias("unused_isr")));
-void low_voltage_isr(void)  __attribute__ ((weak, alias("unused_isr")));
-void wakeup_isr(void)       __attribute__ ((weak, alias("unused_isr")));
-void watchdog_isr(void)     __attribute__ ((weak, alias("unused_isr")));
-void i2c0_isr(void)     __attribute__ ((weak, alias("unused_isr")));
-void spi0_isr(void)     __attribute__ ((weak, alias("unused_isr")));
-void i2s0_tx_isr(void)      __attribute__ ((weak, alias("unused_isr")));
-void i2s0_rx_isr(void)      __attribute__ ((weak, alias("unused_isr")));
-void uart0_lon_isr(void)    __attribute__ ((weak, alias("unused_isr")));
-void uart0_status_isr(void) __attribute__ ((weak, alias("unused_isr")));
-void uart0_error_isr(void)  __attribute__ ((weak, alias("unused_isr")));
-void uart1_status_isr(void) __attribute__ ((weak, alias("unused_isr")));
-void uart1_error_isr(void)  __attribute__ ((weak, alias("unused_isr")));
-void uart2_status_isr(void) __attribute__ ((weak, alias("unused_isr")));
-void uart2_error_isr(void)  __attribute__ ((weak, alias("unused_isr")));
-void adc0_isr(void)     __attribute__ ((weak, alias("unused_isr")));
-void cmp0_isr(void)     __attribute__ ((weak, alias("unused_isr")));
-void cmp1_isr(void)     __attribute__ ((weak, alias("unused_isr")));
-void ftm0_isr(void)     __attribute__ ((weak, alias("unused_isr")));
-void ftm1_isr(void)     __attribute__ ((weak, alias("unused_isr")));
-void cmt_isr(void)      __attribute__ ((weak, alias("unused_isr")));
-void rtc_alarm_isr(void)    __attribute__ ((weak, alias("unused_isr")));
-void rtc_seconds_isr(void)  __attribute__ ((weak, alias("unused_isr")));
-void pit0_isr(void)     __attribute__ ((weak, alias("unused_isr")));
-void pit1_isr(void)     __attribute__ ((weak, alias("unused_isr")));
-void pit2_isr(void)     __attribute__ ((weak, alias("unused_isr")));
-void pit3_isr(void)     __attribute__ ((weak, alias("unused_isr")));
-void pdb_isr(void)      __attribute__ ((weak, alias("unused_isr")));
-void usb_isr(void)      __attribute__ ((weak, alias("unused_isr")));
-void usb_charge_isr(void)   __attribute__ ((weak, alias("unused_isr")));
-void tsi0_isr(void)     __attribute__ ((weak, alias("unused_isr")));
-void mcg_isr(void)      __attribute__ ((weak, alias("unused_isr")));
-void lptmr_isr(void)        __attribute__ ((weak, alias("unused_isr")));
-void porta_isr(void)        __attribute__ ((weak, alias("unused_isr")));
-void portb_isr(void)        __attribute__ ((weak, alias("unused_isr")));
-void portc_isr(void)        __attribute__ ((weak, alias("unused_isr")));
-void portd_isr(void)        __attribute__ ((weak, alias("unused_isr")));
-void porte_isr(void)        __attribute__ ((weak, alias("unused_isr")));
-void software_isr(void)     __attribute__ ((weak, alias("unused_isr")));
+void dma_ch0_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void dma_ch1_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void dma_ch2_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void dma_ch3_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void dma_ch4_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void dma_ch5_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void dma_ch6_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void dma_ch7_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void dma_ch8_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void dma_ch9_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void dma_ch10_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void dma_ch11_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void dma_ch12_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void dma_ch13_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void dma_ch14_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void dma_ch15_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void dma_error_isr(void)	__attribute__ ((weak, alias("unused_isr")));
+void mcm_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void flash_cmd_isr(void)	__attribute__ ((weak, alias("unused_isr")));
+void flash_error_isr(void)	__attribute__ ((weak, alias("unused_isr")));
+void low_voltage_isr(void)	__attribute__ ((weak, alias("unused_isr")));
+void wakeup_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void watchdog_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void i2c0_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void i2c1_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void i2c2_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void spi0_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void spi1_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void spi2_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void sdhc_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void can0_message_isr(void)	__attribute__ ((weak, alias("unused_isr")));
+void can0_bus_off_isr(void)	__attribute__ ((weak, alias("unused_isr")));
+void can0_error_isr(void)	__attribute__ ((weak, alias("unused_isr")));
+void can0_tx_warn_isr(void)	__attribute__ ((weak, alias("unused_isr")));
+void can0_rx_warn_isr(void)	__attribute__ ((weak, alias("unused_isr")));
+void can0_wakeup_isr(void)	__attribute__ ((weak, alias("unused_isr")));
+void i2s0_tx_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void i2s0_rx_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void uart0_lon_isr(void)	__attribute__ ((weak, alias("unused_isr")));
+void uart0_status_isr(void)	__attribute__ ((weak, alias("unused_isr")));
+void uart0_error_isr(void)	__attribute__ ((weak, alias("unused_isr")));
+void uart1_status_isr(void)	__attribute__ ((weak, alias("unused_isr")));
+void uart1_error_isr(void)	__attribute__ ((weak, alias("unused_isr")));
+void uart2_status_isr(void)	__attribute__ ((weak, alias("unused_isr")));
+void uart2_error_isr(void)	__attribute__ ((weak, alias("unused_isr")));
+void uart3_status_isr(void)	__attribute__ ((weak, alias("unused_isr")));
+void uart3_error_isr(void)	__attribute__ ((weak, alias("unused_isr")));
+void uart4_status_isr(void)	__attribute__ ((weak, alias("unused_isr")));
+void uart4_error_isr(void)	__attribute__ ((weak, alias("unused_isr")));
+void uart5_status_isr(void)	__attribute__ ((weak, alias("unused_isr")));
+void uart5_error_isr(void)	__attribute__ ((weak, alias("unused_isr")));
+void adc0_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void adc1_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void cmp0_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void cmp1_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void cmp2_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void ftm0_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void ftm1_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void ftm2_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void ftm3_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void cmt_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void rtc_alarm_isr(void)	__attribute__ ((weak, alias("unused_isr")));
+void rtc_seconds_isr(void)	__attribute__ ((weak, alias("unused_isr")));
+void pit0_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void pit1_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void pit2_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void pit3_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void pdb_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void usb_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void usb_charge_isr(void)	__attribute__ ((weak, alias("unused_isr")));
+void dac0_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void dac1_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void tsi0_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void mcg_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void lptmr_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void porta_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void portb_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void portc_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void portd_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void porte_isr(void)		__attribute__ ((weak, alias("unused_isr")));
+void software_isr(void)		__attribute__ ((weak, alias("unused_isr")));
 
 
 // TODO: create AVR-stype ISR() macro, with default linkage to undefined handler
@@ -197,34 +240,65 @@ void (* const gVectors[])(void) =
     software_isr,                   // 61 Software interrupt
 };
 
-static unsigned ftfl_busy()
+//static unsigned ftfl_busy()
+//{
+//    // Is the flash memory controller busy?
+//    return 0 == (FTFL_FSTAT_CCIF & FTFL_FSTAT);
+//}
+
+//static void ftfl_busy_wait()
+//{
+//    // Wait for the flash memory controller to finish any pending operation.
+//    while (ftfl_busy());
+//}
+
+//static void ftfl_launch_command()
+//{
+//    // Begin a flash memory controller command
+//    FTFL_FSTAT = FTFL_FSTAT_ACCERR | FTFL_FSTAT_FPVIOL | FTFL_FSTAT_RDCOLERR;
+//    FTFL_FSTAT = FTFL_FSTAT_CCIF;
+//}
+
+//static void ftfl_set_flexram_function(uint8_t control_code)
+//{
+//    // Issue a Set FlexRAM Function command. Busy-waits until the command is done.
+//    
+//    ftfl_busy_wait();
+//    FTFL_FCCOB0 = 0x81;
+//    FTFL_FCCOB1 = control_code;
+//    ftfl_launch_command();
+//    ftfl_busy_wait();
+//}
+
+
+char *__brkval = (char *)&_ebss;
+
+void * _sbrk(int incr)
 {
-    // Is the flash memory controller busy?
-    return 0 == (FTFL_FSTAT_CCIF & FTFL_FSTAT);
+	char *prev = __brkval;
+	__brkval += incr;
+	return prev;
 }
 
-static void ftfl_busy_wait()
+int nvic_execution_priority(void)
 {
-    // Wait for the flash memory controller to finish any pending operation.
-    while (ftfl_busy());
-}
+	int priority=256;
+	uint32_t primask, faultmask, basepri, ipsr;
 
-static void ftfl_launch_command()
-{
-    // Begin a flash memory controller command
-    FTFL_FSTAT = FTFL_FSTAT_ACCERR | FTFL_FSTAT_FPVIOL | FTFL_FSTAT_RDCOLERR;
-    FTFL_FSTAT = FTFL_FSTAT_CCIF;
-}
-
-static void ftfl_set_flexram_function(uint8_t control_code)
-{
-    // Issue a Set FlexRAM Function command. Busy-waits until the command is done.
-    
-    ftfl_busy_wait();
-    FTFL_FCCOB0 = 0x81;
-    FTFL_FCCOB1 = control_code;
-    ftfl_launch_command();
-    ftfl_busy_wait();
+	// full algorithm in ARM DDI0403D, page B1-639
+	// this isn't quite complete, but hopefully good enough
+	__asm__ volatile("mrs %0, faultmask\n" : "=r" (faultmask)::);
+	if (faultmask) return -1;
+	__asm__ volatile("mrs %0, primask\n" : "=r" (primask)::);
+	if (primask) return 0;
+	__asm__ volatile("mrs %0, ipsr\n" : "=r" (ipsr)::);
+	if (ipsr) {
+		if (ipsr < 16) priority = 0; // could be non-zero
+		else priority = NVIC_GET_PRIORITY(ipsr - 16);
+	}
+	__asm__ volatile("mrs %0, basepri\n" : "=r" (basepri)::);
+	if (basepri > 0 && basepri < priority) priority = basepri;
+	return priority;
 }
 
 void ResetHandler(void)
@@ -241,9 +315,9 @@ void ResetHandler(void)
     SYST_CSR = SYST_CSR_CLKSOURCE | SYST_CSR_TICKINT | SYST_CSR_ENABLE;
 
     // Use FlexRAM as normal RAM, and zero it
-    ftfl_set_flexram_function(0xFF);
-    dest = &_flexram_begin;
-    while (dest < &_flexram_end) *dest++ = 0;
+//    ftfl_set_flexram_function(0xFF);
+//    dest = &_flexram_begin;
+//    while (dest < &_flexram_end) *dest++ = 0;
 
     __enable_irq();
     _init_Teensyduino_internal_();

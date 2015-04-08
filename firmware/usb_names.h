@@ -28,28 +28,30 @@
  * SOFTWARE.
  */
 
-#ifndef _usb_mem_h_
-#define _usb_mem_h_
+#ifndef _usb_names_h_
+#define _usb_names_h_
+
+// These definitions are intended to allow users to override the default
+// USB manufacturer, product and serial number strings.
 
 #include <stdint.h>
-
-typedef struct usb_packet_struct {
-	uint16_t len;
-	uint16_t index;
-	struct usb_packet_struct *next;
-	uint8_t buf[64];
-} usb_packet_t;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-usb_packet_t * usb_malloc(void);
-void usb_free(usb_packet_t *p);
+struct usb_string_descriptor_struct {
+	uint8_t bLength;
+	uint8_t bDescriptorType;
+	uint16_t wString[];
+};
+
+extern struct usb_string_descriptor_struct usb_string_manufacturer_name;
+extern struct usb_string_descriptor_struct usb_string_product_name;
+extern struct usb_string_descriptor_struct usb_string_serial_number;
 
 #ifdef __cplusplus
 }
 #endif
-
 
 #endif

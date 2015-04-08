@@ -1,7 +1,7 @@
 /*
- * Fadecandy Firmware
+ * LED Animation loader/player
  * 
- * Copyright (c) 2013 Micah Elizabeth Scott
+ * Copyright (c) 2014 Matt Mets
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -21,28 +21,45 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-/*
- * Definitions for Fadecandy, based on the number of supported LEDs
- */
+#include "animation.h"
+//#include "matrix.h"
+#include "mk20dn64.h"
+ #include "blinkytile.h"
 
-#pragma once
+void Animation::init() {
+//    uint8_t buffer[ANIMATION_HEADER_LENGTH];
 
-#define LEDS_PER_STRIP          64
-#define LEDS_TOTAL              (LEDS_PER_STRIP * 8)
-#define CHANNELS_TOTAL          (LEDS_TOTAL * 3)
+    ledCount = 0;
+    frameCount = 0;
+    speed = 10;
+    type = 0;
+}
 
-#define LUT_CH_SIZE             257
-#define LUT_TOTAL_SIZE          (LUT_CH_SIZE * 3)
 
-// USB packet layout
-#define PIXELS_PER_PACKET       21
-#define LUTENTRIES_PER_PACKET   31
-#define PACKETS_PER_FRAME       25
-#define PACKETS_PER_LUT         25
+void Animation::getFrame(uint32_t frame, uint8_t* buffer) {
+    int readLength = ledCount;
+    if(readLength > LED_COUNT)
+        readLength = LED_COUNT;
+}
 
-#define NUM_USB_BUFFERS         104       // Three full frames (3*25), one LUT buffer (25), a little extra (4)
 
-#define VENDOR_ID               0x1d50    // OpenMoko
-#define PRODUCT_ID              0x6666    // Fake product ID
-#define DEVICE_VER              0x0100	  // BCD device version
-#define DEVICE_VER_STRING		"1.00"
+bool Animations::isInitialized() {
+    return initialized;
+}
+
+void Animations::begin() {
+    initialized = false;
+
+    // Look through the file storage, and make an animation for any animation files
+    animationCount = 0;
+
+    initialized = true;
+}
+
+uint32_t Animations::getCount() {
+    return animationCount;
+}
+
+Animation* Animations::getAnimation(uint32_t animation) {
+    return &(animations[animation]);
+}

@@ -10,10 +10,10 @@
  * permit persons to whom the Software is furnished to do so, subject to
  * the following conditions:
  *
- * 1. The above copyright notice and this permission notice shall be
+ * 1. The above copyright notice and this permission notice shall be 
  * included in all copies or substantial portions of the Software.
  *
- * 2. If the Software is incorporated into a build system that allows
+ * 2. If the Software is incorporated into a build system that allows 
  * selection among a list of target devices, then similar target
  * devices manufactured by PJRC.COM must be included in the list of
  * target devices and selectable in the same manner.
@@ -28,28 +28,30 @@
  * SOFTWARE.
  */
 
-#ifndef _usb_mem_h_
-#define _usb_mem_h_
+#include "avr_functions.h"
 
-#include <stdint.h>
+// Just pulling in the bare requirements from this one.
 
-typedef struct usb_packet_struct {
-	uint16_t len;
-	uint16_t index;
-	struct usb_packet_struct *next;
-	uint8_t buf[64];
-} usb_packet_t;
+char * ultoa(unsigned long val, char *buf, int radix)
+{
+        unsigned digit;
+        int i=0, j;
+        char t;
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-usb_packet_t * usb_malloc(void);
-void usb_free(usb_packet_t *p);
-
-#ifdef __cplusplus
+        while (1) {
+                digit = val % radix;
+                buf[i] = ((digit < 10) ? '0' + digit : 'A' + digit - 10);
+                val /= radix;
+                if (val == 0) break;
+                i++;
+        }
+        buf[i + 1] = 0;
+        for (j=0; j < i; j++, i--) {
+                t = buf[j];
+                buf[j] = buf[i];
+                buf[i] = t;
+        }
+        return buf;
 }
-#endif
 
 
-#endif
