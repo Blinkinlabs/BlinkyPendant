@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="7.1.0">
+<eagle version="7.2.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="yes"/>
@@ -36,14 +36,14 @@
 <layer number="26" name="bNames" color="7" fill="1" visible="no" active="yes"/>
 <layer number="27" name="tValues" color="7" fill="1" visible="no" active="yes"/>
 <layer number="28" name="bValues" color="7" fill="1" visible="no" active="yes"/>
-<layer number="29" name="tStop" color="7" fill="3" visible="yes" active="yes"/>
+<layer number="29" name="tStop" color="7" fill="3" visible="no" active="yes"/>
 <layer number="30" name="bStop" color="7" fill="6" visible="no" active="yes"/>
-<layer number="31" name="tCream" color="13" fill="4" visible="yes" active="yes"/>
+<layer number="31" name="tCream" color="13" fill="4" visible="no" active="yes"/>
 <layer number="32" name="bCream" color="7" fill="5" visible="no" active="yes"/>
 <layer number="33" name="tFinish" color="6" fill="3" visible="no" active="yes"/>
 <layer number="34" name="bFinish" color="6" fill="6" visible="no" active="yes"/>
 <layer number="35" name="tGlue" color="7" fill="4" visible="no" active="yes"/>
-<layer number="36" name="bGlue" color="7" fill="5" visible="yes" active="yes"/>
+<layer number="36" name="bGlue" color="7" fill="5" visible="no" active="yes"/>
 <layer number="37" name="tTest" color="7" fill="1" visible="no" active="yes"/>
 <layer number="38" name="bTest" color="7" fill="1" visible="no" active="yes"/>
 <layer number="39" name="tKeepout" color="4" fill="11" visible="no" active="yes"/>
@@ -450,8 +450,8 @@ chip</description>
 <wire x1="11" y1="3" x2="16" y2="3" width="0.127" layer="21"/>
 <wire x1="16" y1="3" x2="16" y2="-3" width="0.127" layer="21"/>
 <wire x1="16" y1="-3" x2="11" y2="-3" width="0.127" layer="21"/>
-<pad name="+" x="13" y="0" drill="1" diameter="2.54"/>
-<pad name="-" x="-7" y="0" drill="1" diameter="2.54"/>
+<pad name="+" x="13.25" y="0" drill="1.2" diameter="2.54"/>
+<pad name="-" x="-7.25" y="0" drill="1.2" diameter="2.54"/>
 </package>
 <package name="BUTTON_MOMENTARY_MP5">
 <wire x1="2.275" y1="-1.15" x2="2.275" y2="1.15" width="0.127" layer="51"/>
@@ -799,14 +799,30 @@ Modified from Laen's PCB Order Design Rules</description>
 <element name="C2" library="adafruit" package="C0402" value="100nF" x="14.75" y="23.75" smashed="yes"/>
 <element name="C3" library="adafruit" package="C0402" value="100nF" x="11.75" y="20.75" smashed="yes" rot="R270"/>
 <element name="C5" library="adafruit" package="C0402" value="100nF" x="9" y="23.75" smashed="yes" rot="R90"/>
-<element name="D1" library="blinkinlabs" package="LED-TRICOLOR-5050-FIXED" value="LED-RGB5050" x="12" y="71"/>
-<element name="D2" library="blinkinlabs" package="LED-TRICOLOR-5050-FIXED" value="LED-RGB5050" x="12" y="77"/>
-<element name="D3" library="blinkinlabs" package="LED-TRICOLOR-5050-FIXED" value="LED-RGB5050" x="12" y="83"/>
-<element name="D4" library="blinkinlabs" package="LED-TRICOLOR-5050-FIXED" value="LED-RGB5050" x="12" y="89"/>
-<element name="D6" library="blinkinlabs" package="LED-TRICOLOR-5050-FIXED" value="LED-RGB5050" x="12" y="42"/>
-<element name="D7" library="blinkinlabs" package="LED-TRICOLOR-5050-FIXED" value="LED-RGB5050" x="12" y="48"/>
-<element name="D8" library="blinkinlabs" package="LED-TRICOLOR-5050-FIXED" value="LED-RGB5050" x="12" y="54"/>
-<element name="D9" library="blinkinlabs" package="LED-TRICOLOR-5050-FIXED" value="LED-RGB5050" x="12" y="60"/>
+<element name="D1" library="blinkinlabs" package="LED-TRICOLOR-5050-FIXED" value="LED-RGB5050" x="12" y="71" smashed="yes">
+<attribute name="VALUE" x="9.46" y="67.444" size="0.762" layer="27"/>
+</element>
+<element name="D2" library="blinkinlabs" package="LED-TRICOLOR-5050-FIXED" value="LED-RGB5050" x="12" y="77" smashed="yes">
+<attribute name="VALUE" x="9.46" y="73.444" size="0.762" layer="27"/>
+</element>
+<element name="D3" library="blinkinlabs" package="LED-TRICOLOR-5050-FIXED" value="LED-RGB5050" x="12" y="83" smashed="yes">
+<attribute name="VALUE" x="9.46" y="79.444" size="0.762" layer="27"/>
+</element>
+<element name="D4" library="blinkinlabs" package="LED-TRICOLOR-5050-FIXED" value="LED-RGB5050" x="12" y="89" smashed="yes">
+<attribute name="VALUE" x="9.46" y="85.444" size="0.762" layer="27"/>
+</element>
+<element name="D6" library="blinkinlabs" package="LED-TRICOLOR-5050-FIXED" value="LED-RGB5050" x="12" y="42" smashed="yes">
+<attribute name="VALUE" x="9.46" y="38.444" size="0.762" layer="27"/>
+</element>
+<element name="D7" library="blinkinlabs" package="LED-TRICOLOR-5050-FIXED" value="LED-RGB5050" x="12" y="48" smashed="yes">
+<attribute name="VALUE" x="9.46" y="44.444" size="0.762" layer="27"/>
+</element>
+<element name="D8" library="blinkinlabs" package="LED-TRICOLOR-5050-FIXED" value="LED-RGB5050" x="12" y="54" smashed="yes">
+<attribute name="VALUE" x="9.46" y="50.444" size="0.762" layer="27"/>
+</element>
+<element name="D9" library="blinkinlabs" package="LED-TRICOLOR-5050-FIXED" value="LED-RGB5050" x="12" y="60" smashed="yes">
+<attribute name="VALUE" x="9.46" y="56.444" size="0.762" layer="27"/>
+</element>
 <element name="C11" library="adafruit" package="C0402" value="100nF" x="15" y="9" smashed="yes" rot="R270">
 <attribute name="VALUE" x="13.095" y="9.635" size="1.27" layer="27" rot="R270"/>
 </element>
@@ -876,7 +892,7 @@ Modified from Laen's PCB Order Design Rules</description>
 <element name="TP1" library="testpad" package="B1,27" value="PTR1B1,27" x="16.5" y="12.75" rot="MR0">
 <attribute name="TP_SIGNAL_NAME" value="" x="16.5" y="12.75" size="1.778" layer="28" rot="MR0" display="off"/>
 </element>
-<element name="U$1" library="blinkinlabs" package="CR2032X2" value="CR2032X2" x="12" y="27.5" rot="MR300"/>
+<element name="U$1" library="blinkinlabs" package="CR2032X2" value="CR2032X2" x="12.5" y="28" rot="MR300"/>
 <element name="T1" library="zetex" package="SOT-23" value="SSM3J328R,LF" x="19.5" y="32" smashed="yes" rot="R270">
 <attribute name="OC_NEWARK" value="unknown" x="19.5" y="32" size="1.778" layer="27" rot="R270" display="off"/>
 <attribute name="MPN" value="" x="19.5" y="32" size="1.778" layer="27" rot="R270" display="off"/>
@@ -894,8 +910,12 @@ Modified from Laen's PCB Order Design Rules</description>
 <element name="SW2" library="blinkinlabs" package="BUTTON_MOMENTARY_MP5" value="BUTTON_2" x="21.75" y="20.75" smashed="yes" rot="R270">
 <attribute name="VALUE" x="16.575" y="23.585" size="1.27" layer="27" rot="R270"/>
 </element>
-<element name="D5" library="blinkinlabs" package="LED-TRICOLOR-5050-FIXED" value="LED-RGB5050" x="12" y="95"/>
-<element name="D10" library="blinkinlabs" package="LED-TRICOLOR-5050-FIXED" value="LED-RGB5050" x="12" y="65.5"/>
+<element name="D5" library="blinkinlabs" package="LED-TRICOLOR-5050-FIXED" value="LED-RGB5050" x="12" y="95" smashed="yes">
+<attribute name="VALUE" x="9.46" y="91.444" size="0.762" layer="27"/>
+</element>
+<element name="D10" library="blinkinlabs" package="LED-TRICOLOR-5050-FIXED" value="LED-RGB5050" x="12" y="65.5" smashed="yes">
+<attribute name="VALUE" x="9.46" y="61.944" size="0.762" layer="27"/>
+</element>
 <element name="U$2" library="blinkinlabs" package="SWITCH_SMD_90_DEGREE" value="SWITCH_SPDT_SHIELD" x="21" y="10.5" smashed="yes" rot="R270">
 <attribute name="VALUE" x="24" y="9.5" size="0.762" layer="27" rot="R270"/>
 </element>
@@ -1491,7 +1511,7 @@ Modified from Laen's PCB Order Design Rules</description>
 <via x="16.5" y="27.5" extent="1-16" drill="0.35"/>
 <via x="19.75" y="28.75" extent="1-16" drill="0.35"/>
 <via x="11" y="27" extent="1-16" drill="0.35"/>
-<via x="13" y="24.5" extent="1-16" drill="0.35"/>
+<via x="12.25" y="24.75" extent="1-16" drill="0.35"/>
 <wire x1="11.1" y1="22.6" x2="10.1" y2="22.6" width="0.254" layer="1"/>
 <wire x1="10.1" y1="22.6" x2="9.75" y2="22.25" width="0.254" layer="1"/>
 <via x="6.5" y="8.75" extent="1-16" drill="0.35"/>
@@ -1499,7 +1519,7 @@ Modified from Laen's PCB Order Design Rules</description>
 <via x="22.25" y="24.75" extent="1-16" drill="0.35"/>
 <via x="22.5" y="27.25" extent="1-16" drill="0.35"/>
 <contactref element="U$1" pad="-"/>
-<via x="6.5" y="7.75" extent="1-16" drill="0.35"/>
+<via x="7" y="7.75" extent="1-16" drill="0.35"/>
 <via x="2.25" y="16.75" extent="1-16" drill="0.35"/>
 <via x="2" y="25.75" extent="1-16" drill="0.35"/>
 <via x="2" y="38.5" extent="1-16" drill="0.35"/>
@@ -1522,7 +1542,7 @@ Modified from Laen's PCB Order Design Rules</description>
 <contactref element="U$2" pad="SHIELD_4"/>
 <via x="18" y="6.5" extent="1-16" drill="0.35"/>
 <via x="21.75" y="4.5" extent="1-16" drill="0.35"/>
-<via x="7" y="14.75" extent="1-16" drill="0.35"/>
+<via x="6.75" y="14.25" extent="1-16" drill="0.35"/>
 <contactref element="SW2" pad="SHEILD_2"/>
 <contactref element="SW2" pad="SHEILD_3"/>
 <contactref element="SW2" pad="SHEILD_4"/>
@@ -1533,8 +1553,7 @@ Modified from Laen's PCB Order Design Rules</description>
 <contactref element="SW2" pad="1"/>
 <wire x1="15.4" y1="23.75" x2="15.4" y2="24.6" width="0.254" layer="1"/>
 <wire x1="15.4" y1="24.6" x2="15.25" y2="24.75" width="0.254" layer="1"/>
-<wire x1="15.25" y1="24.75" x2="13.25" y2="24.75" width="0.254" layer="1"/>
-<wire x1="13.25" y1="24.75" x2="13" y2="24.5" width="0.254" layer="1"/>
+<wire x1="15.25" y1="24.75" x2="12.25" y2="24.75" width="0.254" layer="1"/>
 </signal>
 <signal name="LED_OE">
 <contactref element="U$5" pad="21"/>
@@ -1919,11 +1938,15 @@ Modified from Laen's PCB Order Design Rules</description>
 <contactref element="U2" pad="31"/>
 <wire x1="12.25" y1="30" x2="8" y2="30" width="0.254" layer="1"/>
 <wire x1="8" y1="30" x2="6" y2="28" width="0.254" layer="1"/>
-<wire x1="6" y1="28" x2="6" y2="18.75" width="0.254" layer="1"/>
+<wire x1="6" y1="28" x2="6" y2="18.5" width="0.254" layer="1"/>
 <wire x1="10.225" y1="14.25" x2="9" y2="14.25" width="0.254" layer="1"/>
-<wire x1="9" y1="14.25" x2="7.25" y2="16" width="0.254" layer="1"/>
-<wire x1="7.25" y1="16" x2="7.25" y2="17.5" width="0.254" layer="1"/>
-<wire x1="7.25" y1="17.5" x2="6" y2="18.75" width="0.254" layer="1"/>
+<via x="6" y="18.5" extent="1-16" drill="0.35"/>
+<wire x1="6" y1="18.5" x2="7" y2="18.5" width="0.254" layer="16"/>
+<wire x1="7" y1="18.5" x2="7.75" y2="17.75" width="0.254" layer="16"/>
+<wire x1="7.75" y1="17.75" x2="7.75" y2="15.25" width="0.254" layer="16"/>
+<via x="7.75" y="15.25" extent="1-16" drill="0.35"/>
+<wire x1="7.75" y1="15.25" x2="8" y2="15.25" width="0.254" layer="1"/>
+<wire x1="8" y1="15.25" x2="9" y2="14.25" width="0.254" layer="1"/>
 </signal>
 <signal name="LED_S0">
 <contactref element="U2" pad="29"/>
@@ -2050,13 +2073,14 @@ Modified from Laen's PCB Order Design Rules</description>
 </signal>
 <signal name="N$2">
 <contactref element="U$1" pad="+"/>
-<wire x1="5.5" y1="16.24166875" x2="5.5" y2="12.75" width="0.6096" layer="1"/>
+<wire x1="5.875" y1="16.5251625" x2="5.5" y2="16.1501625" width="0.6096" layer="1"/>
+<wire x1="5.5" y1="16.1501625" x2="5.5" y2="12.75" width="0.6096" layer="1"/>
 <via x="5.5" y="12.75" extent="1-16" drill="0.35"/>
 <wire x1="5.5" y1="12.75" x2="5.5" y2="8" width="0.6096" layer="16"/>
 <via x="5.5" y="8" extent="1-16" drill="0.35"/>
-<wire x1="5.5" y1="8" x2="5.5" y2="7" width="0.6096" layer="1"/>
-<wire x1="5.5" y1="7" x2="6" y2="6.5" width="0.6096" layer="1"/>
-<wire x1="6" y1="6.5" x2="15.5" y2="6.5" width="0.6096" layer="1"/>
+<wire x1="5.5" y1="8" x2="5.5" y2="7.75" width="0.6096" layer="1"/>
+<wire x1="5.5" y1="7.75" x2="6.75" y2="6.5" width="0.6096" layer="1"/>
+<wire x1="6.75" y1="6.5" x2="15.5" y2="6.5" width="0.6096" layer="1"/>
 <wire x1="15.5" y1="6.5" x2="17.25" y2="8.25" width="0.6096" layer="1"/>
 <contactref element="U$2" pad="COM"/>
 <wire x1="18.925" y1="11.25" x2="18.925" y2="9.925" width="0.6096" layer="1"/>
@@ -2244,14 +2268,14 @@ Modified from Laen's PCB Order Design Rules</description>
 <approved hash="5,1,e8fdeb673f3dad5a"/>
 <approved hash="5,1,9da089f141b12283"/>
 <approved hash="5,1,20c0b538cb25af5e"/>
-<approved hash="5,1,22f4b518cb3dad52"/>
-<approved hash="5,1,83881a2713a95255"/>
 <approved hash="5,1,3edcb558cb6db16a"/>
-<approved hash="5,1,50f62da85a64fd59"/>
 <approved hash="5,1,83681a27139152b5"/>
-<approved hash="5,1,50a62d885a54fd29"/>
+<approved hash="5,1,50f62da85a64fd59"/>
 <approved hash="5,1,3ca8b538cb65b376"/>
 <approved hash="5,1,83281a7713d152e5"/>
+<approved hash="5,1,22f4b518cb3dad52"/>
+<approved hash="5,1,83881a2713a95255"/>
+<approved hash="5,1,50a62d885a54fd29"/>
 <approved hash="5,1,5d2c36557a6e123d"/>
 <approved hash="5,1,dcfd05c89f610a5c"/>
 <approved hash="4,1,1fbbe227eb0dad5f"/>

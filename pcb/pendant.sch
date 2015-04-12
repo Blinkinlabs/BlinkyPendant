@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="7.1.0">
+<eagle version="7.2.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="yes"/>
@@ -4928,8 +4928,8 @@ type 0309, grid 2.5 mm</description>
 <wire x1="11" y1="3" x2="16" y2="3" width="0.127" layer="21"/>
 <wire x1="16" y1="3" x2="16" y2="-3" width="0.127" layer="21"/>
 <wire x1="16" y1="-3" x2="11" y2="-3" width="0.127" layer="21"/>
-<pad name="+" x="13" y="0" drill="1" diameter="2.54"/>
-<pad name="-" x="-7" y="0" drill="1" diameter="2.54"/>
+<pad name="+" x="13.25" y="0" drill="1.2" diameter="2.54"/>
+<pad name="-" x="-7.25" y="0" drill="1.2" diameter="2.54"/>
 </package>
 <package name="BUTTON_MOMENTARY_MP5">
 <wire x1="2.275" y1="-1.15" x2="2.275" y2="1.15" width="0.127" layer="51"/>
