@@ -41,6 +41,13 @@
 #define S0        6   // Port D, output 4
 #define S1       20   // Port D, output 5
 
+// RGB pixel type
+struct pixel {
+  uint8_t R;
+  uint8_t G;
+  uint8_t B;
+};
+
 // Set up the matrix and start running it's display loop
 extern void matrixSetup();
 
@@ -52,7 +59,7 @@ extern void setBrightness(float brightness);
 // @param column int Pixel column (0 to LED_COLS - 1)
 // @param row int Pixel row (0 to LED_ROWS - 1)
 // @param value uint8_t New value for the pixel (0 - 255)
-extern void setPixel(int column, int row, uint8_t value);
+extern void setPixel(int column, int row, uint8_t r, uint8_t g, uint8_t b);
 
 // Update the matrix using the data in the Pixels[] array
 extern void show();
@@ -60,6 +67,7 @@ extern void show();
 // Get the display pixel buffer
 // @return Pointer to the pixel display buffer, a uint8_t array of size
 // LED_ROWS*LED_COLS
+// TODO: Change to pixel type...
 extern uint8_t* getPixels();
 
 // The display is double-buffered internally. This function returns

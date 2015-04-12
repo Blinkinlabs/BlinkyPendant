@@ -33,8 +33,30 @@
 #define DMA_S1_SHIFT   5
 #define DMA_STB_SHIFT  6        // Location of the strobe pin in Port D register
 
+
+// Output positions for the signals in each group
+// These are out of order to make the board routing easier
+// RGB RGB RGB RGB RGB
+uint8_t OUTPUT_ORDER[] = {
+  6, // G0
+  7, // B0
+  1, // R0
+  2, // G1
+  3, // B1
+  8, // R1
+  4, // G2
+  5, // B2
+  10, // R2
+  0, // G3
+  9, // B3
+  12, // R3
+  13, // G4
+  11, // B4
+  14, // R4
+};
+
 // Display buffer (write into this!)
-uint8_t Pixels[LED_COLS * LED_ROWS];
+pixel Pixels[LED_COLS * LED_ROWS];
 
 float systemBrightness = 1;
 
@@ -54,9 +76,9 @@ uint32_t FTM0_C1VStates[BIT_DEPTH*LED_ROWS];
 // For each of these rows, there are then BIT_DEPTH separate inner loops
 // And each inner loop has LED_COLS * 2 bytes states (the data is LED_COLS long, plus the clock signal is baked in)
 
-#define ROW_BIT_SIZE (LED_COLS*2)                                  // Number of bytes required to store a single row of 1-bit color data output
+#define ROW_BIT_SIZE (LED_COLS*BYTES_PER_PIXEL*2)                  // Number of bytes required to store a single row of 1-bit color data output
 #define ROW_DEPTH_SIZE (ROW_BIT_SIZE*BIT_DEPTH)                    // Number of bytes required to store a single row of full-color data output
-#define PANEL_DEPTH_SIZE (ROW_DEPTH_SIZE*LED_ROWS) // Number of bytes required to store an entire panel's worth of data output.
+#define PANEL_DEPTH_SIZE (ROW_DEPTH_SIZE*LED_ROWS)                 // Number of bytes required to store an entire panel's worth of data output.
 
 // 2x DMA buffer
 // Note: Extra ROW_BIT_SIZE at end to account for extra DMA transfer
@@ -66,7 +88,7 @@ uint8_t* frontBuffer;
 uint8_t* backBuffer;
 bool swapBuffers;
 
-void pixelsToDmaBuffer(uint8_t* pixelInput, uint8_t bufferOutput[]);
+void pixelsToDmaBuffer(struct pixel* pixelInput, uint8_t bufferOutput[]);
 
 void setupTCD0(uint32_t* source, int minorLoopSize, int majorLoops);
 void setupTCD1(uint32_t* source, int minorLoopSize, int majorLoops);
@@ -99,7 +121,7 @@ void matrixSetup() {
       }
 
 //TODO Mask this correctly?
-#define addressBits(addr) ((0x01 & ~(1 << (addr)))<<(DMA_S0_SHIFT))
+#define addressBits(addr) (~((1<<DMA_STB_SHIFT) | (1<<(addr+DMA_S0_SHIFT))))
 
       for(int i = 0; i < ADDRESS_REPEAT_COUNT; i++) {
         // Note: We're actually pumping out the last address here, to avoid changing it too soon after
@@ -214,18 +236,19 @@ void show() {
     swapBuffers = true;
 }
 
-void setPixel(int column, int row, uint8_t value) {
+void setPixel(int column, int row, uint8_t r, uint8_t g, uint8_t b) {
     // Don't do anything if the pixel is out of range
     if (column >= LED_COLS || row >= LED_ROWS) {
         return;
     }
 
-    // Write the pixel data
-    Pixels[row*LED_COLS + column] = value;
+    Pixels[row*LED_COLS + column].R = r;
+    Pixels[row*LED_COLS + column].G = g;
+    Pixels[row*LED_COLS + column].B = b;
 }
 
 uint8_t* getPixels() {
-    return Pixels;
+    return (uint8_t*) Pixels;
 }
 
 void setBrightness(float brightness) {
@@ -234,21 +257,33 @@ void setBrightness(float brightness) {
 
 // Munge the data so it can be written out by the DMA engine
 // Note: bufferOutput[][xxx] should have BIT_DEPTH as xxx
-void pixelsToDmaBuffer(uint8_t* pixelInput, uint8_t bufferOutput[]) {
-
-  // Fill in the pixel data
+void pixelsToDmaBuffer(struct pixel* pixelInput, uint8_t bufferOutput[]) {
   for(int row = 0; row < LED_ROWS; row++) {
     for(int col = 0; col < LED_COLS; col++) {
       
-      int data = brightnessTable[pixelInput[row*LED_COLS + col]];
-      data = (int)data * systemBrightness;
+      // Data is the data to
+      int data_R = pixelInput[row*LED_COLS + col].R;
+      int data_G = pixelInput[row*LED_COLS + col].G;
+      int data_B = pixelInput[row*LED_COLS + col].B;
 
       for(int depth = 0; depth < BIT_DEPTH; depth++) {
-        uint8_t output =
-            (((data >> depth) & 0x0001) << DMA_DAT_SHIFT);
+        uint8_t output_r =
+            (((data_R >> depth) & 0x01) << DMA_DAT_SHIFT);
+        uint8_t output_g =
+            (((data_G >> depth) & 0x01) << DMA_DAT_SHIFT);
+        uint8_t output_b =
+            (((data_B >> depth) & 0x01) << DMA_DAT_SHIFT);
 
-        bufferOutput[row*ROW_DEPTH_SIZE + depth*ROW_BIT_SIZE + col*2 + 0] = output;
-        bufferOutput[row*ROW_DEPTH_SIZE + depth*ROW_BIT_SIZE + col*2 + 1] = output | (1 << DMA_CLK_SHIFT);
+        int offset_g = OUTPUT_ORDER[col*3 + 0];
+        int offset_b = OUTPUT_ORDER[col*3 + 1];
+        int offset_r = OUTPUT_ORDER[col*3 + 2];
+
+        bufferOutput[row*ROW_DEPTH_SIZE + depth*ROW_BIT_SIZE + offset_r*2 + 0] = output_r;
+        bufferOutput[row*ROW_DEPTH_SIZE + depth*ROW_BIT_SIZE + offset_r*2 + 1] = output_r | 1 << DMA_CLK_SHIFT;
+        bufferOutput[row*ROW_DEPTH_SIZE + depth*ROW_BIT_SIZE + offset_g*2 + 0] = output_g;
+        bufferOutput[row*ROW_DEPTH_SIZE + depth*ROW_BIT_SIZE + offset_g*2 + 1] = output_g | 1 << DMA_CLK_SHIFT;
+        bufferOutput[row*ROW_DEPTH_SIZE + depth*ROW_BIT_SIZE + offset_b*2 + 0] = output_b;
+        bufferOutput[row*ROW_DEPTH_SIZE + depth*ROW_BIT_SIZE + offset_b*2 + 1] = output_b | 1 << DMA_CLK_SHIFT;
       }
     }
   }
