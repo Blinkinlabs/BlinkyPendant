@@ -39,10 +39,14 @@
 #include "buttons.h"
 #include "matrix.h"
 #include "hi.h"
+#include "mma8653.h"
 
 // USB data buffers
 static fcBuffers buffers;
 fcLinearLUT fcBuffers::lutCurrent;
+
+// accelerometer
+MMA8653 mma8653;
 
 // Button inputs
 Buttons userButtons;
@@ -100,6 +104,8 @@ extern "C" int main()
 
     userButtons.setup();
 
+    mma8653.setup();
+
     matrixSetup();
 
     serialReset();
@@ -131,10 +137,8 @@ extern "C" int main()
 
         if(!streaming_mode) {
             if(true) {
-                if(readButton()) {
-                    count_up_loop();
-                    show();
-                }
+                count_up_loop();
+                show();
             }
             else {
 

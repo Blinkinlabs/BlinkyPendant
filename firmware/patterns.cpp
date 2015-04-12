@@ -7,7 +7,7 @@
 void count_up_loop() {
 
     static int pixel = 0;
-    const int slowdown = 500;
+    const int slowdown = 3;
 
     const int cols = 4;
     const int rows = 2;

@@ -6393,8 +6393,8 @@ http://www.zetex.com&lt;p&gt;
 <part name="U$6" library="teensy_adapter" deviceset="MMA8653FC" device=""/>
 <part name="GND5" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
 <part name="SUPPLY6" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
-<part name="R2" library="adafruit" deviceset="R-US_" device="R0402" value="1k"/>
-<part name="R3" library="adafruit" deviceset="R-US_" device="R0402" value="1k"/>
+<part name="R2" library="adafruit" deviceset="R-US_" device="R0402" value="4.7k"/>
+<part name="R3" library="adafruit" deviceset="R-US_" device="R0402" value="4.7k"/>
 <part name="SUPPLY7" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="C2" library="adafruit" deviceset="C-US" device="C0402" value="100nF"/>
 <part name="C3" library="adafruit" deviceset="C-US" device="C0402" value="100nF"/>
@@ -6462,6 +6462,14 @@ http://www.zetex.com&lt;p&gt;
 <part name="D5" library="blinkinlabs" deviceset="LED-RGB" device="5050"/>
 <part name="D10" library="blinkinlabs" deviceset="LED-RGB" device="5050"/>
 <part name="U$2" library="blinkinlabs" deviceset="SWITCH_SPDT_SHIELD" device=""/>
+<part name="TP9" library="testpad" deviceset="PTR1" device="B1,27"/>
+<part name="TP11" library="testpad" deviceset="PTR1" device="B1,27"/>
+<part name="TP12" library="testpad" deviceset="PTR1" device="B1,27"/>
+<part name="TP13" library="testpad" deviceset="PTR1" device="B1,27"/>
+<part name="TP14" library="testpad" deviceset="PTR1" device="B1,27"/>
+<part name="TP15" library="testpad" deviceset="PTR1" device="B1,27"/>
+<part name="TP16" library="testpad" deviceset="PTR1" device="B1,27"/>
+<part name="TP10" library="testpad" deviceset="PTR1" device="B1,27"/>
 </parts>
 <sheets>
 <sheet>
@@ -6608,6 +6616,14 @@ http://www.zetex.com&lt;p&gt;
 <instance part="D5" gate="G$1" x="439.42" y="281.94"/>
 <instance part="D10" gate="G$1" x="439.42" y="193.04"/>
 <instance part="U$2" gate="G$1" x="187.96" y="165.1"/>
+<instance part="TP9" gate="G$1" x="218.44" y="327.66" rot="R90"/>
+<instance part="TP11" gate="G$1" x="218.44" y="307.34" rot="R90"/>
+<instance part="TP12" gate="G$1" x="218.44" y="304.8" rot="R90"/>
+<instance part="TP13" gate="G$1" x="218.44" y="294.64" rot="R90"/>
+<instance part="TP14" gate="G$1" x="218.44" y="292.1" rot="R90"/>
+<instance part="TP15" gate="G$1" x="218.44" y="289.56" rot="R90"/>
+<instance part="TP16" gate="G$1" x="218.44" y="335.28" rot="R90"/>
+<instance part="TP10" gate="G$1" x="218.44" y="325.12" rot="R90"/>
 </instances>
 <busses>
 </busses>
@@ -7040,6 +7056,7 @@ http://www.zetex.com&lt;p&gt;
 <pinref part="U2" gate="G$1" pin="PTA4"/>
 <wire x1="198.12" y1="335.28" x2="215.9" y2="335.28" width="0.1524" layer="91"/>
 <label x="205.74" y="335.28" size="1.778" layer="95"/>
+<pinref part="TP16" gate="G$1" pin="TP"/>
 </segment>
 </net>
 <net name="N$18" class="0">
@@ -7220,6 +7237,7 @@ http://www.zetex.com&lt;p&gt;
 <pinref part="U2" gate="G$1" pin="PTB0"/>
 <wire x1="198.12" y1="327.66" x2="215.9" y2="327.66" width="0.1524" layer="91"/>
 <label x="205.74" y="327.66" size="1.778" layer="95"/>
+<pinref part="TP9" gate="G$1" pin="TP"/>
 </segment>
 </net>
 <net name="I2C0_SDA" class="0">
@@ -7233,6 +7251,7 @@ http://www.zetex.com&lt;p&gt;
 <pinref part="U2" gate="G$1" pin="PTB1"/>
 <wire x1="215.9" y1="325.12" x2="198.12" y2="325.12" width="0.1524" layer="91"/>
 <label x="205.74" y="325.12" size="1.778" layer="95"/>
+<pinref part="TP10" gate="G$1" pin="TP"/>
 </segment>
 </net>
 <net name="N$8" class="0">
@@ -7355,6 +7374,7 @@ http://www.zetex.com&lt;p&gt;
 <pinref part="U2" gate="G$1" pin="PTC6"/>
 <wire x1="215.9" y1="304.8" x2="198.12" y2="304.8" width="0.1524" layer="91"/>
 <label x="205.74" y="304.8" size="1.778" layer="95"/>
+<pinref part="TP12" gate="G$1" pin="TP"/>
 </segment>
 </net>
 <net name="LED_CLOCK" class="0">
@@ -7367,6 +7387,7 @@ http://www.zetex.com&lt;p&gt;
 <pinref part="U2" gate="G$1" pin="PTC5"/>
 <wire x1="198.12" y1="307.34" x2="215.9" y2="307.34" width="0.1524" layer="91"/>
 <label x="205.74" y="307.34" size="1.778" layer="95"/>
+<pinref part="TP11" gate="G$1" pin="TP"/>
 </segment>
 </net>
 <net name="LED_STROBE" class="0">
@@ -7379,6 +7400,7 @@ http://www.zetex.com&lt;p&gt;
 <pinref part="U2" gate="G$1" pin="PTD6"/>
 <wire x1="198.12" y1="289.56" x2="215.9" y2="289.56" width="0.1524" layer="91"/>
 <label x="205.74" y="289.56" size="1.778" layer="95"/>
+<pinref part="TP15" gate="G$1" pin="TP"/>
 </segment>
 </net>
 <net name="LED_S0" class="0">
@@ -7386,6 +7408,7 @@ http://www.zetex.com&lt;p&gt;
 <pinref part="U2" gate="G$1" pin="PTD4"/>
 <wire x1="198.12" y1="294.64" x2="215.9" y2="294.64" width="0.1524" layer="91"/>
 <label x="205.74" y="294.64" size="1.778" layer="95"/>
+<pinref part="TP13" gate="G$1" pin="TP"/>
 </segment>
 <segment>
 <pinref part="U3" gate="G$1" pin="I"/>
@@ -7402,6 +7425,7 @@ http://www.zetex.com&lt;p&gt;
 <pinref part="U2" gate="G$1" pin="PTD5"/>
 <wire x1="198.12" y1="292.1" x2="215.9" y2="292.1" width="0.1524" layer="91"/>
 <label x="205.74" y="292.1" size="1.778" layer="95"/>
+<pinref part="TP14" gate="G$1" pin="TP"/>
 </segment>
 <segment>
 <pinref part="U4" gate="G$1" pin="I"/>

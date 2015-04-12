@@ -44,7 +44,8 @@ CPP_FILES = \
 	buttons.cpp \
         animation.cpp \
         matrix.cpp \
-	fc_usb.cpp
+	fc_usb.cpp \
+	mma8653.cpp 
 
 # Headers
 INCLUDES = -I.
