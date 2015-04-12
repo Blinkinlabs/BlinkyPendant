@@ -42,7 +42,7 @@
 #define S1       20   // Port D, output 5
 
 // RGB pixel type
-struct pixel {
+struct Pixel {
   uint8_t R;
   uint8_t G;
   uint8_t B;
@@ -68,7 +68,7 @@ extern void show();
 // @return Pointer to the pixel display buffer, a uint8_t array of size
 // LED_ROWS*LED_COLS
 // TODO: Change to pixel type...
-extern uint8_t* getPixels();
+extern Pixel* getPixels();
 
 // The display is double-buffered internally. This function returns
 // true if there is already an update waiting.

@@ -38,25 +38,25 @@
 // These are out of order to make the board routing easier
 // RGB RGB RGB RGB RGB
 uint8_t OUTPUT_ORDER[] = {
-  6, // G0
-  7, // B0
-  1, // R0
-  2, // G1
-  3, // B1
-  8, // R1
-  4, // G2
-  5, // B2
-  10, // R2
-  0, // G3
-  9, // B3
-  12, // R3
-  13, // G4
-  11, // B4
-  14, // R4
+    2,  // R1
+    14, // G1
+    5,  // B1
+    4,  // R2
+    10, // G2
+    9,  // B2
+    6,  // R3
+    12, // G3
+    11, // B3
+    13, // R4
+    8,  // G4
+    7,  // B4
+    15, // R0 TODO on next board
+    15, // G0
+    15, // B0
 };
 
 // Display buffer (write into this!)
-pixel Pixels[LED_COLS * LED_ROWS];
+Pixel pixels[LED_ROWS * LED_COLS];
 
 float systemBrightness = 1;
 
@@ -87,7 +87,7 @@ uint8_t* frontBuffer;
 uint8_t* backBuffer;
 bool swapBuffers;
 
-void pixelsToDmaBuffer(struct pixel* pixelInput, uint8_t bufferOutput[]);
+void pixelsToDmaBuffer(Pixel* pixelInput, uint8_t bufferOutput[]);
 
 void setupTCD0(uint32_t* source, int minorLoopSize, int majorLoops);
 void setupTCD1(uint32_t* source, int minorLoopSize, int majorLoops);
@@ -229,7 +229,7 @@ void show() {
     // Wait until the last buffer is written out
     //while(swapBuffers) {}
 
-    pixelsToDmaBuffer(Pixels, backBuffer);
+    pixelsToDmaBuffer(pixels, backBuffer);
     // TODO: Atomic operation?
     swapBuffers = true;
 }
@@ -240,13 +240,13 @@ void setPixel(int column, int row, uint8_t r, uint8_t g, uint8_t b) {
         return;
     }
 
-    Pixels[row*LED_COLS + column].R = r;
-    Pixels[row*LED_COLS + column].G = g;
-    Pixels[row*LED_COLS + column].B = b;
+    pixels[row*LED_COLS + column].R = r;
+    pixels[row*LED_COLS + column].G = g;
+    pixels[row*LED_COLS + column].B = b;
 }
 
-uint8_t* getPixels() {
-    return (uint8_t*) Pixels;
+Pixel* getPixels() {
+    return pixels;
 }
 
 void setBrightness(float brightness) {
@@ -255,7 +255,7 @@ void setBrightness(float brightness) {
 
 // Munge the data so it can be written out by the DMA engine
 // Note: bufferOutput[][xxx] should have BIT_DEPTH as xxx
-void pixelsToDmaBuffer(struct pixel* pixelInput, uint8_t bufferOutput[]) {
+void pixelsToDmaBuffer(Pixel* pixelInput, uint8_t bufferOutput[]) {
   for(int row = 0; row < LED_ROWS; row++) {
     for(int col = 0; col < LED_COLS; col++) {
       
@@ -273,8 +273,8 @@ void pixelsToDmaBuffer(struct pixel* pixelInput, uint8_t bufferOutput[]) {
             (((data_B >> depth) & 0x01) << DMA_DAT_SHIFT);
 
         int offset_r = OUTPUT_ORDER[col*3 + 0];
-        int offset_b = OUTPUT_ORDER[col*3 + 1];
-        int offset_g = OUTPUT_ORDER[col*3 + 2];
+        int offset_g = OUTPUT_ORDER[col*3 + 1];
+        int offset_b = OUTPUT_ORDER[col*3 + 2];
 
         bufferOutput[row*ROW_DEPTH_SIZE + depth*ROW_BIT_SIZE + offset_r*2 + 0] = output_r;
         bufferOutput[row*ROW_DEPTH_SIZE + depth*ROW_BIT_SIZE + offset_r*2 + 1] = output_r | 1 << DMA_CLK_SHIFT;
@@ -284,6 +284,10 @@ void pixelsToDmaBuffer(struct pixel* pixelInput, uint8_t bufferOutput[]) {
         bufferOutput[row*ROW_DEPTH_SIZE + depth*ROW_BIT_SIZE + offset_b*2 + 1] = output_b | 1 << DMA_CLK_SHIFT;
       }
     }
+  }
+
+  for(int pos= 0; pos < PANEL_DEPTH_SIZE/2; pos++) {
+        bufferOutput[pos*2 + 1] |= 1 << DMA_CLK_SHIFT;
   }
 }
 
