@@ -38,13 +38,11 @@
 #include "serialloop.h"
 #include "buttons.h"
 #include "matrix.h"
+#include "hi.h"
 
 // USB data buffers
 static fcBuffers buffers;
 fcLinearLUT fcBuffers::lutCurrent;
-
-// Animations class
-Animations animations;
 
 // Button inputs
 Buttons userButtons;
@@ -119,43 +117,36 @@ extern "C" int main()
 
         static bool streaming_mode;
 
-        static int animation;          // Flash animation to show
-        static int frame;              // current frame to display
         static uint32_t nextTime;           // Time to display next frame
 
         //dmxSetBrightness(brightnessLevels[brightnessStep]);
 
         if(reloadAnimations) {
             reloadAnimations = false;
-            animations.begin();
 
+            hi.reset();
             streaming_mode = false;
-            animation = 0;
-            frame = 0;
             nextTime = 0;
         }
 
         if(!streaming_mode) {
-            // If the flash wasn't initialized, show a default flashing pattern
-            if(animations.getCount() == 0) {
-                count_up_loop();
-                show();
+            if(true) {
+                if(readButton()) {
+                    count_up_loop();
+                    show();
+                }
             }
             else {
 
                 // Flash-based
                 if(millis() > nextTime) {
-                    //animations.getAnimation(animation)->getFrame(frame, dmxGetPixels());
-                    frame++;
-                    if(frame >= animations.getAnimation(animation)->frameCount) {
-                        frame = 0;
-                    }
+                    hi.draw(getPixels());
     
-                    nextTime += animations.getAnimation(animation)->speed;
+                    nextTime += 1000;
     
                     // If we've gotten too far ahead of ourselves, reset the counter
                     if(millis() > nextTime) {
-                        nextTime = millis() + animations.getAnimation(animation)->speed;
+                        nextTime = millis() + 1000;
                     }
     
                     show();
@@ -188,8 +179,7 @@ extern "C" int main()
             uint8_t button = userButtons.getPressed();
     
             if(button == BUTTON_A) {
-                animation = (animation + 1)%animations.getCount();
-                frame = 0;
+                hi.reset();
             }
         }
 

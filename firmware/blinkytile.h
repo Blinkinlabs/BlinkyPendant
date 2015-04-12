@@ -55,6 +55,7 @@
 // Initialize the board hardware (buttons, status led, LED control pins)
 extern void initBoard();
 
+extern bool readButton();
 
 // Refresh the watchdog, so that the board doesn't reset
 static inline void watchdog_refresh(void)

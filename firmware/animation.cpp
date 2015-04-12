@@ -1,65 +1,140 @@
-/*
- * LED Animation loader/player
- * 
- * Copyright (c) 2014 Matt Mets
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy of
- * this software and associated documentation files (the "Software"), to deal in
- * the Software without restriction, including without limitation the rights to
- * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
- * the Software, and to permit persons to whom the Software is furnished to do so,
- * subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
- * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
- * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
- * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
+#include "Animation.h"
 
-#include "animation.h"
-//#include "matrix.h"
-#include "mk20dn64.h"
- #include "blinkytile.h"
-
-void Animation::init() {
-//    uint8_t buffer[ANIMATION_HEADER_LENGTH];
-
-    ledCount = 0;
-    frameCount = 0;
-    speed = 10;
-    type = 0;
+Animation::Animation() {
+  init(0, NULL, ENCODING_RGB24, 0);
 }
 
-
-void Animation::getFrame(uint32_t frame, uint8_t* buffer) {
-    int readLength = ledCount;
-    if(readLength > LED_COUNT)
-        readLength = LED_COUNT;
+Animation::Animation(uint16_t frameCount_,
+                     const uint8_t* frameData_,
+                     const uint8_t encoding_,
+                     const uint8_t ledCount_)
+{
+  init(frameCount_, frameData_, encoding_, ledCount_);
+  reset();
 }
 
+void Animation::init(uint16_t frameCount_,
+                     const uint8_t* frameData_,
+                     const uint8_t encoding_,
+                     const uint8_t ledCount_)
+{
+  frameCount = frameCount_;
+  frameData = (uint8_t*)frameData_;
+  encoding = encoding_;
+  ledCount = ledCount_;
 
-bool Animations::isInitialized() {
-    return initialized;
+  switch(encoding) {
+    case ENCODING_RGB24:
+    case ENCODING_RGB565_RLE:
+      // Nothing to preload.
+      break;
+    case ENCODING_INDEXED:
+    case ENCODING_INDEXED_RLE:
+      // Load the color table into memory
+      // TODO: Free this memory somewhere?
+      colorTableEntries = *(frameData);
+
+      for(int i = 0; i < colorTableEntries; i++) {
+        colorTable[i].R = *(frameData + 1 + i*3 + 0);
+        colorTable[i].G = *(frameData + 1 + i*3 + 1);
+        colorTable[i].B = *(frameData + 1 + i*3 + 2);
+      }
+      break;
+  }
+
+  reset();
+}
+ 
+void Animation::reset() {
+  frameIndex = 0;
 }
 
-void Animations::begin() {
-    initialized = false;
+void Animation::draw(Pixel* pixels) {
+  switch(encoding) {
+    case ENCODING_RGB24:
+      drawRgb24(pixels);
+      break;
+    case ENCODING_RGB565_RLE:
+      drawRgb16_RLE(pixels);
+      break;
+    case ENCODING_INDEXED:
+      drawIndexed(pixels);
+      break;
+    case ENCODING_INDEXED_RLE:
+      drawIndexed_RLE(pixels);
+      break;
+  }
 
-    // Look through the file storage, and make an animation for any animation files
-    animationCount = 0;
+  frameIndex = (frameIndex + 1)%frameCount;
 
-    initialized = true;
+  if(frameIndex > 0) {frameIndex = 0;}
+};
+
+void Animation::drawRgb24(Pixel* pixels) {
+  currentFrameData = frameData
+    + frameIndex*ledCount*3;  // Offset for current frame
+  
+  for(uint8_t i = 0; i < ledCount; i++) {
+    pixels[i].R = *(currentFrameData+0);
+    pixels[i].R = *(currentFrameData+1);
+    pixels[i].R = *(currentFrameData+2);
+  }
 }
 
-uint32_t Animations::getCount() {
-    return animationCount;
+void Animation::drawRgb16_RLE(Pixel* pixels) {
+  if(frameIndex == 0) {
+    currentFrameData = frameData;
+  }
+
+  // Read runs of RLE data until we get enough data.
+  uint8_t count = 0;
+  while(count < ledCount) {
+    uint8_t run_length = 0x7F & *(currentFrameData);
+    uint8_t upperByte = *(currentFrameData + 1);
+    uint8_t lowerByte = *(currentFrameData + 2);
+    
+    uint8_t r = ((upperByte & 0xF8)     );
+    uint8_t g = ((upperByte & 0x07) << 5)
+              | ((lowerByte & 0xE0) >> 3);
+    uint8_t b = ((lowerByte & 0x1F) << 3);
+    
+    for(uint8_t i = 0; i < run_length; i++) {
+      pixels[count + i].R = r;
+      pixels[count + i].G = g;
+      pixels[count + i].B = b;
+    }
+    
+    count += run_length;
+    currentFrameData += 3;
+  }
+};
+
+void Animation::drawIndexed(Pixel* pixels) {
+  currentFrameData = frameData
+    + 1 + 3*colorTableEntries   // Offset for color table
+    + frameIndex*ledCount;      // Offset for current frame
+  
+  for(uint8_t i = 0; i < ledCount; i++) {
+    pixels[i] = colorTable[*(currentFrameData + i)];
+  }
 }
 
-Animation* Animations::getAnimation(uint32_t animation) {
-    return &(animations[animation]);
-}
+void Animation::drawIndexed_RLE(Pixel* pixels) {
+  if(frameIndex == 0) {
+    currentFrameData = frameData
+      + 1 + 3*colorTableEntries;   // Offset for color table
+  }
+
+  // Read runs of RLE data until we get enough data.
+  int count = 0;
+  while(count < ledCount) {
+    uint8_t run_length = *(currentFrameData++);
+    uint8_t colorIndex = *(currentFrameData++);
+    
+    for(uint8_t i = 0; i < run_length; i++) {
+      pixels[count++] = colorTable[colorIndex];
+    }
+  }
+};
+
+
