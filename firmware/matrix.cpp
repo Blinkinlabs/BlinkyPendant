@@ -61,9 +61,8 @@ pixel Pixels[LED_COLS * LED_ROWS];
 float systemBrightness = 1;
 
 // Address output buffer
-// Note: Increasing the count BYTE_WRITES_PER_ADDRESS will increase the time delay between
-// LED_OE deassertion and LED_STB strobe.
-#define ADDRESS_REPEAT_COUNT 10
+// Note: We repeat the address output multiple times, to add a delay between OE deasserting and the address lines changing
+#define ADDRESS_REPEAT_COUNT 10  // was 10
 uint8_t Addresses[BIT_DEPTH*LED_ROWS*ADDRESS_REPEAT_COUNT];
 
 // Timer output buffers (these will be DMAd to the FTM0_MOD and FTM0_C1V registers)
@@ -120,7 +119,6 @@ void matrixSetup() {
         last_address = address;
       }
 
-//TODO Mask this correctly?
 #define addressBits(addr) (~((1<<DMA_STB_SHIFT) | (1<<(addr+DMA_S0_SHIFT))))
 
       for(int i = 0; i < ADDRESS_REPEAT_COUNT; i++) {
@@ -274,9 +272,9 @@ void pixelsToDmaBuffer(struct pixel* pixelInput, uint8_t bufferOutput[]) {
         uint8_t output_b =
             (((data_B >> depth) & 0x01) << DMA_DAT_SHIFT);
 
-        int offset_g = OUTPUT_ORDER[col*3 + 0];
+        int offset_r = OUTPUT_ORDER[col*3 + 0];
         int offset_b = OUTPUT_ORDER[col*3 + 1];
-        int offset_r = OUTPUT_ORDER[col*3 + 2];
+        int offset_g = OUTPUT_ORDER[col*3 + 2];
 
         bufferOutput[row*ROW_DEPTH_SIZE + depth*ROW_BIT_SIZE + offset_r*2 + 0] = output_r;
         bufferOutput[row*ROW_DEPTH_SIZE + depth*ROW_BIT_SIZE + offset_r*2 + 1] = output_r | 1 << DMA_CLK_SHIFT;
