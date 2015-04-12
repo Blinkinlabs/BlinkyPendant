@@ -137,7 +137,11 @@ extern "C" int main()
 
         if(!streaming_mode) {
             if(true) {
-                count_up_loop();
+                int X;
+                int Y;
+                int Z;
+                mma8653.getXYZ(X,Y,Z);
+                count_up_loop(X,Y,Z);
                 show();
             }
             else {

@@ -99,6 +99,8 @@ void WIRE::endTransmission(bool stop = true) {
     if(stop) {
         I2C0_C1 &= ~(I2C_C1_MST);
         I2C0_C1 &= ~(I2C_C1_TX);
+
+        while(I2C0_S & I2C_S_BUSY) {};
     }
     else {
         I2C0_C1 |= I2C_C1_RSTA;
@@ -118,7 +120,9 @@ void WIRE::requestFrom(uint8_t address, int length) {
     I2C0_C1 &= ~(I2C_C1_TX);    // Set for RX mode, and write the device address
 
     //TODO: this is a hack?
-    remaining = length;
+    remaining = length + 1;
+
+    receive();
 }
 
 uint8_t WIRE::receive() {
@@ -126,20 +130,22 @@ uint8_t WIRE::receive() {
         return 0;
     }
 
-    if(remaining == 1) {           // On the last byte, don't ACK
+    if(remaining <= 2) {           // On the last byte, don't ACK
         I2C0_C1 |= I2C_C1_TXAK;
     }
 
-    uint8_t read = I2C0_D;
-    waitForDone();
-
-    remaining--;
-
-    if(remaining == 0) {
-        I2C0_C1 &= ~(I2C_C1_MST);
-        I2C0_C1 &= ~(I2C_C1_TX);
+    if(remaining == 1) {
+        endTransmission();
         I2C0_C1 &= ~(I2C_C1_TXAK);
     }
+
+    uint8_t read = I2C0_D;
+
+    if(remaining >1) {
+        waitForDone();
+    }
+
+    remaining--;
 
     return read;
 }
@@ -169,23 +175,22 @@ void MMA8653::setup() {
   Wire.write(WHO_AM_I);
   Wire.endTransmission(false);
 
-  
   Wire.requestFrom(MMA8653_ADDRESS, 1);
   while(Wire.available()) {
     Wire.receive();
     // TODO: Test if this is equal to 0x5A?
   }
 
-  // Configure for 2G sensitivity
+  // Configure for 8G sensitivity
   Wire.beginTransmission(MMA8653_ADDRESS);
   Wire.write(XYZ_DATA_CFG);
-  Wire.write(XYZ_DATA_CFG_8G);
+  Wire.write(XYZ_DATA_CFG_4G);
   Wire.endTransmission();
 
   // Put in fast-read mode, with 1.56Hz output rate, and activate
   Wire.beginTransmission(MMA8653_ADDRESS);
   Wire.write(CTRL_REG1);
-  Wire.write(CTRL_REG1_ACTIVE | CTRL_REG1_F_READ | CTRL_REG1_DR(2));
+  Wire.write(CTRL_REG1_ACTIVE | CTRL_REG1_F_READ | CTRL_REG1_DR(0));
   Wire.endTransmission();
 
 }
@@ -202,13 +207,13 @@ bool MMA8653::getXYZ(int& X, int& Y, int& Z) {
         Wire.receive();
     }
     if(Wire.available()) {
-        X = Wire.receive();
+        X = (int8_t)Wire.receive();
     }
     if(Wire.available()) {
-        Y = Wire.receive();
+        Y = (int8_t)Wire.receive();
     }
     if(Wire.available()) {
-        Z = Wire.receive();
+        Z = (int8_t)Wire.receive();
     }
 
     return true;
