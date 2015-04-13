@@ -6,9 +6,9 @@
 <setting alwaysvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.5" unitdist="mm" unit="mm" style="lines" multiple="1" display="yes" altdistance="0.1" altunitdist="mm" altunit="mm"/>
+<grid distance="0.5" unitdist="mm" unit="mm" style="lines" multiple="1" display="yes" altdistance="0.25" altunitdist="mm" altunit="mm"/>
 <layers>
-<layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
+<layer number="1" name="Top" color="4" fill="1" visible="no" active="yes"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="no" active="no"/>
 <layer number="3" name="Route3" color="4" fill="3" visible="no" active="no"/>
 <layer number="4" name="Route4" color="1" fill="4" visible="no" active="no"/>
@@ -796,7 +796,7 @@ Modified from Laen's PCB Order Design Rules</description>
 <element name="U$6" library="teensy_adapter" package="VFDFN-10" value="MMA8653FC" x="12" y="23" smashed="yes" rot="R180"/>
 <element name="R2" library="adafruit" package="R0402" value="4.7k" x="9.75" y="20" smashed="yes" rot="R90"/>
 <element name="R3" library="adafruit" package="R0402" value="4.7k" x="13.25" y="20.75" smashed="yes" rot="R90"/>
-<element name="C2" library="adafruit" package="C0402" value="100nF" x="14.75" y="23.75" smashed="yes"/>
+<element name="C2" library="adafruit" package="C0402" value="100nF" x="14.5" y="24.7" smashed="yes" rot="R180"/>
 <element name="C3" library="adafruit" package="C0402" value="100nF" x="11.75" y="20.75" smashed="yes" rot="R270"/>
 <element name="C5" library="adafruit" package="C0402" value="100nF" x="9" y="23.75" smashed="yes" rot="R90"/>
 <element name="D1" library="blinkinlabs" package="LED-TRICOLOR-5050-FIXED" value="LED-RGB5050" x="12" y="71" smashed="yes">
@@ -862,11 +862,11 @@ Modified from Laen's PCB Order Design Rules</description>
 <element name="U3" library="74xx-little-us" package="SC70-5" value="74LVC1G17DCK" x="18" y="28.5" smashed="yes">
 <attribute name="VALUE" x="15.46" y="25.96" size="1.27" layer="27"/>
 </element>
-<element name="R5" library="adafruit" package="R0402" value="10k" x="17.5" y="26.25" smashed="yes" rot="R180">
-<attribute name="VALUE" x="18.135" y="28.282" size="1.27" layer="27" rot="R180"/>
+<element name="R5" library="adafruit" package="R0402" value="10k" x="17.75" y="26.5" smashed="yes" rot="R180">
+<attribute name="VALUE" x="18.385" y="28.532" size="1.27" layer="27" rot="R180"/>
 </element>
-<element name="R4" library="adafruit" package="R0402" value="10k" x="14.75" y="26.25" smashed="yes">
-<attribute name="VALUE" x="14.115" y="24.218" size="1.27" layer="27"/>
+<element name="R4" library="adafruit" package="R0402" value="10k" x="15" y="26.5" smashed="yes">
+<attribute name="VALUE" x="14.365" y="24.468" size="1.27" layer="27"/>
 </element>
 <element name="TP2" library="testpad" package="B1,27" value="PTR1B1,27" x="18.5" y="11" rot="MR0">
 <attribute name="TP_SIGNAL_NAME" value="" x="18.5" y="11" size="1.778" layer="28" rot="MR0" display="off"/>
@@ -919,29 +919,32 @@ Modified from Laen's PCB Order Design Rules</description>
 <element name="U$2" library="blinkinlabs" package="SWITCH_SMD_90_DEGREE" value="SWITCH_SPDT_SHIELD" x="21" y="10.5" smashed="yes" rot="R270">
 <attribute name="VALUE" x="24" y="9.5" size="0.762" layer="27" rot="R270"/>
 </element>
-<element name="TP9" library="testpad" package="B1,27" value="PTR1B1,27" x="14.2" y="22.6" rot="MR0">
-<attribute name="TP_SIGNAL_NAME" value="" x="14.2" y="22.6" size="1.778" layer="28" rot="MR0" display="off"/>
+<element name="TP9" library="testpad" package="B1,27" value="PTR1B1,27" x="14.5" y="22.5" rot="MR0">
+<attribute name="TP_SIGNAL_NAME" value="" x="14.5" y="22.5" size="1.778" layer="28" rot="MR0" display="off"/>
 </element>
-<element name="TP11" library="testpad" package="B1,27" value="PTR1B1,27" x="10.2" y="18.3" rot="MR0">
-<attribute name="TP_SIGNAL_NAME" value="" x="10.2" y="18.3" size="1.778" layer="28" rot="MR0" display="off"/>
+<element name="TP11" library="testpad" package="B1,27" value="PTR1B1,27" x="11.5" y="30" rot="MR0">
+<attribute name="TP_SIGNAL_NAME" value="" x="11.5" y="30" size="1.778" layer="28" rot="MR0" display="off"/>
 </element>
-<element name="TP12" library="testpad" package="B1,27" value="PTR1B1,27" x="8.9" y="27.8" rot="MR180">
-<attribute name="TP_SIGNAL_NAME" value="" x="8.9" y="27.8" size="1.778" layer="28" rot="MR180" display="off"/>
+<element name="TP12" library="testpad" package="B1,27" value="PTR1B1,27" x="9" y="27.5" rot="MR180">
+<attribute name="TP_SIGNAL_NAME" value="" x="9" y="27.5" size="1.778" layer="28" rot="MR180" display="off"/>
 </element>
-<element name="TP13" library="testpad" package="B1,27" value="PTR1B1,27" x="9" y="29.3" rot="MR0">
-<attribute name="TP_SIGNAL_NAME" value="" x="9" y="29.3" size="1.778" layer="28" rot="MR0" display="off"/>
+<element name="TP13" library="testpad" package="B1,27" value="PTR1B1,27" x="9" y="30" rot="MR0">
+<attribute name="TP_SIGNAL_NAME" value="" x="9" y="30" size="1.778" layer="28" rot="MR0" display="off"/>
 </element>
-<element name="TP14" library="testpad" package="B1,27" value="PTR1B1,27" x="7.1" y="28.1" rot="MR0">
-<attribute name="TP_SIGNAL_NAME" value="" x="7.1" y="28.1" size="1.778" layer="28" rot="MR0" display="off"/>
+<element name="TP14" library="testpad" package="B1,27" value="PTR1B1,27" x="6.5" y="27.5" rot="MR0">
+<attribute name="TP_SIGNAL_NAME" value="" x="6.5" y="27.5" size="1.778" layer="28" rot="MR0" display="off"/>
 </element>
-<element name="TP15" library="testpad" package="B1,27" value="PTR1B1,27" x="6.1" y="18.9" rot="MR0">
-<attribute name="TP_SIGNAL_NAME" value="" x="6.1" y="18.9" size="1.778" layer="28" rot="MR0" display="off"/>
+<element name="TP15" library="testpad" package="B1,27" value="PTR1B1,27" x="6.5" y="30" rot="MR0">
+<attribute name="TP_SIGNAL_NAME" value="" x="6.5" y="30" size="1.778" layer="28" rot="MR0" display="off"/>
 </element>
-<element name="TP16" library="testpad" package="B1,27" value="PTR1B1,27" x="5.3" y="28.5" rot="MR0">
-<attribute name="TP_SIGNAL_NAME" value="" x="5.3" y="28.5" size="1.778" layer="28" rot="MR0" display="off"/>
+<element name="TP16" library="testpad" package="B1,27" value="PTR1B1,27" x="4" y="30" rot="MR0">
+<attribute name="TP_SIGNAL_NAME" value="" x="4" y="30" size="1.778" layer="28" rot="MR0" display="off"/>
 </element>
-<element name="TP10" library="testpad" package="B1,27" value="PTR1B1,27" x="8.7" y="20" rot="MR0">
-<attribute name="TP_SIGNAL_NAME" value="" x="8.7" y="20" size="1.778" layer="28" rot="MR0" display="off"/>
+<element name="TP10" library="testpad" package="B1,27" value="PTR1B1,27" x="8.5" y="20" rot="MR0">
+<attribute name="TP_SIGNAL_NAME" value="" x="8.5" y="20" size="1.778" layer="28" rot="MR0" display="off"/>
+</element>
+<element name="TP17" library="testpad" package="B1,27" value="PTR1B1,27" x="13" y="19" rot="MR0">
+<attribute name="TP_SIGNAL_NAME" value="" x="13" y="19" size="1.778" layer="28" rot="MR0" display="off"/>
 </element>
 </elements>
 <signals>
@@ -1526,16 +1529,16 @@ Modified from Laen's PCB Order Design Rules</description>
 <via x="22.75" y="16.75" extent="1-16" drill="0.35"/>
 <via x="14.25" y="7.5" extent="1-16" drill="0.35"/>
 <contactref element="TP5" pad="TP"/>
-<via x="15.5" y="19.25" extent="1-16" drill="0.35"/>
+<via x="15.5" y="19" extent="1-16" drill="0.35"/>
 <via x="18" y="23.1" extent="1-16" drill="0.35"/>
 <via x="10.75" y="20" extent="1-16" drill="0.35"/>
 <via x="5" y="21.25" extent="1-16" drill="0.35"/>
 <via x="3.5" y="21.25" extent="1-16" drill="0.35"/>
 <wire x1="4.3" y1="8.9" x2="5.35" y2="8.9" width="0.254" layer="1"/>
-<via x="16.5" y="27.5" extent="1-16" drill="0.35"/>
+<via x="16.5" y="27.75" extent="1-16" drill="0.35"/>
 <via x="19.75" y="28.75" extent="1-16" drill="0.35"/>
 <via x="11" y="27" extent="1-16" drill="0.35"/>
-<via x="12.25" y="24.75" extent="1-16" drill="0.35"/>
+<via x="12" y="24.75" extent="1-16" drill="0.35"/>
 <wire x1="11.1" y1="22.6" x2="10.1" y2="22.6" width="0.254" layer="1"/>
 <wire x1="10.1" y1="22.6" x2="9.75" y2="22.25" width="0.254" layer="1"/>
 <via x="6.5" y="8.75" extent="1-16" drill="0.35"/>
@@ -1575,9 +1578,6 @@ Modified from Laen's PCB Order Design Rules</description>
 <wire x1="22.725" y1="18.75" x2="22.725" y2="18.425" width="0.4064" layer="1"/>
 <wire x1="22.725" y1="18.425" x2="22.4" y2="18.1" width="0.4064" layer="1"/>
 <contactref element="SW2" pad="1"/>
-<wire x1="15.4" y1="23.75" x2="15.4" y2="24.6" width="0.254" layer="1"/>
-<wire x1="15.4" y1="24.6" x2="15.25" y2="24.75" width="0.254" layer="1"/>
-<wire x1="15.25" y1="24.75" x2="12.25" y2="24.75" width="0.254" layer="1"/>
 </signal>
 <signal name="LED_OE">
 <contactref element="U$5" pad="21"/>
@@ -1585,8 +1585,6 @@ Modified from Laen's PCB Order Design Rules</description>
 <wire x1="3.75" y1="30" x2="4.5" y2="30" width="0.254" layer="1"/>
 <wire x1="4.5" y1="30" x2="5.25" y2="29.25" width="0.254" layer="1"/>
 <via x="9" y="25.75" extent="1-16" drill="0.35"/>
-<wire x1="9" y1="25.75" x2="8" y2="25.75" width="0.254" layer="16"/>
-<wire x1="8" y1="25.75" x2="5.25" y2="28.5" width="0.254" layer="16"/>
 <via x="5.25" y="28.5" extent="1-16" drill="0.35"/>
 <wire x1="5.25" y1="28.5" x2="5.25" y2="29.25" width="0.254" layer="1"/>
 <wire x1="15.775" y1="17.25" x2="15.775" y2="17.525" width="0.254" layer="1"/>
@@ -1595,23 +1593,30 @@ Modified from Laen's PCB Order Design Rules</description>
 <wire x1="16" y1="17.75" x2="18.5" y2="17.75" width="0.254" layer="1"/>
 <wire x1="18.5" y1="17.75" x2="19.25" y2="18.5" width="0.254" layer="1"/>
 <wire x1="19.25" y1="23.2" x2="18.35" y2="24.1" width="0.254" layer="1"/>
-<wire x1="18.35" y1="24.1" x2="17.4" y2="24.1" width="0.254" layer="1"/>
-<via x="17.4" y="24.1" extent="1-16" drill="0.35"/>
-<via x="16" y="25.25" extent="1-16" drill="0.35"/>
-<wire x1="16" y1="25.25" x2="17.15" y2="24.1" width="0.254" layer="16"/>
-<wire x1="17.15" y1="24.1" x2="17.4" y2="24.1" width="0.254" layer="16"/>
+<wire x1="18.35" y1="24.1" x2="17.65" y2="24.1" width="0.254" layer="1"/>
+<via x="17.65" y="24.1" extent="1-16" drill="0.35"/>
+<via x="16" y="25.45" extent="1-16" drill="0.35"/>
+<wire x1="16" y1="25.45" x2="17.35" y2="24.1" width="0.254" layer="16"/>
+<wire x1="17.35" y1="24.1" x2="17.65" y2="24.1" width="0.254" layer="16"/>
 <wire x1="9" y1="25.75" x2="13.25" y2="25.75" width="0.254" layer="1"/>
-<wire x1="13.25" y1="25.75" x2="13.75" y2="25.25" width="0.254" layer="1"/>
-<wire x1="13.75" y1="25.25" x2="16" y2="25.25" width="0.254" layer="1"/>
+<wire x1="13.25" y1="25.75" x2="13.5" y2="25.5" width="0.254" layer="1"/>
+<wire x1="13.5" y1="25.5" x2="15.95" y2="25.5" width="0.254" layer="1"/>
+<wire x1="15.95" y1="25.5" x2="16" y2="25.45" width="0.254" layer="1"/>
 <contactref element="TP16" pad="TP"/>
-<wire x1="5.25" y1="28.5" x2="5.3" y2="28.5" width="0" layer="19" extent="1-16"/>
+<wire x1="4" y1="30" x2="4" y2="29.75" width="0.254" layer="16"/>
+<wire x1="4" y1="29.75" x2="5.25" y2="28.5" width="0.254" layer="16"/>
+<wire x1="9" y1="25.75" x2="6.75" y2="25.75" width="0.254" layer="16"/>
+<wire x1="6.75" y1="25.75" x2="5.25" y2="27.25" width="0.254" layer="16"/>
+<wire x1="5.25" y1="27.25" x2="5.25" y2="28.5" width="0.254" layer="16"/>
 </signal>
 <signal name="N$18">
 <contactref element="U$5" pad="23"/>
 <contactref element="R1" pad="2"/>
 <wire x1="3.75" y1="28" x2="4.5" y2="28" width="0.254" layer="1"/>
-<wire x1="4.5" y1="28" x2="5" y2="27.5" width="0.254" layer="1"/>
-<wire x1="5" y1="27.5" x2="5" y2="23.65" width="0.254" layer="1"/>
+<wire x1="4.5" y1="28" x2="5.5" y2="27" width="0.254" layer="1"/>
+<wire x1="5.5" y1="27" x2="5.5" y2="24.75" width="0.254" layer="1"/>
+<wire x1="5.5" y1="24.75" x2="5" y2="24.25" width="0.254" layer="1"/>
+<wire x1="5" y1="24.25" x2="5" y2="23.65" width="0.254" layer="1"/>
 </signal>
 <signal name="3.3V" class="1">
 <contactref element="U$6" pad="P$8"/>
@@ -1645,9 +1650,9 @@ Modified from Laen's PCB Order Design Rules</description>
 <wire x1="13.3" y1="22.2" x2="13.5" y2="22" width="0.254" layer="1"/>
 <wire x1="13.5" y1="22" x2="13.5" y2="21.5" width="0.254" layer="1"/>
 <via x="8.75" y="21.75" extent="1-16" drill="0.35"/>
-<via x="3.75" y="24.75" extent="1-16" drill="0.35"/>
-<wire x1="3.75" y1="24.75" x2="5.75" y2="24.75" width="0.4064" layer="16"/>
-<wire x1="5.75" y1="24.75" x2="8.75" y2="21.75" width="0.4064" layer="16"/>
+<via x="4.75" y="25.25" extent="1-16" drill="0.35"/>
+<wire x1="4.75" y1="25.25" x2="5.25" y2="25.25" width="0.4064" layer="16"/>
+<wire x1="5.25" y1="25.25" x2="8.75" y2="21.75" width="0.4064" layer="16"/>
 <wire x1="9" y1="23.1" x2="8.85" y2="23.1" width="0.254" layer="1"/>
 <wire x1="8.85" y1="23.1" x2="8.75" y2="23" width="0.254" layer="1"/>
 <wire x1="12" y1="9.65" x2="11.9" y2="9.65" width="0.4064" layer="1"/>
@@ -1661,8 +1666,8 @@ Modified from Laen's PCB Order Design Rules</description>
 <via x="10.25" y="12.75" extent="1-16" drill="0.35"/>
 <via x="15" y="10.75" extent="1-16" drill="0.35"/>
 <contactref element="TP2" pad="TP"/>
-<wire x1="3.75" y1="27" x2="3.75" y2="24.75" width="0.4064" layer="1"/>
-<wire x1="15.4" y1="26.25" x2="16.85" y2="26.25" width="0.254" layer="1"/>
+<wire x1="3.75" y1="27" x2="3.75" y2="25.25" width="0.4064" layer="1"/>
+<wire x1="15.65" y1="26.5" x2="17.1" y2="26.5" width="0.254" layer="1"/>
 <wire x1="13.25" y1="21.4" x2="13.4" y2="21.4" width="0.254" layer="1"/>
 <wire x1="11.75" y1="21.4" x2="13.25" y2="21.4" width="0.4064" layer="1"/>
 <wire x1="13.5" y1="21.5" x2="13.35" y2="21.5" width="0.254" layer="1"/>
@@ -1670,20 +1675,23 @@ Modified from Laen's PCB Order Design Rules</description>
 <wire x1="8.75" y1="21.75" x2="8.75" y2="22.85" width="0.254" layer="1"/>
 <wire x1="8.75" y1="22.85" x2="9" y2="23.1" width="0.254" layer="1"/>
 <wire x1="11.75" y1="21.4" x2="11.4" y2="21.4" width="0.254" layer="1"/>
-<wire x1="15" y1="21.75" x2="16.25" y2="23" width="0.4064" layer="1"/>
-<wire x1="16.25" y1="23" x2="16.25" y2="24.25" width="0.4064" layer="1"/>
-<wire x1="16.25" y1="24.25" x2="17" y2="25" width="0.4064" layer="1"/>
+<wire x1="14.75" y1="21.75" x2="15.75" y2="22.75" width="0.4064" layer="1"/>
+<wire x1="15.75" y1="22.75" x2="16.25" y2="22.75" width="0.4064" layer="1"/>
+<wire x1="16.25" y1="22.75" x2="16.75" y2="23.25" width="0.4064" layer="1"/>
+<wire x1="16.75" y1="23.25" x2="16.75" y2="24.75" width="0.4064" layer="1"/>
+<wire x1="16.75" y1="24.75" x2="17" y2="25" width="0.4064" layer="1"/>
 <wire x1="8.75" y1="21" x2="8.75" y2="21.75" width="0.254" layer="1"/>
-<wire x1="18.5" y1="25" x2="17" y2="25" width="0.4064" layer="1"/>
-<wire x1="16.85" y1="25" x2="17" y2="25" width="0.4064" layer="1"/>
-<wire x1="16.85" y1="26.25" x2="16.85" y2="25" width="0.4064" layer="1"/>
+<wire x1="18.5" y1="25" x2="17.1" y2="25" width="0.4064" layer="1"/>
+<wire x1="17.1" y1="25" x2="17" y2="25" width="0.4064" layer="1"/>
+<wire x1="17.1" y1="26.5" x2="17.1" y2="25" width="0.4064" layer="1"/>
 <wire x1="10.25" y1="12.75" x2="10.75" y2="12.75" width="0.4064" layer="1"/>
 <wire x1="13" y1="11.75" x2="13" y2="10.75" width="0.4064" layer="16"/>
-<wire x1="15" y1="21.75" x2="14" y2="21.75" width="0.4064" layer="1"/>
+<wire x1="14.75" y1="21.75" x2="14" y2="21.75" width="0.4064" layer="1"/>
 <wire x1="14" y1="21.75" x2="13.65" y2="21.4" width="0.4064" layer="1"/>
 <wire x1="13.25" y1="21.4" x2="13.65" y2="21.4" width="0.4064" layer="1"/>
-<wire x1="3.5" y1="23.65" x2="3.5" y2="24.5" width="0.4064" layer="1"/>
-<wire x1="3.5" y1="24.5" x2="3.75" y2="24.75" width="0.4064" layer="1"/>
+<wire x1="3.5" y1="23.65" x2="3.5" y2="25" width="0.4064" layer="1"/>
+<wire x1="3.5" y1="25" x2="3.75" y2="25.25" width="0.4064" layer="1"/>
+<wire x1="3.75" y1="25.25" x2="4.75" y2="25.25" width="0.4064" layer="1"/>
 <wire x1="13" y1="11.75" x2="14.25" y2="11.75" width="0.4064" layer="16"/>
 <wire x1="14.25" y1="11.75" x2="15" y2="11" width="0.4064" layer="16"/>
 <wire x1="8.9" y1="12.75" x2="10.25" y2="12.75" width="0.4064" layer="1"/>
@@ -1714,14 +1722,30 @@ Modified from Laen's PCB Order Design Rules</description>
 <contactref element="U$6" pad="P$4"/>
 <contactref element="C2" pad="1"/>
 <wire x1="12.9" y1="23.4" x2="13.4" y2="23.4" width="0.254" layer="1"/>
-<wire x1="14.1" y1="23.75" x2="13.75" y2="23.75" width="0.254" layer="1"/>
-<wire x1="13.75" y1="23.75" x2="13.4" y2="23.4" width="0.254" layer="1"/>
+<wire x1="13.4" y1="23.4" x2="13.8" y2="23.8" width="0.254" layer="1"/>
+<wire x1="13.8" y1="23.8" x2="14.8" y2="23.8" width="0.254" layer="1"/>
+<wire x1="14.8" y1="23.8" x2="15.15" y2="24.15" width="0.254" layer="1"/>
+<wire x1="15.15" y1="24.7" x2="15.15" y2="24.15" width="0.254" layer="1"/>
 </signal>
-<signal name="INT1">
+<signal name="ACC_INT1">
+<contactref element="U2" pad="24"/>
+<wire x1="11.25" y1="18.275" x2="10.525" y2="18.275" width="0.254" layer="1"/>
+<via x="10.5" y="18.25" extent="1-16" drill="0.35"/>
+<wire x1="10.525" y1="18.275" x2="10.5" y2="18.25" width="0.254" layer="1"/>
+<wire x1="10.5" y1="18.25" x2="11.5" y2="18.25" width="0.254" layer="16"/>
+<wire x1="11.5" y1="18.25" x2="12.625" y2="19.375" width="0.254" layer="16"/>
+<wire x1="12.625" y1="19.375" x2="13.5" y2="20.25" width="0.254" layer="16"/>
+<wire x1="13.5" y1="20.25" x2="13.5" y2="23" width="0.254" layer="16"/>
+<via x="15.75" y="23.75" extent="1-16" drill="0.35"/>
 <contactref element="U$6" pad="P$3"/>
-</signal>
-<signal name="INT2">
-<contactref element="U$6" pad="P$5"/>
+<wire x1="13.5" y1="23" x2="14.25" y2="23.75" width="0.254" layer="16"/>
+<wire x1="15.75" y1="23.75" x2="14.25" y2="23.75" width="0.254" layer="16"/>
+<wire x1="12.9" y1="23" x2="13.8" y2="23" width="0.254" layer="1"/>
+<wire x1="13.8" y1="23" x2="14.1" y2="23.3" width="0.254" layer="1"/>
+<wire x1="14.1" y1="23.3" x2="15.3" y2="23.3" width="0.254" layer="1"/>
+<wire x1="15.3" y1="23.3" x2="15.75" y2="23.75" width="0.254" layer="1"/>
+<contactref element="TP17" pad="TP"/>
+<wire x1="13" y1="19" x2="12.625" y2="19.375" width="0.254" layer="16"/>
 </signal>
 <signal name="+5V" class="1">
 <contactref element="U2" pad="6"/>
@@ -1795,15 +1819,18 @@ Modified from Laen's PCB Order Design Rules</description>
 <contactref element="R3" pad="1"/>
 <contactref element="U2" pad="20"/>
 <via x="14.25" y="20.75" extent="1-16" drill="0.35"/>
-<via x="14.25" y="22.6" extent="1-16" drill="0.35"/>
+<via x="14.45" y="22.6" extent="1-16" drill="0.35"/>
 <wire x1="13.25" y1="20.1" x2="13.9" y2="20.1" width="0.254" layer="1"/>
 <wire x1="14.25" y1="20.75" x2="14.25" y2="20.45" width="0.254" layer="1"/>
 <wire x1="14.25" y1="20.45" x2="13.9" y2="20.1" width="0.254" layer="1"/>
-<wire x1="14.25" y1="20.75" x2="14.25" y2="22.6" width="0.254" layer="16"/>
+<wire x1="14.25" y1="20.75" x2="14.25" y2="22.5" width="0.254" layer="16"/>
+<wire x1="14.25" y1="22.5" x2="14.35" y2="22.6" width="0.254" layer="16"/>
+<wire x1="14.35" y1="22.6" x2="14.45" y2="22.6" width="0.254" layer="16"/>
 <wire x1="13.25" y1="18.275" x2="13.25" y2="20.1" width="0.254" layer="1"/>
-<wire x1="14.25" y1="22.6" x2="12.9" y2="22.6" width="0.254" layer="1"/>
+<wire x1="14.45" y1="22.6" x2="12.9" y2="22.6" width="0.254" layer="1"/>
 <contactref element="TP9" pad="TP"/>
-<wire x1="14.25" y1="22.6" x2="14.2" y2="22.6" width="0" layer="19" extent="1-16"/>
+<wire x1="14.45" y1="22.6" x2="14.45" y2="22.55" width="0.254" layer="16"/>
+<wire x1="14.45" y1="22.55" x2="14.5" y2="22.5" width="0.254" layer="16"/>
 </signal>
 <signal name="I2C0_SDA">
 <contactref element="U$6" pad="P$10"/>
@@ -1825,7 +1852,7 @@ Modified from Laen's PCB Order Design Rules</description>
 <via x="10.5" y="21.5" extent="1-16" drill="0.35"/>
 <wire x1="10.5" y1="21.5" x2="10.25" y2="21.5" width="0.254" layer="16"/>
 <contactref element="TP10" pad="TP"/>
-<wire x1="8.7" y1="20" x2="8.75" y2="20" width="0.254" layer="16"/>
+<wire x1="8.5" y1="20" x2="8.75" y2="20" width="0.254" layer="16"/>
 </signal>
 <signal name="N$8">
 <contactref element="Q2" pad="P$3"/>
@@ -1839,10 +1866,10 @@ Modified from Laen's PCB Order Design Rules</description>
 <contactref element="Q2" pad="P$1"/>
 <contactref element="U2" pad="18"/>
 <wire x1="14.25" y1="19" x2="14.25" y2="18.275" width="0.254" layer="1"/>
-<wire x1="15.5" y1="20" x2="15.25" y2="20" width="0.254" layer="1"/>
-<wire x1="15.25" y1="20" x2="14.25" y2="19" width="0.254" layer="1"/>
+<wire x1="15.25" y1="19.75" x2="15" y2="19.75" width="0.254" layer="1"/>
+<wire x1="15" y1="19.75" x2="14.25" y2="19" width="0.254" layer="1"/>
 <wire x1="16.7" y1="21.6" x2="16.7" y2="21.2" width="0.254" layer="1"/>
-<wire x1="16.7" y1="21.2" x2="15.5" y2="20" width="0.254" layer="1"/>
+<wire x1="16.7" y1="21.2" x2="15.25" y2="19.75" width="0.254" layer="1"/>
 </signal>
 <signal name="N$14">
 <contactref element="R7" pad="1"/>
@@ -1950,8 +1977,7 @@ Modified from Laen's PCB Order Design Rules</description>
 <wire x1="9" y1="28" x2="7.5" y2="26.5" width="0.254" layer="1"/>
 <wire x1="11" y1="28" x2="9" y2="28" width="0.254" layer="16"/>
 <contactref element="TP12" pad="TP"/>
-<wire x1="8.9" y1="27.8" x2="9" y2="27.9" width="0.254" layer="16"/>
-<wire x1="9" y1="27.9" x2="9" y2="28" width="0.254" layer="16"/>
+<wire x1="9" y1="27.5" x2="9" y2="28" width="0.254" layer="16"/>
 </signal>
 <signal name="LED_CLOCK">
 <contactref element="U$5" pad="3"/>
@@ -1959,25 +1985,29 @@ Modified from Laen's PCB Order Design Rules</description>
 <wire x1="12.25" y1="29" x2="10.75" y2="29" width="0.254" layer="1"/>
 <wire x1="8" y1="25.75" x2="8" y2="19.75" width="0.254" layer="1"/>
 <wire x1="8" y1="19.75" x2="9.25" y2="18.5" width="0.254" layer="1"/>
-<wire x1="9.25" y1="18.5" x2="9.25" y2="18.3" width="0.254" layer="1"/>
-<wire x1="9.25" y1="18.3" x2="9.25" y2="17" width="0.254" layer="1"/>
+<wire x1="9.25" y1="18.5" x2="9.25" y2="17" width="0.254" layer="1"/>
 <wire x1="9.25" y1="17" x2="9.5" y2="16.75" width="0.254" layer="1"/>
 <wire x1="9.5" y1="16.75" x2="10.225" y2="16.75" width="0.254" layer="1"/>
 <wire x1="8" y1="25.75" x2="10.25" y2="28" width="0.254" layer="1"/>
 <wire x1="10.25" y1="28" x2="10.25" y2="28.5" width="0.254" layer="1"/>
 <wire x1="10.25" y1="28.5" x2="10.75" y2="29" width="0.254" layer="1"/>
 <contactref element="TP11" pad="TP"/>
-<wire x1="10.4" y1="18.5" x2="10.2" y2="18.3" width="0.254" layer="16"/>
-<via x="10.2" y="18.3" extent="1-16" drill="0.35"/>
-<wire x1="10.2" y1="18.3" x2="10" y2="18.3" width="0.254" layer="1"/>
-<wire x1="10" y1="18.3" x2="9.25" y2="18.3" width="0.254" layer="1"/>
+<via x="10.5" y="29.5" extent="1-16" drill="0.35"/>
+<wire x1="10.75" y1="29" x2="10.5" y2="29.25" width="0.254" layer="1"/>
+<wire x1="10.5" y1="29.25" x2="10.5" y2="29.5" width="0.254" layer="1"/>
+<wire x1="11.5" y1="30" x2="11" y2="30" width="0.254" layer="16"/>
+<wire x1="11" y1="30" x2="10.5" y2="29.5" width="0.254" layer="16"/>
 </signal>
 <signal name="LED_STROBE">
 <contactref element="U$5" pad="4"/>
 <contactref element="U2" pad="31"/>
-<wire x1="12.25" y1="30" x2="8" y2="30" width="0.254" layer="1"/>
-<wire x1="8" y1="30" x2="6" y2="28" width="0.254" layer="1"/>
-<wire x1="6" y1="28" x2="6" y2="18.5" width="0.254" layer="1"/>
+<wire x1="12.25" y1="30" x2="11.25" y2="30" width="0.254" layer="1"/>
+<wire x1="11.25" y1="30" x2="11" y2="30.25" width="0.254" layer="1"/>
+<wire x1="11" y1="30.25" x2="10" y2="30.25" width="0.254" layer="1"/>
+<wire x1="10" y1="30.25" x2="9.75" y2="30" width="0.254" layer="1"/>
+<wire x1="9.75" y1="30" x2="7.75" y2="30" width="0.254" layer="1"/>
+<wire x1="7.75" y1="30" x2="6" y2="28.25" width="0.254" layer="1"/>
+<wire x1="6" y1="28.25" x2="6" y2="18.5" width="0.254" layer="1"/>
 <wire x1="10.225" y1="14.25" x2="9" y2="14.25" width="0.254" layer="1"/>
 <via x="6" y="18.5" extent="1-16" drill="0.35"/>
 <wire x1="6" y1="18.5" x2="7" y2="18.5" width="0.254" layer="16"/>
@@ -1987,8 +2017,8 @@ Modified from Laen's PCB Order Design Rules</description>
 <wire x1="7.75" y1="15.25" x2="8" y2="15.25" width="0.254" layer="1"/>
 <wire x1="8" y1="15.25" x2="9" y2="14.25" width="0.254" layer="1"/>
 <contactref element="TP15" pad="TP"/>
-<wire x1="6.1" y1="18.9" x2="6" y2="18.8" width="0.254" layer="16"/>
-<wire x1="6" y1="18.8" x2="6" y2="18.5" width="0.254" layer="16"/>
+<via x="7.75" y="30" extent="1-16" drill="0.35"/>
+<wire x1="7.75" y1="30" x2="6.5" y2="30" width="0.254" layer="16"/>
 </signal>
 <signal name="LED_S0">
 <contactref element="U2" pad="29"/>
@@ -2007,13 +2037,12 @@ Modified from Laen's PCB Order Design Rules</description>
 <wire x1="13.5" y1="28.75" x2="9.25" y2="28.75" width="0.254" layer="16"/>
 <wire x1="9.25" y1="28.75" x2="9" y2="29" width="0.254" layer="16"/>
 <via x="9" y="29" extent="1-16" drill="0.35"/>
-<wire x1="17.9" y1="26.15" x2="18" y2="26.25" width="0.254" layer="1"/>
 <wire x1="7" y1="27" x2="9" y2="29" width="0.254" layer="1"/>
-<wire x1="18" y1="27.65" x2="18" y2="26.4" width="0.254" layer="1"/>
-<wire x1="18" y1="26.4" x2="18.15" y2="26.25" width="0.254" layer="1"/>
-<wire x1="18.15" y1="26.25" x2="18" y2="26.25" width="0.254" layer="1"/>
 <contactref element="TP13" pad="TP"/>
-<wire x1="9" y1="29.3" x2="9" y2="29" width="0.254" layer="16"/>
+<wire x1="9" y1="30" x2="9" y2="29" width="0.254" layer="16"/>
+<wire x1="18" y1="27.15" x2="18" y2="27.65" width="0.254" layer="1"/>
+<wire x1="18" y1="27.15" x2="18.4" y2="26.75" width="0.254" layer="1"/>
+<wire x1="18.4" y1="26.75" x2="18.4" y2="26.5" width="0.254" layer="1"/>
 </signal>
 <signal name="LED_S1">
 <contactref element="U2" pad="30"/>
@@ -2032,12 +2061,14 @@ Modified from Laen's PCB Order Design Rules</description>
 <wire x1="15" y1="27.25" x2="14.5" y2="26.75" width="0.254" layer="1"/>
 <wire x1="9.75" y1="26.5" x2="10.25" y2="26.5" width="0.254" layer="1"/>
 <wire x1="10.25" y1="26.5" x2="10.5" y2="26.25" width="0.254" layer="1"/>
-<wire x1="10.5" y1="26.25" x2="14.1" y2="26.25" width="0.254" layer="1"/>
+<wire x1="10.5" y1="26.25" x2="13.25" y2="26.25" width="0.254" layer="1"/>
+<wire x1="13.25" y1="26.25" x2="13.5" y2="26.5" width="0.254" layer="1"/>
+<wire x1="13.5" y1="26.5" x2="14.35" y2="26.5" width="0.254" layer="1"/>
 <wire x1="8.25" y1="26.5" x2="9.75" y2="26.5" width="0.254" layer="16"/>
 <wire x1="14.5" y1="26.75" x2="14.5" y2="26.65" width="0.254" layer="1"/>
-<wire x1="14.5" y1="26.65" x2="14.1" y2="26.25" width="0.254" layer="1"/>
+<wire x1="14.5" y1="26.65" x2="14.35" y2="26.5" width="0.254" layer="1"/>
 <contactref element="TP14" pad="TP"/>
-<wire x1="7.1" y1="28.1" x2="6.875" y2="27.875" width="0.254" layer="16"/>
+<wire x1="6.5" y1="27.5" x2="6.875" y2="27.875" width="0.254" layer="16"/>
 </signal>
 <signal name="N$6">
 <contactref element="U3" pad="4"/>
@@ -2277,6 +2308,18 @@ Modified from Laen's PCB Order Design Rules</description>
 <approved hash="4,16,9accd8ec86fe800e"/>
 <approved hash="19,16,2e74038e06002bfa"/>
 <approved hash="19,16,75fc0606078b7471"/>
+<approved hash="19,16,fd7cb086be15f3ef"/>
+<approved hash="19,16,fa7e18841ac9f833"/>
+<approved hash="5,1,50e62d885a54fd31"/>
+<approved hash="5,1,8b2028eab2d60e1a"/>
+<approved hash="5,1,947101d4997d40d0"/>
+<approved hash="19,16,ebee49a2b8ef0603"/>
+<approved hash="19,16,ea8c95d8760d1b32"/>
+<approved hash="19,16,f7d0b22abecbfb31"/>
+<approved hash="19,16,4ab7948c1df4703b"/>
+<approved hash="19,16,87d97837dd58c8a5"/>
+<approved hash="19,16,f51a97e0903bf2c1"/>
+<approved hash="19,16,d7f540f259425c2f"/>
 <approved hash="3,1,4b2a2ed429804c7e"/>
 <approved hash="3,1,4f2a2ad429804c7e"/>
 <approved hash="3,1,4cda292429a04c5e"/>
@@ -2300,8 +2343,8 @@ Modified from Laen's PCB Order Design Rules</description>
 <approved hash="5,1,1c99c203d23a4e36"/>
 <approved hash="5,1,4c85d80b13a1e725"/>
 <approved hash="5,1,6a5b6ba2d78737e7"/>
-<approved hash="5,1,f2aff38a3a56034b"/>
 <approved hash="5,1,7d067a24cdcff09d"/>
+<approved hash="5,1,f2aff38a3a56034b"/>
 <approved hash="5,1,ca8eb3bb65131029"/>
 <approved hash="5,1,fe8ef69cc4e44023"/>
 <approved hash="5,1,f2dff3ea3a460363"/>
@@ -2310,32 +2353,37 @@ Modified from Laen's PCB Order Design Rules</description>
 <approved hash="5,1,7d267a04cda7f09d"/>
 <approved hash="5,1,cb517e5e80b4357b"/>
 <approved hash="5,1,f2dff30a3aa6035b"/>
-<approved hash="5,1,f4d5eb273f6db162"/>
 <approved hash="5,1,eac9eb473f25af56"/>
+<approved hash="5,1,f4d5eb273f6db162"/>
 <approved hash="5,1,e8fdeb673f3dad5a"/>
 <approved hash="5,1,9da089f141b12283"/>
-<approved hash="5,1,20c0b538cb25af5e"/>
 <approved hash="5,1,3edcb558cb6db16a"/>
+<approved hash="5,1,3ca8b538cb65b376"/>
+<approved hash="5,1,83081a5713b952a5"/>
+<approved hash="5,1,20c0b538cb25af5e"/>
 <approved hash="5,1,50f62da85a64fd59"/>
 <approved hash="5,1,83681a27139152b5"/>
-<approved hash="5,1,3ca8b538cb65b376"/>
 <approved hash="5,1,83281a7713d152e5"/>
 <approved hash="5,1,22f4b518cb3dad52"/>
-<approved hash="5,1,50a62d885a54fd29"/>
 <approved hash="5,1,83881a2713a95255"/>
+<approved hash="5,1,50d62d885a64fd31"/>
+<approved hash="5,1,50a62d885a54fd29"/>
 <approved hash="5,1,5d2c36557a6e123d"/>
+<approved hash="5,1,065f24c631f50c0d"/>
+<approved hash="5,1,244ffab02586f237"/>
+<approved hash="5,1,11768afa1050c3d6"/>
 <approved hash="5,1,dcfd05c89f610a5c"/>
+<approved hash="5,1,fb6c4089d226e1cb"/>
 <approved hash="4,1,1fbbe227eb0dad5f"/>
 <approved hash="4,1,78a2298a806899b6"/>
-<approved hash="4,1,12046726fcc19b23"/>
 <approved hash="4,1,fa8bc60ffdf400ea"/>
-<approved hash="19,16,f51a97e0903bf2c1"/>
-<approved hash="19,16,ea8c95d8760d1b32"/>
-<approved hash="19,16,d7f540f259425c2f"/>
-<approved hash="19,16,f7d0b22abecbfb31"/>
-<approved hash="19,16,4ab7948c1df4703b"/>
-<approved hash="19,16,fd7cb086be15f3ef"/>
-<approved hash="19,16,fa7e18841ac9f833"/>
+<approved hash="4,1,12046726fcc19b23"/>
+<approved hash="19,16,ff80213ae9f9e21c"/>
+<approved hash="19,16,121020ea22cd1037"/>
+<approved hash="19,16,8bd81eed4a37a4fd"/>
+<approved hash="5,16,f717097ab60feb94"/>
+<approved hash="5,16,1adcfd9d5f423bfb"/>
+<approved hash="19,16,e27ba081a2c1e03b"/>
 <approved hash="19,16,76521e8fd7a46c60"/>
 <approved hash="19,16,f7f859286ba43c32"/>
 <approved hash="19,16,7474078e020671fc"/>

@@ -6470,6 +6470,7 @@ http://www.zetex.com&lt;p&gt;
 <part name="TP15" library="testpad" deviceset="PTR1" device="B1,27"/>
 <part name="TP16" library="testpad" deviceset="PTR1" device="B1,27"/>
 <part name="TP10" library="testpad" deviceset="PTR1" device="B1,27"/>
+<part name="TP17" library="testpad" deviceset="PTR1" device="B1,27"/>
 </parts>
 <sheets>
 <sheet>
@@ -6624,6 +6625,7 @@ http://www.zetex.com&lt;p&gt;
 <instance part="TP15" gate="G$1" x="218.44" y="289.56" rot="R90"/>
 <instance part="TP16" gate="G$1" x="218.44" y="335.28" rot="R90"/>
 <instance part="TP10" gate="G$1" x="218.44" y="325.12" rot="R90"/>
+<instance part="TP17" gate="G$1" x="218.44" y="312.42" rot="R90"/>
 </instances>
 <busses>
 </busses>
@@ -7161,18 +7163,17 @@ http://www.zetex.com&lt;p&gt;
 <wire x1="66.04" y1="200.66" x2="58.42" y2="200.66" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="INT1" class="0">
+<net name="ACC_INT1" class="0">
+<segment>
+<pinref part="U2" gate="G$1" pin="PTC3"/>
+<wire x1="198.12" y1="312.42" x2="215.9" y2="312.42" width="0.1524" layer="91"/>
+<label x="205.74" y="312.42" size="1.778" layer="95"/>
+<pinref part="TP17" gate="G$1" pin="TP"/>
+</segment>
 <segment>
 <pinref part="U$6" gate="G$1" pin="INT1"/>
 <wire x1="96.52" y1="200.66" x2="104.14" y2="200.66" width="0.1524" layer="91"/>
 <label x="101.6" y="200.66" size="1.778" layer="95"/>
-</segment>
-</net>
-<net name="INT2" class="0">
-<segment>
-<pinref part="U$6" gate="G$1" pin="INT2"/>
-<wire x1="96.52" y1="198.12" x2="104.14" y2="198.12" width="0.1524" layer="91"/>
-<label x="101.6" y="198.12" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="+5V" class="1">
