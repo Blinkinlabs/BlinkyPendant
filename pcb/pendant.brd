@@ -8,7 +8,7 @@
 </settings>
 <grid distance="0.5" unitdist="mm" unit="mm" style="lines" multiple="1" display="yes" altdistance="0.25" altunitdist="mm" altunit="mm"/>
 <layers>
-<layer number="1" name="Top" color="4" fill="1" visible="no" active="yes"/>
+<layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="no" active="no"/>
 <layer number="3" name="Route3" color="4" fill="3" visible="no" active="no"/>
 <layer number="4" name="Route4" color="1" fill="4" visible="no" active="no"/>
@@ -179,11 +179,11 @@
 <wire x1="19" y1="99" x2="5" y2="99" width="0.1524" layer="20"/>
 <wire x1="5" y1="99" x2="0" y2="94" width="0.1524" layer="20" curve="90"/>
 <text x="14.5" y="8" size="0.635" layer="22" font="vector" ratio="20" rot="MR0" align="center-left">GND</text>
-<text x="15.5" y="14" size="0.635" layer="22" font="vector" ratio="20" rot="MR0" align="center-right">RST</text>
+<text x="17.25" y="12.75" size="0.635" layer="22" font="vector" ratio="20" rot="MR0" align="center-right">RST</text>
 <text x="20.75" y="18" size="0.635" layer="22" font="vector" ratio="20" rot="MR0" align="center-left">TMS</text>
-<text x="21.25" y="14.25" size="0.635" layer="22" font="vector" ratio="20" rot="MR0" align="center-right">TCLK</text>
-<text x="20.25" y="14.25" size="0.635" layer="22" font="vector" ratio="20" rot="MR0" align="center-left">RX</text>
-<text x="17.5" y="12.5" size="0.635" layer="22" font="vector" ratio="20" rot="MR0" align="center-right">TX</text>
+<text x="18.25" y="14.25" size="0.635" layer="22" font="vector" ratio="20" rot="MR0" align="center-right">TCLK</text>
+<text x="22.25" y="14.25" size="0.635" layer="22" font="vector" ratio="20" rot="MR0" align="center-left">RX</text>
+<text x="16" y="14.25" size="0.635" layer="22" font="vector" ratio="20" rot="MR0" align="center-right">TX</text>
 <text x="19.25" y="11" size="0.635" layer="22" font="vector" ratio="20" rot="MR0" align="center-right">3.3V</text>
 <text x="19.25" y="8" size="0.635" layer="22" font="vector" ratio="20" rot="MR180" align="center-left">VBAT</text>
 <wire x1="5" y1="3.5" x2="6.5" y2="2" width="0.254" layer="20" curve="90"/>
@@ -2380,8 +2380,8 @@ Modified from Laen's PCB Order Design Rules</description>
 <approved hash="4,1,12046726fcc19b23"/>
 <approved hash="19,16,ff80213ae9f9e21c"/>
 <approved hash="19,16,121020ea22cd1037"/>
-<approved hash="19,16,8bd81eed4a37a4fd"/>
 <approved hash="5,16,f717097ab60feb94"/>
+<approved hash="19,16,8bd81eed4a37a4fd"/>
 <approved hash="5,16,1adcfd9d5f423bfb"/>
 <approved hash="19,16,e27ba081a2c1e03b"/>
 <approved hash="19,16,76521e8fd7a46c60"/>

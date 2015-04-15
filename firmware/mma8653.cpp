@@ -72,7 +72,7 @@ public:
 void WIRE::begin() {
     SIM_SCGC4 |= SIM_SCGC4_I2C0;    // Enable the I2C0 clock
     
-    I2C0_F = 0x3F;                  // Set transmission speed (100KHz?)
+    I2C0_F = 0x1B;                  // Set transmission speed (100KHz?)
     I2C0_C1 = I2C_C1_IICEN;         // Enable I2C
 
     // TODO: Set pin muxes!

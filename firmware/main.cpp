@@ -137,12 +137,22 @@ extern "C" int main()
 
         if(!streaming_mode) {
             if(true) {
-                int X;
-                int Y;
-                int Z;
-                mma8653.getXYZ(X,Y,Z);
-                count_up_loop(X,Y,Z);
-                show();
+                if(millis() > nextTime) {
+                    int X;
+                    int Y;
+                    int Z;
+                    mma8653.getXYZ(X,Y,Z);
+                    count_up_loop(X,Y,Z);
+
+                    nextTime += 2;
+    
+                    // If we've gotten too far ahead of ourselves, reset the counter
+                    if(millis() > nextTime) {
+                        nextTime = millis() + 2;
+                    }
+    
+                    show();
+                }
             }
             else {
 
