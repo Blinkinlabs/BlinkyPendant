@@ -37,7 +37,9 @@
 #define TYPE_LUT            0x40
 #define TYPE_CONFIG         0x80
 
+#ifdef FC_INTERFACE
 static usb_packet_t *rx_packet=NULL;
+#endif
 
 bool fcBuffers::finalizeFrame()
 {
@@ -78,6 +80,7 @@ bool fcBuffers::finalizeFrame()
 
 int fcBuffers::handleUSB()
 {
+#ifdef FC_INTERFACE
     if (!rx_packet) {
         if (!usb_configuration) return -1;
 	rx_packet = usb_rx_no_int(FC_OUT_ENDPOINT);
@@ -132,6 +135,9 @@ int fcBuffers::handleUSB()
     // Handled this packet
     handledAnyPacketsThisFrame = true;
     return true;
+#else
+    return false;
+#endif
 }
 
 void fcBuffers::finalizeFramebuffer()

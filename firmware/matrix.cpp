@@ -37,6 +37,7 @@
 // Output positions for the signals in each group
 // These are out of order to make the board routing easier
 // RGB RGB RGB RGB RGB
+/*
 uint8_t OUTPUT_ORDER[] = {
     2,  // R1
     14, // G1
@@ -53,6 +54,25 @@ uint8_t OUTPUT_ORDER[] = {
     15, // R0 TODO on next board
     15, // G0
     15, // B0
+};
+*/
+
+uint8_t OUTPUT_ORDER[] = {
+    2,  // R0
+    1,  // G0
+    0,  // B0
+    5,  // R1
+    4,  // G1
+    3,  // B1
+    8,  // R2
+    7,  // G2
+    6,  // B2
+    11,  // R3
+    10, // G3
+    9, // B3
+    14, // R4
+    13, // G4
+    12, // B4
 };
 
 // Display buffer (write into this!)

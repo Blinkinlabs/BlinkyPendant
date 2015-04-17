@@ -262,10 +262,16 @@ extern struct usb_string_descriptor_struct usb_string_serial_number
         __attribute__ ((weak, alias("usb_string_serial_number_default")));
 extern struct usb_string_descriptor_struct usb_string_serial_name
         __attribute__ ((weak, alias("usb_string_serial_name_default")));
+
+#ifdef FC_INTERFACE
 extern struct usb_string_descriptor_struct usb_string_fc_name
         __attribute__ ((weak, alias("usb_string_fc_name_default")));
+#endif
+
+#ifdef DFU_INTERFACE
 extern struct usb_string_descriptor_struct usb_string_dfu_name
         __attribute__ ((weak, alias("usb_string_dfu_name_default")));
+#endif
 
 struct usb_string_descriptor_struct string0 = {
         4,

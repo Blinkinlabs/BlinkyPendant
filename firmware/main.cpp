@@ -38,7 +38,6 @@
 #include "serialloop.h"
 #include "buttons.h"
 #include "matrix.h"
-#include "hi.h"
 #include "mma8653.h"
 
 // USB data buffers
@@ -110,6 +109,8 @@ extern "C" int main()
 
     serialReset();
 
+    patternsSetup();
+
 //    flash.begin(FlashClass::autoDetect);
 
     reloadAnimations = true;
@@ -130,35 +131,33 @@ extern "C" int main()
         if(reloadAnimations) {
             reloadAnimations = false;
 
-            hi.reset();
             streaming_mode = false;
             nextTime = 0;
         }
 
         if(!streaming_mode) {
             if(true) {
-                if(millis() > nextTime) {
+//                if(millis() > nextTime) {
                     int X;
                     int Y;
                     int Z;
                     mma8653.getXYZ(X,Y,Z);
                     count_up_loop(X,Y,Z);
 
-                    nextTime += 2;
+//                    nextTime += 1;
     
                     // If we've gotten too far ahead of ourselves, reset the counter
-                    if(millis() > nextTime) {
-                        nextTime = millis() + 2;
-                    }
+//                    if(millis() > nextTime) {
+//                        nextTime = millis() + 1;
+//                    }
     
                     show();
-                }
+//                }
             }
             else {
 
                 // Flash-based
                 if(millis() > nextTime) {
-                    hi.draw(getPixels());
     
                     nextTime += 1000;
     
@@ -197,7 +196,6 @@ extern "C" int main()
             uint8_t button = userButtons.getPressed();
     
             if(button == BUTTON_A) {
-                hi.reset();
             }
         }
 

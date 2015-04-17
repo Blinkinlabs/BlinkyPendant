@@ -184,7 +184,7 @@ void MMA8653::setup() {
   // Configure for 8G sensitivity
   Wire.beginTransmission(MMA8653_ADDRESS);
   Wire.write(XYZ_DATA_CFG);
-  Wire.write(XYZ_DATA_CFG_4G);
+  Wire.write(XYZ_DATA_CFG_8G);
   Wire.endTransmission();
 
   // Put in fast-read mode, with 1.56Hz output rate, and activate

@@ -2,99 +2,101 @@
 #include "blinkytile.h"
 #include "patterns.h"
 #include "matrix.h"
+#include "usb_serial.h"
+#include "animation.h"
+#include "hi.h"
+#include <cstdio>
+
+struct systemStep {
+    int X;
+//    int Y;
+//    int Z;
+    int playbackPos;
+};
+
+
+// Data block for debugging
+#define currentStepMax 250
+systemStep steps[currentStepMax];
+int currentStep;
+
+
+void patternsSetup() {
+    currentStep = 0;
+}
 
 
 void count_up_loop(int X, int Y, int Z) {
-    const int cols = 4;
+    const int cols = 5;
     const int rows = 2;
 
-/*
-    static int pixel = 0;
-    const int slowdown = 3;
+    static int playbackPos = 0;     // Position of the playback head within the frame
 
-    for (uint16_t col = 0; col < cols; col++) {
-        for (uint16_t row = 0; row < rows; row++) {
-            if((pixel/slowdown) > (row*cols + col)) {
-                setPixel(col,row,0,128,0);
-            }
-            else if((pixel/slowdown) == (row*cols + col)) {
-                setPixel(col, row, 0,0,255);
-            }
-            else {
-                setPixel(col,row,128,0,0);
-            }
-        }
+    static int Xlast;
+
+    int jerk = X - Xlast;
+
+    bool disable = false;
+
+    if( jerk > 0) {
+        playbackPos--;
+    }
+    else if (jerk < 0) {
+        playbackPos++;
     }
 
-    pixel = (pixel+1)%(slowdown*rows*cols);
-*/
-
-    const int slowdown = 1;
-    const int playbackMax = rows*cols*slowdown;
-    static int playbackPos = 0;
-
-#define band 2
-#define filterLength 3
-
-    static int last[filterLength];
-
-    for(int i = 0; i < filterLength-1; i++) {
-        last[i+1] = last[i];
-    }
-    last[0] = X;
-
-
-    int filtered = 0;
-    for(int i = 0; i < filterLength-1; i++) {
-        filtered += last[i+1] - last[i];
-    }
-
-    if( filtered> band) {
-        playbackPos = (playbackPos + 1)%playbackMax;
-/*
-        for (uint16_t col = 0; col < cols; col++) {
-            for (uint16_t row = 0; row < rows; row++) {
-                setPixel(col,row,0,128,0);
-            }
-        }
-*/
-    }
-    
-    else if (filtered < -band) {
-        playbackPos = playbackPos - 1;
-        if(playbackPos < 0) {playbackPos = playbackMax - 1;}
-/*
-        for (uint16_t col = 0; col < cols; col++) {
-            for (uint16_t row = 0; row < rows; row++) {
-                setPixel(col,row,0,0,128);
-            }
-        }
-*/
-    }
-    else {
+    if(X == 127 || X == -127) {
         playbackPos = 0;
-/*
-        for (uint16_t col = 0; col < cols; col++) {
-            for (uint16_t row = 0; row < rows; row++) {
-                setPixel(col,row,0,0,0);
-            }
-        }
-*/
+        disable = true;
     }
 
+
+    // Wrap
+    if(playbackPos > pattern.frameCount) {
+        playbackPos = (playbackPos + 1) % pattern.frameCount;
+    }
+    while(playbackPos < 0) {
+        playbackPos += pattern.frameCount;
+    }
 
     for (uint16_t col = 0; col < cols; col++) {
         for (uint16_t row = 0; row < rows; row++) {
-            if((playbackPos/slowdown) > (row*cols + col)) {
-                setPixel(col,row,100,0,0);
-            }
-            else if((playbackPos/slowdown) == (row*cols + col)) {
-                setPixel(col, row, 0,0,255);
+            if(!disable) {
+                setPixel(col, row,
+                    hiData[playbackPos*rows*cols*3 + (row*cols + col)*3 + 0],
+                    hiData[playbackPos*rows*cols*3 + (row*cols + col)*3 + 1],
+                    hiData[playbackPos*rows*cols*3 + (row*cols + col)*3 + 2]);
             }
             else {
-                setPixel(col,row,0,100,0);
+                setPixel(col, row, 0,0,0);
             }
         }
     }
 
+    Xlast = X;
+
+    // Record the system state
+    steps[currentStep].X = X;
+//    steps[currentStep].Y = Y;
+//    steps[currentStep].Z = Z;
+    steps[currentStep].playbackPos = playbackPos;
+
+
+    currentStep++;
+    if(currentStep > currentStepMax) {
+/*
+        char dataBuffer[40];
+
+        for(int step = 0; step < currentStepMax; step++) {
+            int len = snprintf(dataBuffer, 40, "%i,%i,%i\n", step,
+                steps[step].X,
+//                steps[step].Y,
+//                steps[step].Z,
+                steps[step].playbackPos);
+    
+            usb_serial_write(dataBuffer, len);
+        }
+*/
+        currentStep = 0;
+    }
 }

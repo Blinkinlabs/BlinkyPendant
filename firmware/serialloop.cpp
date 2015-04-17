@@ -25,7 +25,8 @@ int pixelIndex;         // Pixel we are currently writing to
 ///// Defines for the control mode
 void commandLoop();
 
-#define CONTROL_BUFFER_SIZE 300
+//#define CONTROL_BUFFER_SIZE 300
+#define CONTROL_BUFFER_SIZE 3
 uint8_t controlBuffer[CONTROL_BUFFER_SIZE];     // Buffer for receiving command data
 int controlBufferIndex;     // Current location in the buffer
 

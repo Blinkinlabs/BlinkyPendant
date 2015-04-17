@@ -10,11 +10,13 @@
 #define ENCODING_INDEXED_RLE 3
 
 class Animation {
- private:
+ public:
+  uint8_t* frameData;             // Pointer to the begining of the frame data
   int ledCount;               // Number of LEDs in the strip (max 254)
   int frameCount;            // Number of frames in this animation (max 65535)
+
+ private:
   uint8_t encoding;               // Encoding type
-  uint8_t* frameData;             // Pointer to the begining of the frame data
   
   int frameIndex;            // Current animation frame
   uint8_t* currentFrameData;      // Pointer to the current position in the frame data

@@ -42,13 +42,19 @@
 
 
 // Fadecandy interface defines
-#define LUT_CH_SIZE             257
-#define LUT_TOTAL_SIZE          (LUT_CH_SIZE * 3)
+//#define LUT_CH_SIZE             257
+//#define LUT_TOTAL_SIZE          (LUT_CH_SIZE * 3)
+#define LUT_CH_SIZE             1
+#define LUT_TOTAL_SIZE          1
 
 // USB packet layout
-#define PIXELS_PER_PACKET       21  // 63 / 3
-#define LUTENTRIES_PER_PACKET   31
-#define PACKETS_PER_FRAME        9  // 170 / 21
+//#define PIXELS_PER_PACKET       21  // 63 / 3
+//#define LUTENTRIES_PER_PACKET   31
+//#define PACKETS_PER_FRAME        9  // 170 / 21
+//#define PACKETS_PER_LUT          1  // originally 25
+#define PIXELS_PER_PACKET        1  // 63 / 3
+#define LUTENTRIES_PER_PACKET    1
+#define PACKETS_PER_FRAME        1  // 170 / 21
 #define PACKETS_PER_LUT          1  // originally 25
 
 
