@@ -47,6 +47,8 @@ fcLinearLUT fcBuffers::lutCurrent;
 // accelerometer
 MMA8653 mma8653;
 
+POV pov;
+
 // Button inputs
 Buttons userButtons;
 
@@ -105,11 +107,12 @@ extern "C" int main()
 
     mma8653.setup();
 
+    pov.setup();
+
     matrixSetup();
 
     serialReset();
 
-    patternsSetup();
 
 //    flash.begin(FlashClass::autoDetect);
 
@@ -142,7 +145,7 @@ extern "C" int main()
                     int Y;
                     int Z;
                     mma8653.getXYZ(X,Y,Z);
-                    count_up_loop(X,Y,Z);
+                    pov.computeStep(X,Y,Z);
 
 //                    nextTime += 1;
     

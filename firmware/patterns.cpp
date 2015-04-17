@@ -4,14 +4,18 @@
 #include "matrix.h"
 #include "usb_serial.h"
 #include "animation.h"
-#include "hi.h"
+#include "ftf2015.h"
 #include <cstdio>
 
+#define cols 5
+#define rows 2
+
+
 struct systemStep {
-    int X;
-//    int Y;
-//    int Z;
-    int playbackPos;
+    int accX;
+    int jerkX;
+    int velocityX;
+    int posX;
 };
 
 
@@ -21,51 +25,65 @@ systemStep steps[currentStepMax];
 int currentStep;
 
 
-void patternsSetup() {
+
+
+void POV::setup() {
     currentStep = 0;
+    reset();
 }
 
+void POV::reset() {
+    playbackPos = 0;
+    accXlast = 0;
+    velocityX = 0;
+    posX = 0;
+}
 
-void count_up_loop(int X, int Y, int Z) {
-    const int cols = 5;
-    const int rows = 2;
+void POV::computeStep(int accX, int accY, int accZ) {
+    int jerkX = accX - accXlast;
 
-    static int playbackPos = 0;     // Position of the playback head within the frame
+    velocityX += accX;
+    posX += velocityX;
 
-    static int Xlast;
 
-    int jerk = X - Xlast;
+#define letterbox 10
+#define totalFrames (pattern.frameCount + letterbox*2)
+#define letterboxing (playbackPos < letterbox || playbackPos > pattern.frameCount + letterbox)
+#define framePosition (playbackPos - letterbox)
 
-    bool disable = false;
 
-    if( jerk > 0) {
+
+    if( jerkX > 0) {
         playbackPos--;
     }
-    else if (jerk < 0) {
+    else if (jerkX < 0) {
         playbackPos++;
     }
 
-    if(X == 127 || X == -127) {
-        playbackPos = 0;
-        disable = true;
+    if(accX == 127 || accX == -127) {
+        reset();
     }
 
 
     // Wrap
-    if(playbackPos > pattern.frameCount) {
-        playbackPos = (playbackPos + 1) % pattern.frameCount;
-    }
     while(playbackPos < 0) {
-        playbackPos += pattern.frameCount;
+        playbackPos += totalFrames;
     }
+
+    if(playbackPos > totalFrames) {
+        playbackPos = (playbackPos + 1) % totalFrames;
+    }
+
+
+    uint8_t* frameData = pattern.getFrame(framePosition);
 
     for (uint16_t col = 0; col < cols; col++) {
         for (uint16_t row = 0; row < rows; row++) {
-            if(!disable) {
+            if(!letterboxing) {
                 setPixel(col, row,
-                    hiData[playbackPos*rows*cols*3 + (row*cols + col)*3 + 0],
-                    hiData[playbackPos*rows*cols*3 + (row*cols + col)*3 + 1],
-                    hiData[playbackPos*rows*cols*3 + (row*cols + col)*3 + 2]);
+                    frameData[(row*cols + col)*3 + 0],
+                    frameData[(row*cols + col)*3 + 1],
+                    frameData[(row*cols + col)*3 + 2]);
             }
             else {
                 setPixel(col, row, 0,0,0);
@@ -73,14 +91,13 @@ void count_up_loop(int X, int Y, int Z) {
         }
     }
 
-    Xlast = X;
+    accXlast = accX;
 
     // Record the system state
-    steps[currentStep].X = X;
-//    steps[currentStep].Y = Y;
-//    steps[currentStep].Z = Z;
-    steps[currentStep].playbackPos = playbackPos;
-
+    steps[currentStep].accX = accX;
+    steps[currentStep].jerkX = jerkX;
+    steps[currentStep].velocityX = velocityX;
+    steps[currentStep].posX = posX;
 
     currentStep++;
     if(currentStep > currentStepMax) {

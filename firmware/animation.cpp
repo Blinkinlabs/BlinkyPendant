@@ -137,4 +137,12 @@ void Animation::drawIndexed_RLE(Pixel* pixels) {
   }
 };
 
+uint8_t* Animation::getFrame(int frame) {
+  switch(encoding) {
+    case ENCODING_RGB24:
+      return frameData + frame*ledCount*3;
+      break;
+  }
 
+  return frameData;
+};

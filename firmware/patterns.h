@@ -26,9 +26,20 @@
 
 extern void patternsSetup();
 
-extern void color_loop();
-extern void white_loop();
-extern void green_loop();
 extern void count_up_loop(int X, int Y, int Z);
+
+class POV {
+private:
+    int playbackPos;    // Current playback position
+    int accXlast;       // Last measured X acceleration
+    int velocityX;      // X velocity estimation
+    int posX;           // X position estimation
+
+    void reset();
+public:
+    void setup();
+
+    void computeStep(int accX, int accY, int accZ);
+};
 
 #endif

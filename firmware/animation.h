@@ -61,6 +61,8 @@ class Animation {
   // Draw the next frame of the animation
   // @param strip[] LED strip to draw to.
   void draw(Pixel* pixels);
+
+  uint8_t* getFrame(int frame);
 };
 
 #endif
