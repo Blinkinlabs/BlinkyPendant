@@ -33,6 +33,7 @@ C_FILES = \
 	usb_mem.c \
 	usb_serial.c \
 	nonstd.c \
+	SampleFilter.c \
 	yield.c
 
 CPP_FILES = \

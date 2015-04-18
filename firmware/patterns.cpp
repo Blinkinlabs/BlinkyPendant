@@ -3,89 +3,115 @@
 #include "patterns.h"
 #include "matrix.h"
 #include "usb_serial.h"
-#include "animation.h"
-#include "ftf2015.h"
 #include <cstdio>
+
+extern "C" {
+#include "SampleFilter.h"
+};
 
 #define cols 5
 #define rows 2
 
 
 struct systemStep {
-    int accX;
-    int jerkX;
-    int velocityX;
-    int posX;
+    float accX;
+    float velocityX;
+    float posX;
+    int playbackPos;
+    float dir;
+    float accXavg;
 };
 
+#define playbackScale 300
 
 // Data block for debugging
-#define currentStepMax 250
+#define currentStepMax 200
 systemStep steps[currentStepMax];
 int currentStep;
+SampleFilter filter;
 
+void POV::setup(Animation *newAnimation) {
+    animation = newAnimation;
 
-
-
-void POV::setup() {
     currentStep = 0;
-    reset();
-}
-
-void POV::reset() {
-    playbackPos = 0;
     accXlast = 0;
     velocityX = 0;
     posX = 0;
+
+    SampleFilter_init(&filter);
 }
 
-void POV::computeStep(int accX, int accY, int accZ) {
-    int jerkX = accX - accXlast;
-
-    velocityX += accX;
-    posX += velocityX;
+static float accXavgLast;
+static int dirLast;
 
 
-#define letterbox 10
-#define totalFrames (pattern.frameCount + letterbox*2)
-#define letterboxing (playbackPos < letterbox || playbackPos > pattern.frameCount + letterbox)
-#define framePosition (playbackPos - letterbox)
+void POV::computeStep(float accX, float accY, float accZ, float delta) {
 
 
-
-    if( jerkX > 0) {
-        playbackPos--;
+    SampleFilter_put(&filter, accX);
+    float accXavg = SampleFilter_get(&filter);
+    int dir;
+    if(accXavg - accXavgLast > 0) {
+        dir = 1;
     }
-    else if (jerkX < 0) {
-        playbackPos++;
+    else if(accXavg - accXavgLast < 0) {
+        dir = -1;
     }
-
-    if(accX == 127 || accX == -127) {
-        reset();
+    else {
+        dir=dirLast;
     }
 
+    accXavgLast = accXavg;
 
-    // Wrap
-    while(playbackPos < 0) {
-        playbackPos += totalFrames;
+
+    if(dir != dirLast) {
+        velocityX = 0;
+
+        accXlast = accX;
+
+        if(dir < 0) {
+            posX = 0;
+        }
+        else {
+            posX = animation->frameCount/playbackScale;
+        }
+    }
+    dirLast = dir;
+
+    velocityX += (accX)*delta;
+
+    // Only update the position if our velocity is high enough
+    float velocityGuardBand = 0.5;
+    if(velocityX > velocityGuardBand || velocityX < velocityGuardBand) {
+        posX += velocityX*delta;
     }
 
-    if(playbackPos > totalFrames) {
-        playbackPos = (playbackPos + 1) % totalFrames;
+/*
+    if(dir > 0) {
+        posX -= .002;
     }
+    else {
+        posX += .002;
+    }
+*/
 
+    int playbackPos = posX*playbackScale;
 
-    uint8_t* frameData = pattern.getFrame(framePosition);
+    if(playbackPos > -1 && playbackPos < animation->frameCount) {
+        uint8_t* frameData = animation->getFrame(playbackPos);
 
-    for (uint16_t col = 0; col < cols; col++) {
-        for (uint16_t row = 0; row < rows; row++) {
-            if(!letterboxing) {
+        for (uint16_t col = 0; col < cols; col++) {
+            for (uint16_t row = 0; row < rows; row++) {
                 setPixel(col, row,
                     frameData[(row*cols + col)*3 + 0],
                     frameData[(row*cols + col)*3 + 1],
                     frameData[(row*cols + col)*3 + 2]);
             }
-            else {
+        }
+    }
+    else {
+        for (uint16_t col = 0; col < cols; col++) {
+            for (uint16_t row = 0; row < rows; row++) {
                 setPixel(col, row, 0,0,0);
             }
         }
@@ -95,25 +121,30 @@ void POV::computeStep(int accX, int accY, int accZ) {
 
     // Record the system state
     steps[currentStep].accX = accX;
-    steps[currentStep].jerkX = jerkX;
     steps[currentStep].velocityX = velocityX;
     steps[currentStep].posX = posX;
+    steps[currentStep].playbackPos = playbackPos;
+    steps[currentStep].dir = dir;
+    steps[currentStep].accXavg = accXavg;
 
     currentStep++;
     if(currentStep > currentStepMax) {
-/*
-        char dataBuffer[40];
+        char dataBuffer[80];
 
+        usb_serial_write("count, accX (m/s^2), velocityX (m/s), posX (m)\n", 47);
         for(int step = 0; step < currentStepMax; step++) {
-            int len = snprintf(dataBuffer, 40, "%i,%i,%i\n", step,
-                steps[step].X,
-//                steps[step].Y,
-//                steps[step].Z,
-                steps[step].playbackPos);
+            int len = snprintf(dataBuffer, 80, "%i,%i,%i,%i,%i,%i,%i\n",
+                step,
+                (int)(steps[step].accX*1000),
+                (int)(steps[step].velocityX*100000),
+                (int)(steps[step].posX*100000),
+                steps[step].playbackPos,
+                (int)(steps[step].dir),
+                (int)(steps[step].accXavg)
+                );
     
             usb_serial_write(dataBuffer, len);
         }
-*/
         currentStep = 0;
     }
 }

@@ -59,20 +59,20 @@ uint8_t OUTPUT_ORDER[] = {
 
 uint8_t OUTPUT_ORDER[] = {
     2,  // R0
-    1,  // G0
-    0,  // B0
+    0,  // G0
+    1,  // B0
     5,  // R1
-    4,  // G1
-    3,  // B1
+    3,  // G1
+    4,  // B1
     8,  // R2
-    7,  // G2
-    6,  // B2
+    6,  // G2
+    7,  // B2
     11,  // R3
-    10, // G3
-    9, // B3
+    9, // G3
+    10, // B3
     14, // R4
-    13, // G4
-    12, // B4
+    12, // G4
+    13, // B4
 };
 
 // Display buffer (write into this!)

@@ -40,6 +40,11 @@
 #include "matrix.h"
 #include "mma8653.h"
 
+#include "animations/kinetisconnects.h"
+#include "animations/freescale.h"
+#include "animations/ftf2015.h"
+
+
 // USB data buffers
 static fcBuffers buffers;
 fcLinearLUT fcBuffers::lutCurrent;
@@ -107,14 +112,11 @@ extern "C" int main()
 
     mma8653.setup();
 
-    pov.setup();
+    pov.setup(&kinetisAnimation);
 
     matrixSetup();
 
     serialReset();
-
-
-//    flash.begin(FlashClass::autoDetect);
 
     reloadAnimations = true;
 
@@ -129,8 +131,6 @@ extern "C" int main()
 
         static uint32_t nextTime;           // Time to display next frame
 
-        //dmxSetBrightness(brightnessLevels[brightnessStep]);
-
         if(reloadAnimations) {
             reloadAnimations = false;
 
@@ -139,54 +139,24 @@ extern "C" int main()
         }
 
         if(!streaming_mode) {
-            if(true) {
-//                if(millis() > nextTime) {
-                    int X;
-                    int Y;
-                    int Z;
-                    mma8653.getXYZ(X,Y,Z);
-                    pov.computeStep(X,Y,Z);
+            // Hit the accelerometer every 
+            if(millis() > nextTime) {
+                float X;
+                float Y;
+                float Z;
+                mma8653.getXYZ(X,Y,Z);
+                pov.computeStep(X,Y,Z,(millis()-nextTime)/1000.0);
 
-//                    nextTime += 1;
+                nextTime += 1;
     
-                    // If we've gotten too far ahead of ourselves, reset the counter
-//                    if(millis() > nextTime) {
-//                        nextTime = millis() + 1;
-//                    }
-    
-                    show();
-//                }
-            }
-            else {
-
-                // Flash-based
+                // If we've gotten too far ahead of ourselves, reset the counter
                 if(millis() > nextTime) {
-    
-                    nextTime += 1000;
-    
-                    // If we've gotten too far ahead of ourselves, reset the counter
-                    if(millis() > nextTime) {
-                        nextTime = millis() + 1000;
-                    }
-    
-                    show();
+                    nextTime = millis() + 1;
                 }
+    
+            show();
             }
-        }
 
-        // Handle fadecandy status messages
-        if(buffers.finalizeFrame()) {
-	    streaming_mode = true;
-/*
-            if(!dmxWaiting()) {
-                for(int i = 0; i <  LED_COUNT; i++) {
-                    dmxSetPixel(i, *(buffers.fbNext->pixel(i)+2),
-                                   *(buffers.fbNext->pixel(i)+1),
-                                   *(buffers.fbNext->pixel(i)));
-                }
-                show();
-            }
-*/
         }
 
         // Check for serial data

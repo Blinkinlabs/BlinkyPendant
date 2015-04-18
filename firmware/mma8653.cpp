@@ -187,7 +187,7 @@ void MMA8653::setup() {
   Wire.write(XYZ_DATA_CFG_8G);
   Wire.endTransmission();
 
-  // Put in fast-read mode, with 1.56Hz output rate, and activate
+  // Put in fast-read mode, with 800Hz output rate, and activate
   Wire.beginTransmission(MMA8653_ADDRESS);
   Wire.write(CTRL_REG1);
   Wire.write(CTRL_REG1_ACTIVE | CTRL_REG1_F_READ | CTRL_REG1_DR(0));
@@ -195,7 +195,11 @@ void MMA8653::setup() {
 
 }
 
-bool MMA8653::getXYZ(int& X, int& Y, int& Z) {
+bool MMA8653::getXYZ(float& X, float& Y, float& Z) {
+
+    // TODO: We're assuming that we are in 8G, 8 bit mode
+    // 1/16*9.8m/s^2
+#define factor (.6125)
 
     Wire.beginTransmission(MMA8653_ADDRESS);
     Wire.write(STATUS);
@@ -207,13 +211,13 @@ bool MMA8653::getXYZ(int& X, int& Y, int& Z) {
         Wire.receive();
     }
     if(Wire.available()) {
-        X = (int8_t)Wire.receive();
+        X = factor*(int8_t)Wire.receive();
     }
     if(Wire.available()) {
-        Y = (int8_t)Wire.receive();
+        Y = factor*(int8_t)Wire.receive();
     }
     if(Wire.available()) {
-        Z = (int8_t)Wire.receive();
+        Z = factor*(int8_t)Wire.receive();
     }
 
     return true;

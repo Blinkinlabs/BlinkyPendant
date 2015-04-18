@@ -1,0 +1,9 @@
+RevC:
+-double check silkscreen labels
+-lengthen accelerometer pads
+-lengthen transistor pads
+-fix uneven LED spacing
+-reduce pcb cutout under power switch
+-fix uneven lanyard hole
+-move USB connector in, to be flush with board
+-add on/off marker

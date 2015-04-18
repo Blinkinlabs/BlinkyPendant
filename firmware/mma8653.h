@@ -4,7 +4,7 @@
 class MMA8653 {
 public:
     void setup();
-    bool getXYZ(int& X, int& Y, int& Z);
+    bool getXYZ(float& X, float& Y, float& Z);
 };
 
 #endif

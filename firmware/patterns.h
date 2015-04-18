@@ -24,22 +24,27 @@
 #ifndef PATTERNS_H
 #define PATTERNS_H
 
-extern void patternsSetup();
-
-extern void count_up_loop(int X, int Y, int Z);
+#include "animation.h"
 
 class POV {
 private:
-    int playbackPos;    // Current playback position
-    int accXlast;       // Last measured X acceleration
-    int velocityX;      // X velocity estimation
-    int posX;           // X position estimation
 
-    void reset();
+    float accXlast;       // Last measured X acceleration (m/s^2)
+    float velocityX;      // X velocity estimation
+    float posX;           // X position estimation
+
+    Animation* animation;
 public:
-    void setup();
+    void setup(Animation* newAnimation);
 
-    void computeStep(int accX, int accY, int accZ);
+    // Calculate the next step based on accelerometer data
+    // accX: X acceleration (m/s^2)
+    // accX: Y acceleration (m/s^2)
+    // accX: Z acceleration (m/s^2)
+    // delta: Time from the previous step, in s
+    void computeStep(float accX, float accY, float accZ, float delta);
+
+    void interpolateStep(int delta);
 };
 
 #endif
