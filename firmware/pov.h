@@ -28,10 +28,11 @@
 
 class POV {
 private:
-
+    float accX;           // Current measured X acceleration
     float accXlast;       // Last measured X acceleration (m/s^2)
     float velocityX;      // X velocity estimation
     float posX;           // X position estimation
+    int dir;              // Direction we are travelling in X axis
 
     Animation* animation;
 public:
