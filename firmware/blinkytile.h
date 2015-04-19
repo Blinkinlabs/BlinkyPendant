@@ -34,7 +34,7 @@
 #define BUTTON_COUNT        1   // Two input buttons
 #define BUTTON_A            0   // First button
 
-#define BUTTON_A_PIN        12   // Button A: Port A3  //TODO
+#define BUTTON_A_PIN        0   // Button A: Port A3  //TODO
 
 #define ACCELEROMETER_IN    // Accelerometer input, PTC3 
 

@@ -57,6 +57,14 @@ POV pov;
 // Button inputs
 Buttons userButtons;
 
+// built-in animations
+#define builtinAnimationCount 3
+Animation* builtinAnimations[3] = {
+    &freescaleAnimation,
+    &ftfAnimation,
+    &kinetisAnimation
+};
+
 // Reserved RAM area for signalling entry to bootloader
 extern uint32_t boot_token;
 
@@ -112,63 +120,45 @@ extern "C" int main()
 
     mma8653.setup();
 
-    pov.setup(&kinetisAnimation);
+    int currentAnimation = 0;
+    pov.setup(builtinAnimations[currentAnimation]);
 
     matrixSetup();
 
     serialReset();
 
-    reloadAnimations = true;
+    uint32_t nextTime = 0;        // Time to display next frame
 
     // Application main loop
     while (usb_dfu_state == DFU_appIDLE) {
         watchdog_refresh();
        
-        // TODO: put this in an ISR? Make the buttons do pin change interrupts?
         userButtons.buttonTask();
 
-        static bool streaming_mode;
+        // Hit the accelerometer every 
+        if(millis() > nextTime) {
+            float X;
+            float Y;
+            float Z;
+            mma8653.getXYZ(X,Y,Z);
+            pov.computeStep(X,Y,Z,(millis()-nextTime)/1000.0);
 
-        static uint32_t nextTime;           // Time to display next frame
-
-        if(reloadAnimations) {
-            reloadAnimations = false;
-
-            streaming_mode = false;
-            nextTime = 0;
-        }
-
-        if(!streaming_mode) {
-            // Hit the accelerometer every 
-            if(millis() > nextTime) {
-                float X;
-                float Y;
-                float Z;
-                mma8653.getXYZ(X,Y,Z);
-                pov.computeStep(X,Y,Z,(millis()-nextTime)/1000.0);
-
-                nextTime += 1;
+            nextTime += 1;
     
-                // If we've gotten too far ahead of ourselves, reset the counter
-                if(millis() > nextTime) {
-                    nextTime = millis() + 1;
-                }
+            // If we've gotten too far ahead of ourselves, reset the counter
+            if(millis() > nextTime) {
+                nextTime = millis() + 1;
+            }
     
             show();
-            }
-
-        }
-
-        // Check for serial data
-        if(usb_serial_available() > 0) {
-            streaming_mode = true;
-            serialLoop();
         }
 
         if(userButtons.isPressed()) {
             uint8_t button = userButtons.getPressed();
     
             if(button == BUTTON_A) {
+                currentAnimation = (currentAnimation+1)%builtinAnimationCount;
+                pov.setup(builtinAnimations[currentAnimation]);
             }
         }
 
