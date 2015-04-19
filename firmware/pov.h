@@ -21,8 +21,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef PATTERNS_H
-#define PATTERNS_H
+#ifndef POV_H
+#define POV_H
 
 #include "animation.h"
 
@@ -38,13 +38,12 @@ public:
     void setup(Animation* newAnimation);
 
     // Calculate the next step based on accelerometer data
-    // accX: X acceleration (m/s^2)
-    // accX: Y acceleration (m/s^2)
-    // accX: Z acceleration (m/s^2)
     // delta: Time from the previous step, in s
-    void computeStep(float accX, float accY, float accZ, float delta);
+    void computeStep(float delta);
 
     void interpolateStep(int delta);
 };
+
+extern POV pov;
 
 #endif

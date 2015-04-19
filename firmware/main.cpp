@@ -38,7 +38,6 @@
 #include "serialloop.h"
 #include "buttons.h"
 #include "matrix.h"
-#include "mma8653.h"
 
 #include "animations/kinetisconnects.h"
 #include "animations/freescale.h"
@@ -48,11 +47,6 @@
 // USB data buffers
 static fcBuffers buffers;
 fcLinearLUT fcBuffers::lutCurrent;
-
-// accelerometer
-MMA8653 mma8653;
-
-POV pov;
 
 // Button inputs
 Buttons userButtons;
@@ -118,8 +112,6 @@ extern "C" int main()
 
     userButtons.setup();
 
-    mma8653.setup();
-
     int currentAnimation = 0;
     pov.setup(builtinAnimations[currentAnimation]);
 
@@ -129,6 +121,9 @@ extern "C" int main()
 
     uint32_t nextTime = 0;        // Time to display next frame
 
+//    uint32_t thisTime = millis();
+//    uint32_t lastTime = millis();
+
     // Application main loop
     while (usb_dfu_state == DFU_appIDLE) {
         watchdog_refresh();
@@ -136,12 +131,8 @@ extern "C" int main()
         userButtons.buttonTask();
 
         // Hit the accelerometer every 
-        if(millis() > nextTime) {
-            float X;
-            float Y;
-            float Z;
-            mma8653.getXYZ(X,Y,Z);
-            pov.computeStep(X,Y,Z,(millis()-nextTime)/1000.0);
+        if (millis() > nextTime) {
+            pov.computeStep((millis()-nextTime)/1000.0);
 
             nextTime += 1;
     
@@ -149,9 +140,15 @@ extern "C" int main()
             if(millis() > nextTime) {
                 nextTime = millis() + 1;
             }
-    
             show();
         }
+
+/*
+        thisTime = millis();
+        pov.computeStep((thisTime - lastTime)/1000);
+        show();
+        lastTime = thisTime;
+*/
 
         if(userButtons.isPressed()) {
             uint8_t button = userButtons.getPressed();

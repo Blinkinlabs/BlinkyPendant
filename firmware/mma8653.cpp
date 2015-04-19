@@ -55,6 +55,20 @@
 #define CTRL_REG2_SLPE     0x02                            // Auto-SLEEP enable
 #define CTRL_REG2_MODS(n)  (uint8_t)(((n) & 0x03))         // ACTIVE mode power scheme selection
 
+#define CTRL_REG3_PP_OD         0x01
+#define CTRL_REG3_IPOL          0x02
+#define CTRL_REG3_WAKE_FF_MT    0x08
+#define CTRL_REG3_WAKE_LNDPRT   0x20
+
+#define CTRL_REG4_INT_EN_DRDY   0x01
+#define CTRL_REG4_INT_EN_FF_MT  0x04
+#define CTRL_REG4_INT_EN_LNDPRT 0x10
+#define CTRL_REG4_INT_EN_ASLP   0x80
+
+#define CTRL_REG5_INT_CFG_DRDY   0x01
+#define CTRL_REG5_INT_CFG_FF_MT  0x04
+#define CTRL_REG5_INT_CFG_LNDPRT 0x10
+#define CTRL_REG5_INT_CFG_ASLP   0x80
 
 class WIRE {
 private:
@@ -158,8 +172,7 @@ WIRE Wire;
 
 
 void MMA8653::setup() {
-
-// Accelerometer setup
+  // Set up the SPI peripheral
   Wire.begin();
   
   // Reset the device, to put it into a known state.
@@ -187,12 +200,23 @@ void MMA8653::setup() {
   Wire.write(XYZ_DATA_CFG_8G);
   Wire.endTransmission();
 
+
+  // Enable data ready interrupt on interrput pin 1
+  Wire.beginTransmission(MMA8653_ADDRESS);
+  Wire.write(CTRL_REG4);
+  Wire.write(CTRL_REG4_INT_EN_DRDY);
+  Wire.endTransmission();
+
+  Wire.beginTransmission(MMA8653_ADDRESS);
+  Wire.write(CTRL_REG5);
+  Wire.write(CTRL_REG5_INT_CFG_DRDY);
+  Wire.endTransmission();
+
   // Put in fast-read mode, with 800Hz output rate, and activate
   Wire.beginTransmission(MMA8653_ADDRESS);
   Wire.write(CTRL_REG1);
   Wire.write(CTRL_REG1_ACTIVE | CTRL_REG1_F_READ | CTRL_REG1_DR(0));
   Wire.endTransmission();
-
 }
 
 bool MMA8653::getXYZ(float& X, float& Y, float& Z) {

@@ -1,7 +1,8 @@
 #include "WProgram.h"
 #include "blinkytile.h"
-#include "patterns.h"
+#include "pov.h"
 #include "matrix.h"
+#include "mma8653.h"
 #include "usb_serial.h"
 #include <cstdio>
 
@@ -12,6 +13,11 @@ extern "C" {
 #define cols 5
 #define rows 2
 
+// accelerometer
+MMA8653 mma8653;
+POV pov;
+
+SampleFilter filter;
 
 struct systemStep {
     float accX;
@@ -25,12 +31,23 @@ struct systemStep {
 #define playbackScale 300
 
 // Data block for debugging
-#define currentStepMax 200
+#define currentStepMax 100
 systemStep steps[currentStepMax];
 int currentStep;
-SampleFilter filter;
+
+
+
+float gaccX, gaccY, gaccZ;
+
+// watermark generates this interrupt
+void readISR()
+{
+    // TODO: This is slow?
+    mma8653.getXYZ(gaccX,gaccY,gaccZ);
+} 
 
 void POV::setup(Animation *newAnimation) {
+
     animation = newAnimation;
 
     currentStep = 0;
@@ -39,14 +56,26 @@ void POV::setup(Animation *newAnimation) {
     posX = 0;
 
     SampleFilter_init(&filter);
+
+    // Configure the accelerometer interrupt
+    pinMode(ACCELEROMETER_INT, INPUT);
+
+    // And turn on an interrupt to get notification when accelerometer data is ready
+    attachInterrupt(ACCELEROMETER_INT, readISR, FALLING);
+
+    // Give the interrupt lowest priority
+    NVIC_SET_PRIORITY(IRQ_PORTC, 240);
+    
+    mma8653.setup();
 }
 
 static float accXavgLast;
 static int dirLast;
 
 
-void POV::computeStep(float accX, float accY, float accZ, float delta) {
+void POV::computeStep(float delta) {
 
+    float accX = gaccX;
 
     SampleFilter_put(&filter, accX);
     float accXavg = SampleFilter_get(&filter);
@@ -81,7 +110,7 @@ void POV::computeStep(float accX, float accY, float accZ, float delta) {
     velocityX += (accX)*delta;
 
     // Only update the position if our velocity is high enough
-    float velocityGuardBand = 0.5;
+    float velocityGuardBand = 0.1;
     if(velocityX > velocityGuardBand || velocityX < velocityGuardBand) {
         posX += velocityX*delta;
     }
@@ -127,6 +156,7 @@ void POV::computeStep(float accX, float accY, float accZ, float delta) {
     steps[currentStep].dir = dir;
     steps[currentStep].accXavg = accXavg;
 
+/*
     currentStep++;
     if(currentStep > currentStepMax) {
         char dataBuffer[80];
@@ -147,4 +177,5 @@ void POV::computeStep(float accX, float accY, float accZ, float delta) {
         }
         currentStep = 0;
     }
+*/
 }

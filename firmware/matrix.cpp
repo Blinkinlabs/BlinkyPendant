@@ -162,8 +162,9 @@ void matrixSetup() {
     // (when OE is asserted) on each cycle is set by onTime; it begins with
     // ON_TIME_MIN and doubles every cycle after that to create a binary progression.
     // TODO: What does this translate to, in time?
-    #define LOW_BIT_ENABLE_TIME     0x1             // Shortest OE on interval; the shorter, the dimmer the lowest bit.
+//    #define LOW_BIT_ENABLE_TIME     0x1             // Shortest OE on interval; the shorter, the dimmer the lowest bit.
     
+    #define LOW_BIT_ENABLE_TIME     0x10             // Shortest OE on interval; the shorter, the dimmer the lowest bit.
     // The interval between OE cycle is set by one of the three cases:
     // 1. For low bits, where onTime is small, the interval is expanded to MIN_CYCLE_TIME
     // 2. For longer bits, where onTime is longer, the cycle time is calculated as onTime + MIN_BLANKING_TIME

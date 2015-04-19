@@ -31,12 +31,12 @@
 #define LED_COUNT           (LED_COLS*LED_ROWS)  // Number of LEDs we are controlling
 #define BYTES_PER_PIXEL     3
 
-#define BUTTON_COUNT        1   // Two input buttons
+#define BUTTON_COUNT        1   // One input button
 #define BUTTON_A            0   // First button
 
 #define BUTTON_A_PIN        0   // Button A: Port A3  //TODO
 
-#define ACCELEROMETER_IN    // Accelerometer input, PTC3 
+#define ACCELEROMETER_INT   9   // Accelerometer input, PTC3. Note this interrupt bank needs to be set to low priority.
 
 
 // File types

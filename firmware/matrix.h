@@ -29,7 +29,7 @@
 #include "blinkytile.h"
 
 //Display Geometry
-#define BIT_DEPTH 11       // Color bits per channel (Note: input is always 8 bit)
+#define BIT_DEPTH 8       // Color bits per channel (Note: input is always 8 bit)
 
 // Output assignments
 // Note: These can't be changed arbitrarily- the GPIOs are actually
