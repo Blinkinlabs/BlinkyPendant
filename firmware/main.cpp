@@ -34,7 +34,7 @@
 
 #include "blinkytile.h"
 #include "animation.h"
-#include "patterns.h"
+#include "pov.h"
 #include "serialloop.h"
 #include "buttons.h"
 #include "matrix.h"
@@ -60,8 +60,8 @@ Buttons userButtons;
 // built-in animations
 #define builtinAnimationCount 3
 Animation* builtinAnimations[3] = {
-    &freescaleAnimation,
     &ftfAnimation,
+    &freescaleAnimation,
     &kinetisAnimation
 };
 
