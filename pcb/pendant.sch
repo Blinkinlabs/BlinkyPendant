@@ -240,16 +240,16 @@ We've spent an enormous amount of time creating and checking these footprints an
 <wire x1="4.25" y1="6" x2="4.25" y2="-6" width="0.2032" layer="51"/>
 </package>
 <package name="VFDFN-10">
-<smd name="P$1" x="-0.9" y="0.8" dx="0.6" dy="0.225" layer="1" roundness="100"/>
-<smd name="P$2" x="-0.9" y="0.4" dx="0.6" dy="0.225" layer="1" roundness="100"/>
-<smd name="P$3" x="-0.9" y="0" dx="0.6" dy="0.225" layer="1" roundness="100"/>
-<smd name="P$4" x="-0.9" y="-0.4" dx="0.6" dy="0.225" layer="1" roundness="100"/>
-<smd name="P$5" x="-0.9" y="-0.8" dx="0.6" dy="0.225" layer="1" roundness="100"/>
-<smd name="P$6" x="0.9" y="-0.8" dx="0.6" dy="0.225" layer="1" roundness="100"/>
-<smd name="P$7" x="0.9" y="-0.4" dx="0.6" dy="0.225" layer="1" roundness="100"/>
-<smd name="P$8" x="0.9" y="0" dx="0.6" dy="0.225" layer="1" roundness="100"/>
-<smd name="P$9" x="0.9" y="0.4" dx="0.6" dy="0.225" layer="1" roundness="100"/>
-<smd name="P$10" x="0.9" y="0.8" dx="0.6" dy="0.225" layer="1" roundness="100"/>
+<smd name="P$1" x="-1.05" y="0.8" dx="0.9" dy="0.225" layer="1" roundness="100"/>
+<smd name="P$2" x="-1.05" y="0.4" dx="0.9" dy="0.225" layer="1" roundness="100"/>
+<smd name="P$3" x="-1.05" y="0" dx="0.9" dy="0.225" layer="1" roundness="100"/>
+<smd name="P$4" x="-1.05" y="-0.4" dx="0.9" dy="0.225" layer="1" roundness="100"/>
+<smd name="P$5" x="-1.05" y="-0.8" dx="0.9" dy="0.225" layer="1" roundness="100"/>
+<smd name="P$6" x="1.05" y="-0.8" dx="0.9" dy="0.225" layer="1" roundness="100"/>
+<smd name="P$7" x="1.05" y="-0.4" dx="0.9" dy="0.225" layer="1" roundness="100"/>
+<smd name="P$8" x="1.05" y="0" dx="0.9" dy="0.225" layer="1" roundness="100"/>
+<smd name="P$9" x="1.05" y="0.4" dx="0.9" dy="0.225" layer="1" roundness="100"/>
+<smd name="P$10" x="1.05" y="0.8" dx="0.9" dy="0.225" layer="1" roundness="100"/>
 <wire x1="-1" y1="1" x2="1" y2="1" width="0.05" layer="51"/>
 <wire x1="1" y1="1" x2="1" y2="-1" width="0.05" layer="51"/>
 <wire x1="1" y1="-1" x2="-1" y2="-1" width="0.05" layer="51"/>
