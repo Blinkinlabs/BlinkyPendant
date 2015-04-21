@@ -113,13 +113,14 @@ extern "C" int main()
     userButtons.setup();
 
     int currentAnimation = 0;
-    pov.setup(builtinAnimations[currentAnimation]);
+    pov.setup();
+    pov.setAnimation(builtinAnimations[currentAnimation]);
 
     matrixSetup();
 
     serialReset();
 
-    uint32_t nextTime = 0;        // Time to display next frame
+//    uint32_t nextTime = 0;        // Time to display next frame
 
 //    uint32_t thisTime = millis();
 //    uint32_t lastTime = millis();
@@ -131,17 +132,8 @@ extern "C" int main()
         userButtons.buttonTask();
 
         // Hit the accelerometer every 
-        if (millis() > nextTime) {
-            pov.computeStep((millis()-nextTime)/1000.0);
-
-            nextTime += 1;
-    
-            // If we've gotten too far ahead of ourselves, reset the counter
-            if(millis() > nextTime) {
-                nextTime = millis() + 1;
-            }
-            show();
-        }
+        pov.computeStep(0);
+        show();
 
 /*
         thisTime = millis();
@@ -155,7 +147,7 @@ extern "C" int main()
     
             if(button == BUTTON_A) {
                 currentAnimation = (currentAnimation+1)%builtinAnimationCount;
-                pov.setup(builtinAnimations[currentAnimation]);
+                pov.setAnimation(builtinAnimations[currentAnimation]);
             }
         }
 

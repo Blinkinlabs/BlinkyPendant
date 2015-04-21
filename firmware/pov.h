@@ -36,13 +36,13 @@ private:
 
     Animation* animation;
 public:
-    void setup(Animation* newAnimation);
+    void setup();
+
+    void setAnimation(Animation *newAnimation);
 
     // Calculate the next step based on accelerometer data
     // delta: Time from the previous step, in s
     void computeStep(float delta);
-
-    void interpolateStep(int delta);
 };
 
 extern POV pov;

@@ -28,7 +28,7 @@ struct systemStep {
     float accXavg;
 };
 
-#define playbackScale 300
+#define playbackScale 120
 
 // Data block for debugging
 #define currentStepMax 100
@@ -48,29 +48,27 @@ void readISR()
     newAcc = true;
 } 
 
-void POV::setup(Animation *newAnimation) {
-
+void POV::setAnimation(Animation *newAnimation) {
     animation = newAnimation;
+}
 
+void POV::setup() {
     currentStep = 0;
     velocityX = 0;
     posX = 0;
 
     SampleFilter_init(&filter);
 
-/*
     // Set up FTM1 to act as a timer for our model
     SIM_SCGC6 |= SIM_SCGC6_FTM1;    // Enable FTM1 clock
-    FTM0_MODE = FTM_MODE_WPDIS;    // Disable Write Protect
+    FTM1_MODE = FTM_MODE_WPDIS;    // Disable Write Protect
 
-    FTM0_SC = 0;                   // Turn off the clock so we can update CNTIN and MODULO?
-    FTM0_MOD = 0xFFFF;             // Period register
-    FTM0_SC |= FTM_SC_CLKS(1) | FTM_SC_PS(1);
+    FTM1_SC = 0;                   // Turn off the clock so we can update CNTIN and MODULO?
+    FTM1_MOD = 0xFFFF;             // Period register
+    FTM1_SC |= FTM_SC_CLKS(1) | FTM_SC_PS(7);
 
-    FTM0_MODE |= FTM_MODE_INIT;         // Enable FTM0
-
-    FTM0_SYNC |= 0x80;        // set PWM value update
-*/
+    FTM1_MODE |= FTM_MODE_INIT;         // Enable FTM0
+    FTM1_SYNC |= 0x80;        // set PWM value update
 
     // Configure the accelerometer interrupt
     pinMode(ACCELEROMETER_INT, INPUT);
@@ -89,6 +87,11 @@ static int dirLast;
 
 
 void POV::computeStep(float delta) {
+
+    // TODO: fix the units here...
+    delta = FTM1_CNT * (0.00000417);
+    FTM1_CNT = 0;   // reset the counter
+
 
     if(newAcc) {
         accX = newAccX;
@@ -124,11 +127,7 @@ void POV::computeStep(float delta) {
 
     velocityX += (accX)*delta;
 
-    // Only update the position if our velocity is high enough
-    float velocityGuardBand = 0;
-    if(velocityX > velocityGuardBand || velocityX < velocityGuardBand) {
-        posX += velocityX*delta;
-    }
+    posX += velocityX*delta;
 
     int playbackPos = posX*playbackScale;
 

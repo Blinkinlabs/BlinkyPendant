@@ -105,7 +105,7 @@ uint32_t FTM0_C1VStates[BIT_DEPTH*LED_ROWS];
 uint8_t dmaBuffer[2][PANEL_DEPTH_SIZE];
 uint8_t* frontBuffer;
 uint8_t* backBuffer;
-bool swapBuffers;
+volatile bool swapBuffers;
 
 void pixelsToDmaBuffer(Pixel* pixelInput, uint8_t bufferOutput[]);
 
@@ -247,8 +247,12 @@ bool bufferWaiting() {
 }
 
 void show() {
+    if(swapBuffers) {
+        return;
+    }
+    
     // Wait until the last buffer is written out
-    //while(swapBuffers) {}
+//    while(swapBuffers) {}
 
     pixelsToDmaBuffer(pixels, backBuffer);
     // TODO: Atomic operation?
