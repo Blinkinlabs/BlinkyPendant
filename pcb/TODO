@@ -1,3 +1,7 @@
+RevD:
+-fix outline for battery connector
+-lengthen transistor pads
+
 RevC:
 x-double check silkscreen labels
 x-move USB connector in, to be flush with board
@@ -6,5 +10,4 @@ x-fix uneven LED spacing
 x-reduce pcb cutout under power switch
 x-add on/off marker
 x-lengthen accelerometer pads
--lengthen transistor pads
--fix outline for battery connector
+x-remove excess thermal vias under uC

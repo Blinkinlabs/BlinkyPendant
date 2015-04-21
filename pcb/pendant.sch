@@ -4896,24 +4896,14 @@ type 0309, grid 2.5 mm</description>
 <smd name="32" x="-1.75" y="2.775" dx="1.25" dy="0.275" layer="1" roundness="100" rot="R270"/>
 <text x="-3.9" y="4.55" size="1.27" layer="25">&gt;NAME</text>
 <text x="-3.9" y="-5.525" size="1.27" layer="27">&gt;VALUE</text>
-<pad name="PAD@9" x="-1" y="-1" drill="0.254" diameter="1.5" shape="square" stop="no" thermals="no"/>
-<pad name="PAD@6" x="0" y="0" drill="0.254" diameter="1.5" shape="square" stop="no" thermals="no"/>
-<pad name="PAD@5" x="-1" y="0" drill="0.254" diameter="1.5" shape="square" stop="no" thermals="no"/>
-<pad name="PAD@1" x="-1" y="1" drill="0.254" diameter="1.5" shape="octagon" stop="no" thermals="no"/>
-<pad name="PAD@2" x="0" y="1" drill="0.254" diameter="1.5" shape="square" stop="no" thermals="no"/>
-<pad name="PAD@3" x="1" y="0" drill="0.254" diameter="1.5" shape="square" stop="no" thermals="no"/>
-<pad name="PAD@10" x="0" y="-1" drill="0.254" diameter="1.5" shape="square" stop="no" thermals="no"/>
-<pad name="PAD@11" x="1" y="-1" drill="0.254" diameter="1.5" shape="square" stop="no" thermals="no"/>
-<pad name="PAD@4" x="1" y="1" drill="0.254" diameter="1.5" shape="square" stop="no" thermals="no"/>
-<rectangle x1="0.6" y1="-1.4" x2="1.4" y2="-0.6" layer="31"/>
-<rectangle x1="0.6" y1="-0.4" x2="1.4" y2="0.4" layer="31"/>
-<rectangle x1="0.6" y1="0.6" x2="1.4" y2="1.4" layer="31"/>
-<rectangle x1="-0.4" y1="0.6" x2="0.4" y2="1.4" layer="31"/>
-<rectangle x1="-1.4" y1="0.6" x2="-0.6" y2="1.4" layer="31"/>
-<rectangle x1="-1.4" y1="-0.4" x2="-0.6" y2="0.4" layer="31"/>
-<rectangle x1="-1.4" y1="-1.4" x2="-0.6" y2="-0.6" layer="31"/>
-<rectangle x1="-0.4" y1="-1.4" x2="0.4" y2="-0.6" layer="31"/>
-<rectangle x1="-0.4" y1="-0.4" x2="0.4" y2="0.4" layer="31"/>
+<pad name="PAD@9" x="-0.875" y="-0.875" drill="0.254" diameter="1.76" shape="square" stop="no" thermals="no"/>
+<pad name="PAD@1" x="-0.875" y="0.875" drill="0.254" diameter="1.75" shape="square" stop="no" thermals="no"/>
+<pad name="PAD@11" x="0.875" y="-0.875" drill="0.254" diameter="1.75" shape="square" stop="no" thermals="no"/>
+<pad name="PAD@4" x="0.875" y="0.875" drill="0.254" diameter="1.75" shape="square" stop="no" thermals="no"/>
+<rectangle x1="0.35" y1="-1.4" x2="1.4" y2="-0.35" layer="31"/>
+<rectangle x1="0.35" y1="0.35" x2="1.4" y2="1.4" layer="31"/>
+<rectangle x1="-1.4" y1="0.35" x2="-0.35" y2="1.4" layer="31"/>
+<rectangle x1="-1.4" y1="-1.4" x2="-0.35" y2="-0.35" layer="31"/>
 <polygon width="0.127" layer="29">
 <vertex x="-1.3" y="1.8"/>
 <vertex x="1.8" y="1.8"/>
@@ -5289,7 +5279,7 @@ type 0309, grid 2.5 mm</description>
 <connect gate="G$1" pin="VDDA" pad="7"/>
 <connect gate="G$1" pin="VOUT33" pad="5"/>
 <connect gate="G$1" pin="VREGIN" pad="6"/>
-<connect gate="G$1" pin="VSS" pad="2 PAD@1 PAD@2 PAD@3 PAD@4 PAD@5 PAD@6 PAD@9 PAD@10 PAD@11"/>
+<connect gate="G$1" pin="VSS" pad="2 PAD@1 PAD@4 PAD@9 PAD@11"/>
 <connect gate="G$1" pin="VSSA" pad="8"/>
 <connect gate="G$1" pin="XTAL32" pad="9"/>
 </connects>
