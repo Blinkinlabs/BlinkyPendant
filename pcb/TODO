@@ -1,4 +1,5 @@
 -lengthen transistor pads
+-add oshw logo
 
 RevD:
 x-add test points for LED parts
@@ -8,8 +9,7 @@ x-increase QFN drill size to .35mm
 x-fix outline for battery connector
 x-Add test points for USB D+ D-
 x-Add test point for VBAT
--Add Blinkinlabs art
--add oshw logo
+x-Add Blinkinlabs art
 
 RevC:
 x-double check silkscreen labels
