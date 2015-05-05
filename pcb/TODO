@@ -1,6 +1,12 @@
 RevD:
+x-add test points for LED parts
+x-merge USB ground with board ground
+x-Add FSL art
+x-increase QFN drill size to .35mm
 -fix outline for battery connector
 -lengthen transistor pads
+-Add Blinkinlabs art
+-add oshw logo
 
 RevC:
 x-double check silkscreen labels

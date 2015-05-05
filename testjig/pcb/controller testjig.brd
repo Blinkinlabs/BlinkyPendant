@@ -856,7 +856,7 @@ Modified from Laen's PCB Order Design Rules</description>
 <element name="C2" library="adafruit" package="C0603" value=".1uF" x="14.5" y="54.5" smashed="yes">
 <attribute name="VALUE" x="17.214" y="54.889" size="1.27" layer="27" rot="SR270"/>
 </element>
-<element name="JP2" library="SparkFun-Connectors" package="USB-A-H" value="USB-A-H" x="9.5" y="46.5">
+<element name="JP2" library="SparkFun-Connectors" package="USB-A-H" value="USB-A-H" x="9.5" y="46.5" smashed="yes">
 <attribute name="PROD_ID" value="CONN-08367" x="9.5" y="46.5" size="1.778" layer="27" display="off"/>
 </element>
 <element name="POW" library="con-amp-quick" package="02P" value="" x="3.5" y="57" smashed="yes" rot="R270">
