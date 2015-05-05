@@ -4913,11 +4913,10 @@ type 0309, grid 2.5 mm</description>
 </polygon>
 </package>
 <package name="CR2032X2">
-<circle x="0" y="0" radius="11.5" width="0.127" layer="21"/>
-<circle x="0" y="0" radius="10" width="0.127" layer="21"/>
-<wire x1="11" y1="3" x2="16" y2="3" width="0.127" layer="21"/>
+<circle x="1" y="0" radius="12" width="0.127" layer="21"/>
+<wire x1="13" y1="3" x2="16" y2="3" width="0.127" layer="21"/>
 <wire x1="16" y1="3" x2="16" y2="-3" width="0.127" layer="21"/>
-<wire x1="16" y1="-3" x2="11" y2="-3" width="0.127" layer="21"/>
+<wire x1="16" y1="-3" x2="13" y2="-3" width="0.127" layer="21"/>
 <pad name="+" x="13.25" y="0" drill="1.2" diameter="2.54"/>
 <pad name="-" x="-7.25" y="0" drill="1.2" diameter="2.54"/>
 </package>
@@ -6478,6 +6477,9 @@ http://www.zetex.com&lt;p&gt;
 <part name="TP32" library="testpad" deviceset="PTR1" device="B1,27"/>
 <part name="TP33" library="testpad" deviceset="PTR1" device="B1,27"/>
 <part name="TP34" library="testpad" deviceset="PTR1" device="B1,27"/>
+<part name="TP35" library="testpad" deviceset="PTR1" device="B1,27"/>
+<part name="TP36" library="testpad" deviceset="PTR1" device="B1,27"/>
+<part name="TP37" library="testpad" deviceset="PTR1" device="B1,27"/>
 </parts>
 <sheets>
 <sheet>
@@ -6650,6 +6652,9 @@ http://www.zetex.com&lt;p&gt;
 <instance part="TP32" gate="G$1" x="360.68" y="304.8" rot="R90"/>
 <instance part="TP33" gate="G$1" x="393.7" y="251.46" rot="R90"/>
 <instance part="TP34" gate="G$1" x="393.7" y="226.06" rot="R90"/>
+<instance part="TP35" gate="G$1" x="73.66" y="309.88"/>
+<instance part="TP36" gate="G$1" x="78.74" y="309.88"/>
+<instance part="TP37" gate="G$1" x="170.18" y="170.18" rot="R180"/>
 </instances>
 <busses>
 </busses>
@@ -7319,7 +7324,11 @@ http://www.zetex.com&lt;p&gt;
 <segment>
 <pinref part="R7" gate="G$1" pin="1"/>
 <pinref part="CON1" gate="G$1" pin="D+"/>
-<wire x1="119.38" y1="317.5" x2="53.34" y2="317.5" width="0.1524" layer="91"/>
+<wire x1="119.38" y1="317.5" x2="78.74" y2="317.5" width="0.1524" layer="91"/>
+<pinref part="TP36" gate="G$1" pin="TP"/>
+<wire x1="78.74" y1="317.5" x2="53.34" y2="317.5" width="0.1524" layer="91"/>
+<wire x1="78.74" y1="317.5" x2="78.74" y2="312.42" width="0.1524" layer="91"/>
+<junction x="78.74" y="317.5"/>
 </segment>
 </net>
 <net name="N$15" class="0">
@@ -7406,7 +7415,11 @@ http://www.zetex.com&lt;p&gt;
 <segment>
 <pinref part="R6" gate="G$1" pin="1"/>
 <pinref part="CON1" gate="G$1" pin="D-"/>
-<wire x1="53.34" y1="320.04" x2="119.38" y2="320.04" width="0.1524" layer="91"/>
+<wire x1="53.34" y1="320.04" x2="73.66" y2="320.04" width="0.1524" layer="91"/>
+<pinref part="TP35" gate="G$1" pin="TP"/>
+<wire x1="73.66" y1="320.04" x2="119.38" y2="320.04" width="0.1524" layer="91"/>
+<wire x1="73.66" y1="312.42" x2="73.66" y2="320.04" width="0.1524" layer="91"/>
+<junction x="73.66" y="320.04"/>
 </segment>
 </net>
 <net name="LED_DATA" class="0">
@@ -7514,11 +7527,16 @@ http://www.zetex.com&lt;p&gt;
 <label x="414.02" y="198.12" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="N$2" class="0">
+<net name="VBAT" class="0">
 <segment>
 <pinref part="U$1" gate="G$1" pin="+"/>
-<wire x1="162.56" y1="165.1" x2="177.8" y2="165.1" width="0.1524" layer="91"/>
+<wire x1="162.56" y1="165.1" x2="170.18" y2="165.1" width="0.1524" layer="91"/>
 <pinref part="U$2" gate="G$1" pin="COM"/>
+<pinref part="TP37" gate="G$1" pin="TP"/>
+<wire x1="170.18" y1="165.1" x2="177.8" y2="165.1" width="0.1524" layer="91"/>
+<wire x1="170.18" y1="167.64" x2="170.18" y2="165.1" width="0.1524" layer="91"/>
+<junction x="170.18" y="165.1"/>
+<label x="162.56" y="165.1" size="1.778" layer="95"/>
 </segment>
 </net>
 </nets>

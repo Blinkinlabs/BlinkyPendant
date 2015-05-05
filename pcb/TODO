@@ -1,10 +1,13 @@
+-lengthen transistor pads
+
 RevD:
 x-add test points for LED parts
 x-merge USB ground with board ground
 x-Add FSL art
 x-increase QFN drill size to .35mm
--fix outline for battery connector
--lengthen transistor pads
+x-fix outline for battery connector
+x-Add test points for USB D+ D-
+x-Add test point for VBAT
 -Add Blinkinlabs art
 -add oshw logo
 
