@@ -4670,7 +4670,7 @@
 <rectangle x1="12.45593125" y1="63.5161625" x2="13.07823125" y2="63.539275" layer="200" rot="R270"/>
 <text x="7.5" y="13" size="0.635" layer="22" font="vector" ratio="20" rot="MR0" align="center">D-</text>
 <text x="7.5" y="11" size="0.635" layer="22" font="vector" ratio="20" rot="MR0" align="center">D+</text>
-<text x="7.5" y="9" size="0.635" layer="22" font="vector" ratio="20" rot="MR0" align="center">VUSB</text>
+<text x="7.5" y="9" size="0.635" layer="22" font="vector" ratio="20" rot="MR0" align="center">VBAT</text>
 <rectangle x1="10.3893375" y1="48.943815625" x2="10.94305625" y2="48.966678125" layer="200" rot="R270"/>
 <rectangle x1="10.249509375" y1="48.943690625" x2="11.036909375" y2="48.966803125" layer="200" rot="R270"/>
 <rectangle x1="9.985096875" y1="85.80925" x2="11.255096875" y2="85.8323625" layer="200" rot="R270"/>
