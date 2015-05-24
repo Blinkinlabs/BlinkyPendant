@@ -11,7 +11,7 @@ OBJDUMP = arm-none-eabi-objdump
 SIZE = arm-none-eabi-size
 
 # Bootloader to include in whole-chip .hex image
-FCBOOT_IMAGE = ../bin/povpendant-boot-v090.hex
+FCBOOT_IMAGE = ../bin/pendant-boot-v100.hex
 
 # Configuration options
 OPTIONS += -DF_CPU=48000000 -D__MK20DN64__ -DUSB_SERIAL_FC_DFU
@@ -19,7 +19,7 @@ OPTIONS += -DF_CPU=48000000 -D__MK20DN64__ -DUSB_SERIAL_FC_DFU
 #######################################################
 
 # The name of your project (used to name the compiled .dfu file)
-TARGET = lightbuddy-firmware
+TARGET = pendant-firmware
 
 # Temporary .hex file for application image only, without bootloader
 APP_HEX = app-image.hex
