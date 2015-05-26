@@ -340,6 +340,10 @@ bool ARMKinetisDebug::flashSectorBufferWrite(uint32_t bufferOffset, const uint32
     return memStore(REG_FLEXRAM_BASE + bufferOffset, data, count);
 }
 
+bool ARMKinetisDebug::initializeI2C() {
+    return false;
+}
+
 bool ARMKinetisDebug::flashSectorProgram(uint32_t address)
 {
     if (address & (FLASH_SECTOR_SIZE-1)) {

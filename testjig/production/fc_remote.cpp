@@ -81,84 +81,96 @@ bool FcRemote::setFlags(uint8_t cflag)
     return target.memStoreByte(fw_pFlags, cflag);
 }
 
-bool FcRemote::testUserButtons()
+
+bool FcRemote::testAccelerometer()
 {
-    // Button pins to test
-    const unsigned button2Pin = target.PTD5;
-    const unsigned button1Pin = target.PTD7;
+    target.log(target.LOG_NORMAL, "Accelerometer test: beginning accelerometer test");
     
-    if(!target.pinMode(button1Pin,INPUT_PULLUP))
+    ////// Initialize the SPI hardware
+    if (!target.initializeI2C())
         return false;
-    if(!target.pinMode(button2Pin,INPUT_PULLUP))
-        return false;
-        
-    // Button should start high
-    if(!target.digitalRead(button1Pin)) {
-        target.log(target.LOG_ERROR, "BUTTON: Button 1 stuck low");
-        return false;
-    }
-    if(!target.digitalRead(button2Pin)) {
-        target.log(target.LOG_ERROR, "BUTTON: Button 2 stuck low");
-        return false;
-    }
-        
-    target.log(target.LOG_NORMAL, "BUTTON: Waiting for user to press button 1");
 
-    const int FLASH_SPEED = 200;
-
-    while(target.digitalRead(button1Pin)) {
-        static bool blink = false;
-        static int i = 0;
-        
-        if((i++ % FLASH_SPEED) == 0) {
-            blink = !blink;
-            if (!setLED(blink)) return false;
-            digitalWrite(ledPin, blink);
-        }
-    }
-
-    target.log(target.LOG_NORMAL, "BUTTON: Waiting for user to release button 1");
-
-    while(!target.digitalRead(button1Pin)) {
-        static bool blink = false;
-        static int i = 0;
-        
-        if((i++ % FLASH_SPEED) == 0) {
-            blink = !blink;
-            if (!setLED(blink)) return false;
-            digitalWrite(ledPin, blink);
-        }
-    }
-    
-    target.log(target.LOG_NORMAL, "BUTTON: Waiting for user to press button 2");
-
-    while(target.digitalRead(button2Pin)) {
-        static bool blink = false;
-        static int i = 0;
-        
-        if((i++ % FLASH_SPEED) == 0) {
-            blink = !blink;
-            if (!setLED(blink)) return false;
-            digitalWrite(ledPin, blink);
-        }
-    }
-    
-    target.log(target.LOG_NORMAL, "BUTTON: Waiting for user to release button 2");
-    
-    while(!target.digitalRead(button2Pin)) {
-        static bool blink = false;
-        static int i = 0;
-        
-        if((i++ % FLASH_SPEED) == 0) {
-            blink = !blink;
-            if (!setLED(blink)) return false;
-            digitalWrite(ledPin, blink);
-        }
-    }
-    
-    target.log(target.LOG_NORMAL, "BUTTON: Buttons ok.");
-    return true;
+    return false;
 }
+
+//bool FcRemote::testUserButtons()
+//{
+//    // Button pins to test
+//    const unsigned button2Pin = target.PTD5;
+//    const unsigned button1Pin = target.PTD7;
+//    
+//    if(!target.pinMode(button1Pin,INPUT_PULLUP))
+//        return false;
+//    if(!target.pinMode(button2Pin,INPUT_PULLUP))
+//        return false;
+//        
+//    // Button should start high
+//    if(!target.digitalRead(button1Pin)) {
+//        target.log(target.LOG_ERROR, "BUTTON: Button 1 stuck low");
+//        return false;
+//    }
+//    if(!target.digitalRead(button2Pin)) {
+//        target.log(target.LOG_ERROR, "BUTTON: Button 2 stuck low");
+//        return false;
+//    }
+//        
+//    target.log(target.LOG_NORMAL, "BUTTON: Waiting for user to press button 1");
+//
+//    const int FLASH_SPEED = 200;
+//
+//    while(target.digitalRead(button1Pin)) {
+//        static bool blink = false;
+//        static int i = 0;
+//        
+//        if((i++ % FLASH_SPEED) == 0) {
+//            blink = !blink;
+//            if (!setLED(blink)) return false;
+//            digitalWrite(ledPin, blink);
+//        }
+//    }
+//
+//    target.log(target.LOG_NORMAL, "BUTTON: Waiting for user to release button 1");
+//
+//    while(!target.digitalRead(button1Pin)) {
+//        static bool blink = false;
+//        static int i = 0;
+//        
+//        if((i++ % FLASH_SPEED) == 0) {
+//            blink = !blink;
+//            if (!setLED(blink)) return false;
+//            digitalWrite(ledPin, blink);
+//        }
+//    }
+//    
+//    target.log(target.LOG_NORMAL, "BUTTON: Waiting for user to press button 2");
+//
+//    while(target.digitalRead(button2Pin)) {
+//        static bool blink = false;
+//        static int i = 0;
+//        
+//        if((i++ % FLASH_SPEED) == 0) {
+//            blink = !blink;
+//            if (!setLED(blink)) return false;
+//            digitalWrite(ledPin, blink);
+//        }
+//    }
+//    
+//    target.log(target.LOG_NORMAL, "BUTTON: Waiting for user to release button 2");
+//    
+//    while(!target.digitalRead(button2Pin)) {
+//        static bool blink = false;
+//        static int i = 0;
+//        
+//        if((i++ % FLASH_SPEED) == 0) {
+//            blink = !blink;
+//            if (!setLED(blink)) return false;
+//            digitalWrite(ledPin, blink);
+//        }
+//    }
+//    
+//    target.log(target.LOG_NORMAL, "BUTTON: Buttons ok.");
+//    return true;
+//}
 
 //bool FcRemote::testExternalFlash()
 //{

@@ -57,6 +57,8 @@ private:
     bool analogThreshold(int pin, float nominal, float tolerance = 0.30);
 
     bool testBatteryPresent();
+    bool testRowSelects();
+    bool testRowSelectsStates(bool S0_state, bool S1_state);
 
     bool testOutputPattern(uint8_t bits);
     bool testAllOutputPatterns();

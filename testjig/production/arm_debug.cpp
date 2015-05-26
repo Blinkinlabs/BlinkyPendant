@@ -25,7 +25,6 @@
 #include <stdarg.h>
 #include "arm_debug.h"
 
-static const unsigned resetPin = 9;
 
 ARMDebug::ARMDebug(unsigned clockPin, unsigned dataPin, LogLevel logLevel)
     : clockPin(clockPin), dataPin(dataPin), logLevel(logLevel),

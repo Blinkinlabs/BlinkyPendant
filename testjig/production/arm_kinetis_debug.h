@@ -52,6 +52,11 @@ public:
     // USB controller pull-up resistor
     bool usbSetPullup(bool enable);
 
+
+    // simple I2C driver
+    bool initializeI2C();
+    
+
     // Flash mass-erase operation. Works even on protected devices.
     bool flashMassErase();
 

@@ -96,6 +96,7 @@ void loop()
     if (!etest.powerOn())
         return;
     
+    // Force a reset during startup to be sure the test interface is available
     digitalWrite(resetPin, LOW);
 
     
@@ -103,6 +104,7 @@ void loop()
     if (!target.begin())
         return;
 
+    // Release the reset so that the target can be booted
     digitalWrite(resetPin, HIGH);
 
 
@@ -110,24 +112,25 @@ void loop()
         return;
 
 
-
     // Run an electrical test, to verify that the target board is okay
     if (!etest.runAll())
         return;
 
+    // Test that the accelerometer is present and can generate interrupts
+    if (!remote.testAccelerometer())
+          return;
 
     // Program firmware, blinking both LEDs in unison for status.
     if (!remote.installFirmware())
         return;
-        
-        
-//    // Test that the user buttons work
-//    if (!remote.testUserButtons())
-//        return;
 
     // Boot the target
     if (!remote.boot())
         return;
+        
+//    // Test that the user buttons work
+//    if (!remote.testUserButtons())
+//        return;
 
     testState = TEST_PASS;
     success();

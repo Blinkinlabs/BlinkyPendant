@@ -38,10 +38,13 @@ public:
     // Set control flags
     bool setFlags(uint8_t cflag);
 
+    // test if the accelerometer is present 
+    bool testAccelerometer();
+
     // Test that the flash chip works
 //    bool testExternalFlash();
     
-    bool testUserButtons();
+//    bool testUserButtons();
 
 
 private:

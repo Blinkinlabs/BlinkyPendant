@@ -8077,7 +8077,7 @@ Use a rail-to-rail opamp, &gt;30mA output.</text>
 <junction x="-81.28" y="-86.36"/>
 </segment>
 </net>
-<net name="TARGET_003_MEAS" class="0">
+<net name="TARGET_S1_MEAS" class="0">
 <segment>
 <pinref part="U$1" gate="G$1" pin="16/A2"/>
 <wire x1="-5.08" y1="15.24" x2="-17.78" y2="15.24" width="0.1524" layer="91"/>
@@ -8093,7 +8093,7 @@ Use a rail-to-rail opamp, &gt;30mA output.</text>
 <junction x="-86.36" y="-83.82"/>
 </segment>
 </net>
-<net name="TARGET_002_MEAS" class="0">
+<net name="TARGET_S0_MEAS" class="0">
 <segment>
 <pinref part="U$1" gate="G$1" pin="15/A1"/>
 <wire x1="-17.78" y1="12.7" x2="-5.08" y2="12.7" width="0.1524" layer="91"/>

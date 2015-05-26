@@ -1212,7 +1212,7 @@ Modified from Laen's PCB Order Design Rules</description>
 <wire x1="29" y1="69" x2="29" y2="60" width="0.254" layer="16"/>
 <via x="29" y="60" extent="1-16" drill="0.35"/>
 </signal>
-<signal name="TARGET_003_MEAS">
+<signal name="TARGET_S1_MEAS">
 <contactref element="U$1" pad="16/A2"/>
 <contactref element="R11" pad="1"/>
 <wire x1="38.15" y1="62" x2="31" y2="62" width="0.254" layer="1"/>
@@ -1230,7 +1230,7 @@ Modified from Laen's PCB Order Design Rules</description>
 <wire x1="31" y1="69" x2="31" y2="62" width="0.254" layer="16"/>
 <via x="31" y="62" extent="1-16" drill="0.35"/>
 </signal>
-<signal name="TARGET_002_MEAS">
+<signal name="TARGET_S0_MEAS">
 <contactref element="U$1" pad="15/A1"/>
 <contactref element="R10" pad="1"/>
 <wire x1="38.15" y1="64" x2="33" y2="64" width="0.254" layer="1"/>

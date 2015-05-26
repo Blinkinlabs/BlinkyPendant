@@ -29,6 +29,8 @@ static const unsigned powerPWMPin = 10;             // Ok
 
 
 static const unsigned analogTargetVBATPin = 0;      // Ok
+static const unsigned analogTargetS0Pin = 1;        // Ok
+static const unsigned analogTargetS1Pin = 2;        // Ok
 
 static const unsigned analogTarget33vPin = 8;       // Ok
 static const unsigned analogTargetVUsbPin = 9;      // Ok
