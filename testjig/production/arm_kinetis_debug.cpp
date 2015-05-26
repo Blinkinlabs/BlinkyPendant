@@ -33,6 +33,8 @@ ARMKinetisDebug::ARMKinetisDebug(unsigned clockPin, unsigned dataPin, LogLevel l
 
 bool ARMKinetisDebug::startup()
 {
+    log(LOG_NORMAL, "debug::startup");
+    
     return detect() && reset() && debugHalt() && peripheralInit();
 }
 

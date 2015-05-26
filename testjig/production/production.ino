@@ -12,7 +12,7 @@
 #include "electrical_test.h"
 #include "testjig.h"
 
-ARMKinetisDebug target(swclkPin, swdioPin, ARMDebug::LOG_MAX);
+ARMKinetisDebug target(swclkPin, swdioPin, ARMDebug::LOG_NORMAL);
 FcRemote remote(target);
 ElectricalTest etest(target);
 
@@ -58,13 +58,6 @@ void success()
     Serial.println("");
     Serial.println("#### Tests Passed! ####");
     Serial.println("");
-
-//    // Green and blue throbbing means success!
-//    while (1) {
-//        float x = sin(millis() * 0.008);
-//        if (!remote.setPixel(0, 0, 0xc + 0x10 * x, 0)) return;
-//        if (!remote.setPixel(1, 0, 0, 0xc - 0x10 * x)) return;
-//    }
 }
 
 #define TEST_UNTESTED 0
@@ -102,25 +95,30 @@ void loop()
     // Turn on the target power supply
     if (!etest.powerOn())
         return;
-        
-    // Force a reset to enable the TAP interface
+    
     digitalWrite(resetPin, LOW);
-    digitalWrite(resetPin, HIGH);
+
     
     // Start debugging the target
     if (!target.begin())
         return;
+
+    digitalWrite(resetPin, HIGH);
+
+
     if (!target.startup())
         return;
+
+
 
     // Run an electrical test, to verify that the target board is okay
     if (!etest.runAll())
         return;
 
 
-//    // Program firmware, blinking both LEDs in unison for status.
-//    if (!remote.installFirmware())
-//        return;
+    // Program firmware, blinking both LEDs in unison for status.
+    if (!remote.installFirmware())
+        return;
         
         
 //    // Test that the user buttons work

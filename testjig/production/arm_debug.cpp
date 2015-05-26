@@ -25,6 +25,7 @@
 #include <stdarg.h>
 #include "arm_debug.h"
 
+static const unsigned resetPin = 9;
 
 ARMDebug::ARMDebug(unsigned clockPin, unsigned dataPin, LogLevel logLevel)
     : clockPin(clockPin), dataPin(dataPin), logLevel(logLevel),
@@ -34,16 +35,23 @@ ARMDebug::ARMDebug(unsigned clockPin, unsigned dataPin, LogLevel logLevel)
 
 bool ARMDebug::begin()
 {
+    log(LOG_NORMAL, "debug::begin");
+  
     pinMode(clockPin, OUTPUT);
     pinMode(dataPin, INPUT_PULLUP);
 
     // Invalidate cache
     cache.select = 0xFFFFFFFF;
+    
+    // Force a reset to enable the TAP interface
+//    digitalWrite(resetPin, LOW);
 
+    
     // Put the bus in a known state, and trigger a JTAG-to-SWD transition.
     wireWriteTurnaround();
     wireWrite(0xFFFFFFFF, 32);
     wireWrite(0xFFFFFFFF, 32);
+    
     wireWrite(0xE79E, 16);
     wireWrite(0xFFFFFFFF, 32);
     wireWrite(0xFFFFFFFF, 32);
@@ -57,12 +65,14 @@ bool ARMDebug::begin()
 
     if (!debugPortPowerup())
         return false;
-
+        
     if (!debugPortReset())
         return false;
 
     if (!initMemPort())
         return false;
+        
+//    digitalWrite(resetPin, HIGH);
 
     return true;
 }
