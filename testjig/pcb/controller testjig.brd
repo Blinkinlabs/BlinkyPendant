@@ -1248,7 +1248,7 @@ Modified from Laen's PCB Order Design Rules</description>
 <wire x1="33" y1="69" x2="33" y2="64" width="0.254" layer="16"/>
 <via x="33" y="64" extent="1-16" drill="0.35"/>
 </signal>
-<signal name="TARGET_001_MEAS">
+<signal name="TARGET_VBAT_MEAS">
 <contactref element="U$1" pad="14/A0"/>
 <contactref element="R9" pad="1"/>
 <wire x1="38.15" y1="66" x2="35" y2="66" width="0.254" layer="1"/>

@@ -646,7 +646,7 @@
 #define REG_USB0_USBFRMADJUST           0x40072114 // Frame Adjust Register
 
 // FlexRAM base address
-//#define REG_FLEXRAM_BASE            0x14000000
+#define REG_FLEXRAM_BASE            0x14000000
 
 // MDM-AP debug port registers
 #define REG_MDM_STATUS              0x01000000

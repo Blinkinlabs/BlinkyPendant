@@ -12,8 +12,7 @@
 #include "electrical_test.h"
 #include "testjig.h"
 
-//ARMKinetisDebug target(swclkPin, swdioPin);
-ARMKinetisDebug target(swclkPin, swdioPin, ARMDebug::LOG_NORMAL);
+ARMKinetisDebug target(swclkPin, swdioPin, ARMDebug::LOG_MAX);
 FcRemote remote(target);
 ElectricalTest etest(target);
 
@@ -22,7 +21,7 @@ void setup()
   pinMode(ledPin, OUTPUT);
     pinMode(ledPassPin, OUTPUT);
     pinMode(ledFailPin, OUTPUT);
-//    pinMode(buttonPin, INPUT_PULLUP);
+    pinMode(buttonPin, INPUT_PULLUP);
     analogReference(INTERNAL);
     Serial.begin(115200);
 
@@ -36,19 +35,20 @@ void waitForButton()
 
     Serial.println("");
     Serial.println("--------------------------------------------");
-    Serial.println(" Fadecandy Test Jig : Press button to start");
+    Serial.println(" BlinkyPendant Test Jig : Press button to start");
     Serial.println("--------------------------------------------");
     Serial.println("");
 
-//    while (digitalRead(buttonPin) == LOW);
-//    delay(20);
-//    while (digitalRead(buttonPin) == HIGH) {
-//        // While we're waiting, blink the LED to indicate we're alive
-//        digitalWrite(ledPin, (millis() % 1000) < 150);
-//    }
-    while(Serial.available() < 1) {
+    while (digitalRead(buttonPin) == LOW);
+    delay(20);
+    while (digitalRead(buttonPin) == HIGH) {
+        // While we're waiting, blink the LED to indicate we're alive
+        digitalWrite(ledPin, (millis() % 1000) < 150);
     }
-    Serial.read();
+
+//    while(Serial.available() < 1) {
+//    }
+//    Serial.read();
     
     digitalWrite(ledPin, HIGH);
 }
@@ -78,30 +78,30 @@ void loop()
     // Keep target power supply off when we're not using it
     etest.powerOff();
     
-//    // Set the status LEDs
-//    if(testState == TEST_FAIL) {
-//      digitalWrite(ledPassPin, LOW);
-//      digitalWrite(ledFailPin, HIGH);
-//    }
-//    else if(testState == TEST_PASS) {
-//      digitalWrite(ledPassPin, HIGH);
-//      digitalWrite(ledFailPin, LOW);
-//    }
-//    else {
-//      digitalWrite(ledPassPin, HIGH);
-//      digitalWrite(ledFailPin, HIGH);
-//    }      
+    // Set the status LEDs
+    if(testState == TEST_FAIL) {
+      digitalWrite(ledPassPin, LOW);
+      digitalWrite(ledFailPin, HIGH);
+    }
+    else if(testState == TEST_PASS) {
+      digitalWrite(ledPassPin, HIGH);
+      digitalWrite(ledFailPin, LOW);
+    }
+    else {
+      digitalWrite(ledPassPin, HIGH);
+      digitalWrite(ledFailPin, HIGH);
+    }      
       
     // Button press starts the test
     waitForButton();
     
-//    testState = TEST_FAIL;
-//    digitalWrite(ledPassPin, HIGH);
-//    digitalWrite(ledFailPin, HIGH);
+    testState = TEST_FAIL;
+    digitalWrite(ledPassPin, HIGH);
+    digitalWrite(ledFailPin, HIGH);
 
-//    // Turn on the target power supply
-//    if (!etest.powerOn())
-//        return;
+    // Turn on the target power supply
+    if (!etest.powerOn())
+        return;
         
     // Force a reset to enable the TAP interface
     digitalWrite(resetPin, LOW);
@@ -113,17 +113,14 @@ void loop()
     if (!target.startup())
         return;
 
-//    // Run an electrical test, to verify that the target board is okay
-//    if (!etest.runAll())
-//        return;
-//
-//    // Test for the presence of the flash chip
-//    if (!remote.testExternalFlash())
-//        return;
-
-    // Program firmware, blinking both LEDs in unison for status.
-    if (!remote.installFirmware())
+    // Run an electrical test, to verify that the target board is okay
+    if (!etest.runAll())
         return;
+
+
+//    // Program firmware, blinking both LEDs in unison for status.
+//    if (!remote.installFirmware())
+//        return;
         
         
 //    // Test that the user buttons work
@@ -133,22 +130,6 @@ void loop()
     // Boot the target
     if (!remote.boot())
         return;
-    
-//    // Disable interpolation, since we only update fbNext
-//    if (!remote.setFlags(CFLAG_NO_INTERPOLATION))
-//        return;
-//
-//    // Set a default color lookup table
-//    if (!remote.initLUT())
-//        return;
-//
-//    // Pixel pattern to display while running the frame rate test (white / green)
-//    if (!remote.setPixel(0, 16, 16, 16)) return;
-//    if (!remote.setPixel(1, 0, 24, 0)) return;
-//
-//    // Check the frame rate; make sure the firmware is going fast enough
-//    if (!remote.testFrameRate())
-//        return;
 
     testState = TEST_PASS;
     success();

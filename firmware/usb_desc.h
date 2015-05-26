@@ -94,14 +94,14 @@ let me know?  http://forum.pjrc.com/forums/4-Suggestions-amp-Bug-Reports
 
   #define MANUFACTURER_NAME	{'B','l','i','n','k','i','n','l','a','b','s'}
   #define MANUFACTURER_NAME_LEN	11
-  #define PRODUCT_NAME		{'P','O','V','P','e','n','d','a','n','t'}
-  #define PRODUCT_NAME_LEN	10
-  #define SERIAL_NAME           {'P','O','V','P','e','n','d','a','n','t',' ','S','e','r','i','a','l'}
-  #define SERIAL_NAME_LEN       17
-  #define FC_NAME               {'P','O','V','P','e','n','d','a','n','t',' ','F','a','d','e','c','a','n','d','y'}
-  #define FC_NAME_LEN           20
-  #define DFU_NAME              {'P','O','V','P','e','n','d','a','n','t',' ','D','F','U'}
-  #define DFU_NAME_LEN          14
+  #define PRODUCT_NAME		{'B','l','i','n','k','y','P','e','n','d','a','n','t'}
+  #define PRODUCT_NAME_LEN	13
+  #define SERIAL_NAME           {'B','l','i','n','k','y','P','e','n','d','a','n','t',' ','S','e','r','i','a','l'}
+  #define SERIAL_NAME_LEN       20
+  #define FC_NAME               {'B','l','i','n','k','y','P','e','n','d','a','n','t',' ','F','a','d','e','c','a','n','d','y'}
+  #define FC_NAME_LEN           23
+  #define DFU_NAME              {'B','l','i','n','k','y','P','e','n','d','a','n','t',' ','D','F','U'}
+  #define DFU_NAME_LEN          17
   #define EP0_SIZE		64
   #define NUM_ENDPOINTS		4       // 1=fadecandy,dfu 2,3,4=serial
   #define NUM_USB_BUFFERS	12      // FC uses 9*3, serial 12, we don't need this many?

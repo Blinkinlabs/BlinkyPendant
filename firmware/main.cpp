@@ -42,6 +42,9 @@
 #include "animations/kinetisconnects.h"
 #include "animations/freescale.h"
 #include "animations/ftf2015.h"
+#include "animations/squiggle.h"
+#include "animations/dots.h"
+#include "animations/blink.h"
 
 
 // USB data buffers
@@ -52,8 +55,11 @@ fcLinearLUT fcBuffers::lutCurrent;
 Buttons userButtons;
 
 // built-in animations
-#define builtinAnimationCount 3
-Animation* builtinAnimations[3] = {
+#define builtinAnimationCount 6
+Animation* builtinAnimations[builtinAnimationCount] = {
+    &dotsAnimation,
+    &squiggleAnimation,
+    &blinkAnimation,
     &ftfAnimation,
     &freescaleAnimation,
     &kinetisAnimation

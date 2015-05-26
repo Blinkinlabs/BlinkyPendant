@@ -39,30 +39,12 @@ public:
     bool setFlags(uint8_t cflag);
 
     // Test that the flash chip works
-    bool testExternalFlash();
+//    bool testExternalFlash();
     
     bool testUserButtons();
 
-//    // Measure actual frame rate of Fadecandy firmware
-//    float measureFrameRate(float minDuration = 1.0);
-//    bool testFrameRate();
-//
-//    // Direct framebuffer access
-//    bool initLUT();
-//    bool setLUT(unsigned channel, unsigned index, int value);
-//    bool setPixel(unsigned index, int red, int green, int blue);
 
 private:
     ARMKinetisDebug &target;
 };
 
-//#define CFLAG_NO_DITHERING      (1 << 0)
-//#define CFLAG_NO_INTERPOLATION  (1 << 1)
-//#define CFLAG_NO_ACTIVITY_LED   (1 << 2)
-//#define CFLAG_LED_CONTROL       (1 << 3)
-//#define LUT_CH_SIZE             257
-//#define LUT_TOTAL_SIZE          (LUT_CH_SIZE * 3)
-//#define PIXELS_PER_PACKET       21
-//#define LUTENTRIES_PER_PACKET   31
-//#define PACKETS_PER_FRAME       25
-//#define PACKETS_PER_LUT         25

@@ -160,177 +160,81 @@ bool FcRemote::testUserButtons()
     return true;
 }
 
-bool FcRemote::testExternalFlash()
-{
-    target.log(target.LOG_NORMAL, "External flash test: Beginning external flash test");
-    
-    ////// Initialize the SPI hardware
-    if (!target.initializeSpi0())
-        return false;
-    
-    ////// Identify the flash
-    
-    if(!target.sendSpi0(0x9F, false)) {
-        target.log(target.LOG_ERROR, "External flash test: Error communicating with device.");
-        return false;
-    }
-
-    const int JEDEC_ID_LENGTH = 3;
-    uint8_t receivedId[JEDEC_ID_LENGTH];
-
-    for(int i = 0; i < JEDEC_ID_LENGTH; i++) {
-        if(!target.receiveSpi0(receivedId[i], (JEDEC_ID_LENGTH - 1) == i)) {
-            target.log(target.LOG_ERROR, "External flash test: Error communicating with device.");
-            return false;
-        }
-    }
-    
-    if((receivedId[0] != 0x01) | (receivedId[1] != 0x40) | (receivedId[2] != 0x15)) {    // Spansion 16m
-//    if((receivedId[0] != 0xEF) | (receivedId[1] != 0x40) | (receivedId[2] != 0x14)) {    // Winbond 8m
-        target.log(target.LOG_ERROR, "External flash test: Invalid device type, got %02X%02X%02X", receivedId[0], receivedId[1], receivedId[2]);
-        return false;
-    }
-    
-    ////// Erase the flash
-    
-    if(!target.sendSpi0(0x06, true)) {
-        target.log(target.LOG_ERROR, "External flash test: Error enabling flash write");
-        return false;
-    }
-
-    if(!target.sendSpi0(0xC7, true)) {
-        target.log(target.LOG_ERROR, "External flash test: Error sending erase command.");
-        return false;
-    }
-    
-    target.log(target.LOG_NORMAL, "External flash test: Erasing external flash");
-    
-    uint8_t sr;
-    do {
-        static bool blink = false;
-        static int i = 0;
-        const int FLASH_SPEED = 40;
-        
-        if((i++ % FLASH_SPEED) == 0) {
-            blink = !blink;
-            if (!setLED(blink)) return false;
-            digitalWrite(ledPin, blink);
-        }
-      
-      if(!target.sendSpi0(0x05, false)) {
-          target.log(target.LOG_ERROR, "External flash test: Error getting status report");
-          return false;
-      }
-      if(!target.receiveSpi0(sr, true)) {
-          target.log(target.LOG_ERROR, "External flash test: Error getting status report");
-          return false;
-      }
-    }
-    while(sr & 0x01);
-    
-    if(!target.sendSpi0(0x03, true)) {
-        target.log(target.LOG_ERROR, "External flash test: Error disabling flash write");
-        return false;
-    }
-    
-    
-    target.log(target.LOG_NORMAL, "External flash test: Successfully completed external flash test!");
-    return true;
-}
-
-//bool FcRemote::initLUT()
+//bool FcRemote::testExternalFlash()
 //{
-//    // Install a trivial identity-mapping LUT, writing directly to the firmware's LUT buffer.
-//    for (unsigned channel = 0; channel < 3; channel++) {
-//        for (unsigned index = 0; index < LUT_CH_SIZE; index++) {
-//            if (!setLUT(channel, index, index << 8))
-//                return false;
-//        }
-//    }
-//    return true;
-//}
-//
-//bool FcRemote::setLUT(unsigned channel, unsigned index, int value)
-//{
-//    return target.memStoreHalf(fw_pLUT + 2*(index + channel*LUT_CH_SIZE), constrain(value, 0, 0xFFFF));
-//}
-//
-//bool FcRemote::setPixel(unsigned index, int red, int green, int blue)
-//{
-//    // Write one pixel directly into the fbNext framebuffer on the target.
-//
-//    uint32_t idPacket = index / PIXELS_PER_PACKET;
-//    uint32_t idOffset = fw_usbPacketBufOffset + 1 + (index % PIXELS_PER_PACKET) * 3;
-//
-//    uint32_t fb;        // Address of the current fcFramebuffer bound to fbNext
-//    uint32_t packet;    // Pointer to usb_packet in question
-//
-//    return
-//        target.memLoad(fw_pFbNext, fb) &&
-//        target.memLoad(fb + idPacket*4, packet) &&
-//        target.memStoreByte(packet + idOffset + 0, constrain(red, 0, 255)) &&
-//        target.memStoreByte(packet + idOffset + 1, constrain(green, 0, 255)) &&
-//        target.memStoreByte(packet + idOffset + 2, constrain(blue, 0, 255));
-//}
-//
-//float FcRemote::measureFrameRate(float minDuration)
-//{
-//    // Use the end-to-end LED data signal to measure the overall system frame rate.
-//    // Gaps of >50us indicate frame boundaries
-//
-//    pinMode(dataFeedbackPin, INPUT);
-//
-//    uint32_t minMicros = minDuration * 1000000;
-//    uint32_t startTime = micros();
-//    uint32_t gapStart = 0;
-//    bool inGap = false;
-//    uint32_t frames = 0;
-//    uint32_t duration;
-//
-//    while (1) {
-//        long now = micros();
-//        duration = now - startTime;
-//        if (duration >= minMicros)
-//            break;
-//
-//        if (digitalRead(dataFeedbackPin)) {
-//            // Definitely not in a gap, found some data
-//            inGap = false;
-//            gapStart = now;
-//
-//        } else if (inGap) {
-//            // Already in a gap, wait for some data.
-//
-//        } else if (uint32_t(now - gapStart) >= 50) {
-//            // We just found an inter-frame gap
-//
-//            inGap = true;
-//            frames++;
-//        }
-//    }
-//
-//    return frames / (duration * 1e-6);
-//}
-//
-//bool FcRemote::testFrameRate()
-//{
-//    const float goalFPS = 375;
-//    const float maxFPS = 450;
-//
-//    target.log(target.LOG_NORMAL, "FPS: Measuring frame rate...");
-//    float fps = measureFrameRate();
-//    target.log(target.LOG_NORMAL, "FPS: Measured %.2f frames/sec", fps);
-//
-//    if (fps > maxFPS) {
-//        target.log(target.LOG_ERROR, "FPS: ERROR, frame rate of %.2f frames/sec is unrealistically high!", fps);
+//    target.log(target.LOG_NORMAL, "External flash test: Beginning external flash test");
+//    
+//    ////// Initialize the SPI hardware
+//    if (!target.initializeSpi0())
+//        return false;
+//    
+//    ////// Identify the flash
+//    
+//    if(!target.sendSpi0(0x9F, false)) {
+//        target.log(target.LOG_ERROR, "External flash test: Error communicating with device.");
 //        return false;
 //    }
 //
-//    if (fps < goalFPS) {
-//        target.log(target.LOG_ERROR, "FPS: ERROR, frame rate of %.2f frames/sec is below goal of %.2f!",
-//            fps, goalFPS);
+//    const int JEDEC_ID_LENGTH = 3;
+//    uint8_t receivedId[JEDEC_ID_LENGTH];
+//
+//    for(int i = 0; i < JEDEC_ID_LENGTH; i++) {
+//        if(!target.receiveSpi0(receivedId[i], (JEDEC_ID_LENGTH - 1) == i)) {
+//            target.log(target.LOG_ERROR, "External flash test: Error communicating with device.");
+//            return false;
+//        }
+//    }
+//    
+//    if((receivedId[0] != 0x01) | (receivedId[1] != 0x40) | (receivedId[2] != 0x15)) {    // Spansion 16m
+////    if((receivedId[0] != 0xEF) | (receivedId[1] != 0x40) | (receivedId[2] != 0x14)) {    // Winbond 8m
+//        target.log(target.LOG_ERROR, "External flash test: Invalid device type, got %02X%02X%02X", receivedId[0], receivedId[1], receivedId[2]);
+//        return false;
+//    }
+//    
+//    ////// Erase the flash
+//    
+//    if(!target.sendSpi0(0x06, true)) {
+//        target.log(target.LOG_ERROR, "External flash test: Error enabling flash write");
 //        return false;
 //    }
 //
+//    if(!target.sendSpi0(0xC7, true)) {
+//        target.log(target.LOG_ERROR, "External flash test: Error sending erase command.");
+//        return false;
+//    }
+//    
+//    target.log(target.LOG_NORMAL, "External flash test: Erasing external flash");
+//    
+//    uint8_t sr;
+//    do {
+//        static bool blink = false;
+//        static int i = 0;
+//        const int FLASH_SPEED = 40;
+//        
+//        if((i++ % FLASH_SPEED) == 0) {
+//            blink = !blink;
+//            if (!setLED(blink)) return false;
+//            digitalWrite(ledPin, blink);
+//        }
+//      
+//      if(!target.sendSpi0(0x05, false)) {
+//          target.log(target.LOG_ERROR, "External flash test: Error getting status report");
+//          return false;
+//      }
+//      if(!target.receiveSpi0(sr, true)) {
+//          target.log(target.LOG_ERROR, "External flash test: Error getting status report");
+//          return false;
+//      }
+//    }
+//    while(sr & 0x01);
+//    
+//    if(!target.sendSpi0(0x03, true)) {
+//        target.log(target.LOG_ERROR, "External flash test: Error disabling flash write");
+//        return false;
+//    }
+//    
+//    
+//    target.log(target.LOG_NORMAL, "External flash test: Successfully completed external flash test!");
 //    return true;
 //}
+

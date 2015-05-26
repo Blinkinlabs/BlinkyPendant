@@ -8109,7 +8109,7 @@ Use a rail-to-rail opamp, &gt;30mA output.</text>
 <junction x="-91.44" y="-81.28"/>
 </segment>
 </net>
-<net name="TARGET_001_MEAS" class="0">
+<net name="TARGET_VBAT_MEAS" class="0">
 <segment>
 <pinref part="U$1" gate="G$1" pin="14/A0"/>
 <wire x1="-5.08" y1="10.16" x2="-17.78" y2="10.16" width="0.1524" layer="91"/>

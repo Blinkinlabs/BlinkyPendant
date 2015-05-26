@@ -220,17 +220,18 @@ bool ElectricalTest::testUSBConnections()
         if (!target.usbSetPullup(false))
             return false;
 
-        // Test both USB ground connections
-        pinMode(usbShieldGroundPin, INPUT_PULLUP);
-        pinMode(usbSignalGroundPin, INPUT_PULLUP);
-        if (digitalRead(usbShieldGroundPin) != LOW) {
-            target.log(LOG_ERROR, "ETEST: Faulty USB shield ground");
-            return false;
-        }
-        if (digitalRead(usbSignalGroundPin) != LOW) {
-            target.log(LOG_ERROR, "ETEST: Faulty USB signal ground");
-            return false;
-        }
+//        // Test both USB ground connections
+//        pinMode(usbShieldGroundPin, INPUT_PULLUP);
+//        pinMode(usbSignalGroundPin, INPUT_PULLUP);
+//        if (digitalRead(usbShieldGroundPin) != LOW) {
+//            target.log(LOG_ERROR, "ETEST: Faulty USB shield ground");
+//            return false;
+//        }
+        
+//        if (digitalRead(usbSignalGroundPin) != LOW) {
+//            target.log(LOG_ERROR, "ETEST: Faulty USB signal ground");
+//            return false;
+//        }
 
         // Test for a high-impedance USB D+ and D- by charging and discharging parasitic capacitance
         if (!testHighZ(usbDMinusPin)) {
@@ -258,6 +259,24 @@ bool ElectricalTest::testUSBConnections()
 
     }
 
+    return true;
+}
+
+
+bool ElectricalTest::testBatteryPresent()
+{
+    target.log(logLevel, "ETEST: Check if battery present");
+    const float minimum = 5.3;
+    float measured = analogVolts(analogTargetVBATPin);
+    
+    if (measured < minimum) {
+        target.log(LOG_ERROR,
+                "ETEST: Analog value %d below minimum! "
+                "value = %.2fv, minimum = %.2fv",
+                analogTargetVBATPin, measured, minimum);
+        return false;
+    }
+    
     return true;
 }
 
@@ -342,17 +361,21 @@ bool ElectricalTest::runAll()
     if (!testUSBConnections())
         return false;
         
-    // Top row of pins short test
-    if (!testTopPinShorts())
+    // battery
+    if (!testBatteryPresent())
         return false;
         
-    // Top row of pins short test
-    if (!testSidePinShorts())
-        return false;
-
-    // Output patterns
-    if (!testAllOutputPatterns())
-        return false;
+//    // Top row of pins short test
+//    if (!testTopPinShorts())
+//        return false;
+//        
+//    // Top row of pins short test
+//    if (!testSidePinShorts())
+//        return false;
+//
+//    // Output patterns
+//    if (!testAllOutputPatterns())
+//        return false;
 
     target.log(logLevel, "ETEST: Successfully completed electrical test");
     return true;
