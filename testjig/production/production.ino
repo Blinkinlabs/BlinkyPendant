@@ -116,9 +116,9 @@ void loop()
     if (!etest.runAll())
         return;
 
-    // Test that the accelerometer is present and can generate interrupts
-    if (!remote.testAccelerometer())
-          return;
+//    // Test that the accelerometer is present and can generate interrupts
+//    if (!remote.testAccelerometer())
+//          return;
 
     // Program firmware, blinking both LEDs in unison for status.
     if (!remote.installFirmware())

@@ -54,8 +54,16 @@ public:
 
 
     // simple I2C driver
-    bool initializeI2C();
+    bool I2C0begin();
+    bool I2C0waitForDone();
     
+    int I2C0remaining;
+    bool I2C0beginTransmission(uint8_t address);
+    bool I2C0endTransmission(bool stop = true);
+    bool I2C0write(uint8_t data);
+    bool I2C0requestFrom(uint8_t address, int length);
+    bool I2C0receive(uint8_t& data);
+    bool I2C0available(); 
 
     // Flash mass-erase operation. Works even on protected devices.
     bool flashMassErase();

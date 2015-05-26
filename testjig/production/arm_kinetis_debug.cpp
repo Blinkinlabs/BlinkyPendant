@@ -198,8 +198,8 @@ bool ARMKinetisDebug::peripheralInit()
         memStore(REG_SIM_SOPT2, REG_SIM_SOPT2_USBSRC | REG_SIM_SOPT2_PLLFLLSEL |
             REG_SIM_SOPT2_TRACECLKSEL | REG_SIM_SOPT2_CLKOUTSEL(6)) &&
 
-        // Enable USB clock gate
-        memStore(REG_SIM_SCGC4, REG_SIM_SCGC4_USBOTG) &&
+        // Enable USB clock gate and I2C0
+        memStore(REG_SIM_SCGC4, REG_SIM_SCGC4_USBOTG | REG_SIM_SCGC4_I2C0) &&
 
         // Reset USB core
         memStoreByte(REG_USB0_USBTRC0, REG_USB_USBTRC_USBRESET) &&
@@ -340,9 +340,172 @@ bool ARMKinetisDebug::flashSectorBufferWrite(uint32_t bufferOffset, const uint32
     return memStore(REG_FLEXRAM_BASE + bufferOffset, data, count);
 }
 
-bool ARMKinetisDebug::initializeI2C() {
+bool ARMKinetisDebug::I2C0begin() {
+//    SIM_SCGC4 |= SIM_SCGC4_I2C0;    // Enable the I2C0 clock
+//    uint32_t SCGC4_VAL;
+//    log(LOG_NORMAL, "i2c0begin: enable clock");    
+//    if(!memLoad(REG_SIM_SCGC4, SCGC4_VAL))
+//        return false;
+//    if(!memStore(REG_SIM_SCGC4, SCGC4_VAL | REG_SIM_SCGC4_I2C0))
+//        return false;
+
+    log(LOG_NORMAL, "i2c0begin: set transmission speed");
+//    I2C0_F = 0x1B;                  // Set transmission speed (100KHz?)
+    if(!memStoreByte(REG_I2C0_F, 0x1B))
+        return false;
+        
+//    log(LOG_NORMAL, "i2c0begin: enable i2c");
+//    
+////    I2C0_C1 = I2C_C1_IICEN;         // Enable I2C
+//    if(!memStoreByte(REG_I2C0_C1, I2C_C1_IICEN))
+//        return false;
+//
+//    log(LOG_NORMAL, "i2c0begin: set muxes");  
+//
+////    // TODO: Set pin muxes!
+////    PORTB_PCR0 = PORT_PCR_MUX(2);
+////    PORTB_PCR1 = PORT_PCR_MUX(2);
+//    if(!memStore(REG_PORTB_PCR0, REG_PORT_PCR_MUX(2)))
+//        return false;
+//    if(!memStore(REG_PORTB_PCR1, REG_PORT_PCR_MUX(2)))
+//        return false;
+
     return false;
 }
+
+
+bool ARMKinetisDebug::I2C0waitForDone() {
+//  while((I2C0_S & I2C_S_IICIF) == 0) {}
+//    I2C0_S |= I2C_S_IICIF;
+    uint8_t I2C0_S_VALUE;
+    do{
+      if(!memLoadByte(REG_I2C0_S, I2C0_S_VALUE))
+          return false;
+    }
+    while ((I2C0_S_VALUE & REG_I2C_S_IICIF) == 0);
+    
+    return true;
+}
+
+
+bool ARMKinetisDebug::I2C0beginTransmission(uint8_t address) {
+//    I2C0_C1 |= I2C_C1_TX;
+//    I2C0_C1 |= I2C_C1_MST;
+    uint8_t I2C0_C1_VALUE;
+    if(!memLoadByte(REG_I2C0_C1, I2C0_C1_VALUE))
+        return false;
+    if(!memStoreByte(REG_I2C0_C1, I2C0_C1_VALUE | REG_I2C_C1_TX))
+        return false;
+    if(!memStoreByte(REG_I2C0_C1, I2C0_C1_VALUE | REG_I2C_C1_TX | I2C_C1_MST))
+        return false;
+
+    return I2C0write(address << 1);
+}
+
+
+bool ARMKinetisDebug::I2C0endTransmission(bool stop) {
+    if(stop) {
+//        I2C0_C1 &= ~(I2C_C1_MST);
+//        I2C0_C1 &= ~(I2C_C1_TX);
+        uint8_t I2C0_C1_VALUE;
+        if(!memLoadByte(REG_I2C0_C1, I2C0_C1_VALUE))
+            return false;
+        if(!memStoreByte(REG_I2C0_C1, I2C0_C1_VALUE | ~(REG_I2C_C1_MST)))
+            return false;
+        if(!memStoreByte(REG_I2C0_C1, I2C0_C1_VALUE | ~(REG_I2C_C1_MST | REG_I2C_C1_TX)))
+            return false;
+
+//        while(I2C0_S & I2C_S_BUSY) {};
+        uint8_t I2C0_S_VALUE;
+        do{
+          if(!memLoadByte(REG_I2C0_S, I2C0_S_VALUE))
+              return false;
+        }
+        while (I2C0_S_VALUE & REG_I2C_S_BUSY);
+
+    }
+    else {
+//        I2C0_C1 |= I2C_C1_RSTA;
+        uint8_t I2C0_C1_VALUE;
+        if(!memLoadByte(REG_I2C0_C1, I2C0_C1_VALUE))
+            return false;
+        if(!memStoreByte(REG_I2C0_C1, I2C0_C1_VALUE | I2C_C1_RSTA))
+            return false;
+    }
+    
+    return true;
+}
+
+
+bool ARMKinetisDebug::I2C0write(uint8_t data) {
+//    I2C0_D = data;
+    if(!memStoreByte(I2C0_D, data))
+        return false;
+
+    return I2C0waitForDone();
+}
+
+
+bool ARMKinetisDebug::I2C0requestFrom(uint8_t address, int length) {
+    if(!I2C0write(address << 1 | 0x01))
+        return false;
+
+//    I2C0_C1 &= ~(I2C_C1_TX);    // Set for RX mode, and write the device address
+    uint8_t I2C0_C1_VALUE;
+    if(!memLoadByte(REG_I2C0_C1, I2C0_C1_VALUE))
+        return false;
+    if(!memStoreByte(REG_I2C0_C1, I2C0_C1_VALUE & ~(I2C_C1_TX)))
+        return false;
+
+    //TODO: this is a hack?
+    I2C0remaining = length + 1;
+
+    uint8_t throwaway;
+    return I2C0receive(throwaway);
+}
+
+
+bool ARMKinetisDebug::I2C0receive(uint8_t& data) {
+    if(I2C0remaining == 0) {
+        return 0;
+    }
+
+    if(I2C0remaining <= 2) {           // On the last byte, don't ACK
+//        I2C0_C1 |= I2C_C1_TXAK;
+        uint8_t I2C0_C1_VALUE;
+        if(!memLoadByte(REG_I2C0_C1, I2C0_C1_VALUE))
+            return false;
+        if(!memStoreByte(REG_I2C0_C1, I2C0_C1_VALUE |= I2C_C1_TXAK))
+            return false;
+    }
+
+    if(I2C0remaining == 1) {
+        I2C0endTransmission();
+//        I2C0_C1 &= ~(I2C_C1_TXAK);
+        uint8_t I2C0_C1_VALUE;
+        if(!memLoadByte(REG_I2C0_C1, I2C0_C1_VALUE))
+            return false;
+        if(!memStoreByte(REG_I2C0_C1, I2C0_C1_VALUE |= I2C_C1_TXAK))
+            return false;
+    }
+
+    uint8_t read = I2C0_D;
+
+    if(I2C0remaining >1) {
+        I2C0waitForDone();
+    }
+
+    I2C0remaining--;
+
+    return read;
+}
+
+
+bool ARMKinetisDebug::I2C0available() {
+    return I2C0remaining > 0;
+}
+
+
 
 bool ARMKinetisDebug::flashSectorProgram(uint32_t address)
 {

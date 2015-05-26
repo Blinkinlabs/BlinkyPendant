@@ -25,6 +25,7 @@
 #include "fc_remote.h"
 #include "testjig.h"
 #include "firmware_data.h"
+#include "mma8653_defines.h"
 
 // TODO: DELETE ME!
 #define fw_pFlags 0x00FFFFFF
@@ -86,10 +87,65 @@ bool FcRemote::testAccelerometer()
 {
     target.log(target.LOG_NORMAL, "Accelerometer test: beginning accelerometer test");
     
-    ////// Initialize the SPI hardware
-    if (!target.initializeI2C())
+    if(!target.I2C0begin())
         return false;
 
+    target.log(target.LOG_NORMAL, "Accelerometer test: resetting accelerometer");
+    // Reset the device, to put it into a known state.
+    if(!(
+        target.I2C0beginTransmission(MMA8653_ADDRESS) &&
+        target.I2C0write(CTRL_REG2) &&
+        target.I2C0write(CTRL_REG2_RST) &&
+        target.I2C0endTransmission()))
+        return false;
+
+    delay(1); // Allow the device to reset
+
+    target.log(target.LOG_NORMAL, "Accelerometer test: asking for device ID");
+    // Check that we're talking to the right kind of device
+    if(!(
+        target.I2C0beginTransmission(MMA8653_ADDRESS) &&
+        target.I2C0write(WHO_AM_I) &&
+        target.I2C0endTransmission(false)))
+        return false;
+
+    target.log(target.LOG_NORMAL, "Accelerometer test: receiving device ID");
+    target.I2C0requestFrom(MMA8653_ADDRESS, 1);
+    while(target.I2C0available()) {
+      uint8_t throwaway;
+      target.I2C0receive(throwaway);
+      // TODO: Test if this is equal to 0x5A?
+    }
+    
+    target.log(target.LOG_NORMAL, "Accelerometer test: enable data ready interrupt");
+    // Enable data ready interrupt on interrput pin 1
+    if(!(
+        target.I2C0beginTransmission(MMA8653_ADDRESS) &&
+        target.I2C0write(CTRL_REG4) &&
+        target.I2C0write(CTRL_REG4_INT_EN_DRDY) &&
+        target.I2C0endTransmission() &&
+
+        target.I2C0beginTransmission(MMA8653_ADDRESS) &&
+        target.I2C0write(CTRL_REG5) &&
+        target.I2C0write(CTRL_REG5_INT_CFG_DRDY) &&
+        target.I2C0endTransmission()))
+        return false;
+
+    target.log(target.LOG_NORMAL, "Accelerometer test: set fast-read mode");
+    // Put in fast-read mode, with 800Hz output rate, and activate
+    if(!(
+        target.I2C0beginTransmission(MMA8653_ADDRESS) &&
+        target.I2C0write(CTRL_REG1) &&
+        target.I2C0write(CTRL_REG1_ACTIVE | CTRL_REG1_F_READ | CTRL_REG1_DR(0)) &&
+        target.I2C0endTransmission()))
+        return false;
+    
+    // Read XYZ data
+    
+    // activate self test mode
+    
+    // Read XYZ data
+    
     return false;
 }
 

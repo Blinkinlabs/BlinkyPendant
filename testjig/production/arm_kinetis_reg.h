@@ -768,3 +768,40 @@ typedef struct {
         volatile uint32_t       RXFR[16]; // 7c
 } REG_SPI_t;
 #define REG_SPI0            (*(SPI_t *)0x4002C000)
+
+
+// Chapter 43: Inter-Integrated Circuit (I2C)
+#define REG_I2C0_A1                 *(volatile uint8_t  *)0x40066000 // I2C Address Register 1
+#define REG_I2C0_F                  *(volatile uint8_t  *)0x40066001 // I2C Frequency Divider register
+#define REG_I2C0_C1                 *(volatile uint8_t  *)0x40066002 // I2C Control Register 1
+#define REG_I2C_C1_IICEN                    (uint8_t)0x80                   // I2C Enable
+#define REG_I2C_C1_IICIE                    (uint8_t)0x40                   // I2C Interrupt Enable
+#define REG_I2C_C1_MST                      (uint8_t)0x20                   // Master Mode Select
+#define REG_I2C_C1_TX                       (uint8_t)0x10                   // Transmit Mode Select
+#define REG_I2C_C1_TXAK                     (uint8_t)0x08                   // Transmit Acknowledge Enable
+#define REG_I2C_C1_RSTA                     (uint8_t)0x04                   // Repeat START
+#define REG_I2C_C1_WUEN                     (uint8_t)0x02                   // Wakeup Enable
+#define REG_I2C_C1_DMAEN                    (uint8_t)0x01                   // DMA Enable
+#define REG_I2C0_S                  *(volatile uint8_t  *)0x40066003 // I2C Status register
+#define REG_I2C_S_TCF                       (uint8_t)0x80                   // Transfer Complete Flag
+#define REG_I2C_S_IAAS                      (uint8_t)0x40                   // Addressed As A Slave
+#define REG_I2C_S_BUSY                      (uint8_t)0x20                   // Bus Busy
+#define REG_I2C_S_ARBL                      (uint8_t)0x10                   // Arbitration Lost
+#define REG_I2C_S_RAM                       (uint8_t)0x08                   // Range Address Match
+#define REG_I2C_S_SRW                       (uint8_t)0x04                   // Slave Read/Write
+#define REG_I2C_S_IICIF                     (uint8_t)0x02                   // Interrupt Flag
+#define REG_I2C_S_RXAK                      (uint8_t)0x01                   // Receive Acknowledge
+#define REG_I2C0_D                  *(volatile uint8_t  *)0x40066004 // I2C Data I/O register
+#define REG_I2C0_C2                 *(volatile uint8_t  *)0x40066005 // I2C Control Register 2
+#define REG_I2C_C2_GCAEN                    (uint8_t)0x80                   // General Call Address Enable
+#define REG_I2C_C2_ADEXT                    (uint8_t)0x40                   // Address Extension
+#define REG_I2C_C2_HDRS                     (uint8_t)0x20                   // High Drive Select
+#define REG_I2C_C2_SBRC                     (uint8_t)0x10                   // Slave Baud Rate Control
+#define REG_I2C_C2_RMEN                     (uint8_t)0x08                   // Range Address Matching Enable
+#define REG_I2C_C2_AD(n)                    ((n) & 7)                       // Slave Address, upper 3 bits
+#define REG_I2C0_FLT                *(volatile uint8_t  *)0x40066006 // I2C Programmable Input Glitch Filter register
+#define REG_I2C0_RA                 *(volatile uint8_t  *)0x40066007 // I2C Range Address register
+#define REG_I2C0_SMB                *(volatile uint8_t  *)0x40066008 // I2C SMBus Control and Status register
+#define REG_I2C0_A2                 *(volatile uint8_t  *)0x40066009 // I2C Address Register 2
+#define REG_I2C0_SLTH               *(volatile uint8_t  *)0x4006600A // I2C SCL Low Timeout Register High
+#define REG_I2C0_SLTL               *(volatile uint8_t  *)0x4006600B // I2C SCL Low Timeout Register Low
