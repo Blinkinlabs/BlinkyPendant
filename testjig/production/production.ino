@@ -105,10 +105,8 @@ void loop()
     // Release the reset so that the target can be booted
     digitalWrite(resetPin, HIGH);
 
-
     if (!target.startup())
         return;
-
 
     // Run an electrical test, to verify that the target board is okay
     if (!etest.runAll())
@@ -124,8 +122,8 @@ void loop()
           return;
 
     // Program firmware, blinking both LEDs in unison for status.
-//    if (!remote.installFirmware())
-//        return;
+    if (!remote.installFirmware())
+        return;
 
     // Boot the target
     if (!remote.boot())

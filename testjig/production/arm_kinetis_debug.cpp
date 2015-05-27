@@ -33,9 +33,7 @@ ARMKinetisDebug::ARMKinetisDebug(unsigned clockPin, unsigned dataPin, LogLevel l
 
 bool ARMKinetisDebug::startup()
 {
-    log(LOG_NORMAL, "debug::startup");
-    
-    return detect() && reset() && debugHalt() && peripheralInit();
+    return reset() && debugHalt() && detect() && peripheralInit();
 }
 
 bool ARMKinetisDebug::detect()
@@ -61,6 +59,7 @@ bool ARMKinetisDebug::reset()
     uint32_t status;
     if (!apWrite(REG_MDM_CONTROL, REG_MDM_CONTROL_CORE_HOLD_RESET))
         return false;
+        
     if (!apReadPoll(REG_MDM_STATUS, status, REG_MDM_STATUS_SYS_NRESET, -1, resetRetries))
         return false;
 
@@ -86,7 +85,6 @@ bool ARMKinetisDebug::reset()
 
 bool ARMKinetisDebug::debugHalt()
 {
-
     /*
      * Enable debug, request a halt, and read back status.
      *
@@ -133,7 +131,7 @@ bool ARMKinetisDebug::debugHalt()
 
 bool ARMKinetisDebug::peripheralInit()
 {
-    /*
+  /*
      * ARM peripheral initialization, based on the peripheral startup code
      * used in Teensyduino. We set up the same peripherals that FC-Boot sets up.
      */

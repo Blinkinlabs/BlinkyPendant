@@ -28,13 +28,12 @@
 
 ARMDebug::ARMDebug(unsigned clockPin, unsigned dataPin, LogLevel logLevel)
     : clockPin(clockPin), dataPin(dataPin), logLevel(logLevel),
-//      fastPins(dataPin == ARMDEBUG_FAST_DATA_PIN && clockPin == ARMDEBUG_FAST_CLOCK_PIN)
-      fastPins(0)
+      fastPins(dataPin == ARMDEBUG_FAST_DATA_PIN && clockPin == ARMDEBUG_FAST_CLOCK_PIN)
 {}
 
 bool ARMDebug::begin()
 {
-    log(LOG_NORMAL, "debug::begin");
+//    log(LOG_NORMAL, "debug::begin");
   
     pinMode(clockPin, OUTPUT);
     pinMode(dataPin, INPUT_PULLUP);

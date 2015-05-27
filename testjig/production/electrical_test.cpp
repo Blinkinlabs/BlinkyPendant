@@ -174,6 +174,7 @@ void ElectricalTest::setPowerSupplyVoltage(float volts)
 
 void ElectricalTest::powerOff()
 {
+    // TODO: This should be board-specific?
     pinMode(3, INPUT);  // TCLK
     pinMode(4, INPUT);  // TMS
     pinMode(5, INPUT);  // USB_D+
