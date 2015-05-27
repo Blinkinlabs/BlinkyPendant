@@ -44,6 +44,7 @@ public:
         LOG_NONE = 0,
         LOG_ERROR,
         LOG_NORMAL,
+        LOG_I2C,
         LOG_TRACE_MEM,
         LOG_TRACE_AP,
         LOG_TRACE_DP,

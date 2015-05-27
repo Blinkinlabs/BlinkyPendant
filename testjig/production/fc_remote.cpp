@@ -83,7 +83,9 @@ bool FcRemote::setFlags(uint8_t cflag)
 
 
 bool FcRemote::testAccelerometer()
-{
+{ 
+    const unsigned interruptPin   = target.PTC3;
+  
     target.log(target.LOG_NORMAL, "Accelerometer test: beginning accelerometer test");
     
     if(!target.I2C0begin())
@@ -98,7 +100,16 @@ bool FcRemote::testAccelerometer()
         target.I2C0endTransmission()))
         return false;
 
-    delay(1); // Allow the device to reset
+    delay(10); // Allow the device to reset
+    
+    
+    // Now, check that the interrupt pin is clear
+    if(!target.pinMode(interruptPin, INPUT_PULLUP))
+        return false;
+        
+    if(target.digitalRead(interruptPin) == LOW)
+        return false;
+    
 
     target.log(target.LOG_NORMAL, "Accelerometer test: asking for device ID");
     // Check that we're talking to the right kind of device
@@ -139,13 +150,42 @@ bool FcRemote::testAccelerometer()
         target.I2C0endTransmission()))
         return false;
     
+    delay(10); // Data should be ready in <3
+    
+    // Check that an interrupt occurred
+    if(target.digitalRead(interruptPin) == HIGH)
+        return false;
+    
     // Read XYZ data
+    int8_t X, Y, Z;
+    if(!(
+        target.I2C0beginTransmission(MMA8653_ADDRESS) &&
+        target.I2C0write(STATUS) &&
+        target.I2C0endTransmission(false) &&
+        target.I2C0requestFrom(MMA8653_ADDRESS, 4) &&
+        target.I2C0available() &&
+        target.I2C0receive((uint8_t&)X) && // Ignore this one
+        target.I2C0available() &&
+        target.I2C0receive((uint8_t&)X) &&
+        target.I2C0available() &&
+        target.I2C0receive((uint8_t&)Y) &&
+        target.I2C0available() &&
+        target.I2C0receive((uint8_t&)Z)))
+        return false;
+        
+    target.log(target.LOG_NORMAL, "Accelerometer data (X=%i, Y=%i, Z=%i)",X,Y,Z);
     
-    // activate self test mode
+    // Check the range
+    const int bounds = 10;
+    const int Xtarget= 0;
+    const int Ytarget= 0;
+    const int Ztarget= 64;
+    if((X > Xtarget + bounds) || (X < Xtarget - bounds) ||
+        (Y > Ytarget + bounds) || (Y < Ytarget - bounds) ||
+        (Z > Ztarget + bounds) || (Z < Ztarget - bounds))
+        return false;
     
-    // Read XYZ data
-    
-    return false;
+    return true;
 }
 
 bool FcRemote::setLEDData(bool* data)

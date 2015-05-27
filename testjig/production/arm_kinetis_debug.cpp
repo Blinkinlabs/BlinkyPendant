@@ -353,18 +353,18 @@ bool ARMKinetisDebug::I2C0begin() {
 //    if(!memStoreByte(REG_I2C0_C1, 0))
 //        return false;
 
-    log(LOG_NORMAL, "i2c0begin: set transmission speed");
+    log(LOG_I2C, "i2c0begin: set transmission speed");
 //    I2C0_F = 0x1B;                  // Set transmission speed (100KHz?)
     if(!memStoreByte(REG_I2C0_F, 0x1B))
         return false;
         
-    log(LOG_NORMAL, "i2c0begin: enable i2c");
+    log(LOG_I2C, "i2c0begin: enable i2c");
     
 //    I2C0_C1 = I2C_C1_IICEN;         // Enable I2C
     if(!memStoreByte(REG_I2C0_C1, REG_I2C_C1_IICEN))
         return false;
 
-    log(LOG_NORMAL, "i2c0begin: set muxes");  
+    log(LOG_I2C, "i2c0begin: set muxes");  
 
 //    // TODO: Set pin muxes!
 //    PORTB_PCR0 = PORT_PCR_MUX(2);
@@ -379,12 +379,12 @@ bool ARMKinetisDebug::I2C0begin() {
 
 
 bool ARMKinetisDebug::I2C0waitForDone() {
-    log(LOG_NORMAL, "I2C0waitForDone");
+    log(LOG_I2C, "I2C0waitForDone");
 //  while((I2C0_S & I2C_S_IICIF) == 0) {}
 //    I2C0_S |= I2C_S_IICIF;
     uint8_t I2C0_S_VALUE;
     int counts = 0;
-    int timeout = 500;
+    const int timeout = 500;
     do{
       if(!memLoadByte(REG_I2C0_S, I2C0_S_VALUE))
           return false;
@@ -400,7 +400,7 @@ bool ARMKinetisDebug::I2C0waitForDone() {
 
 
 bool ARMKinetisDebug::I2C0beginTransmission(uint8_t address) {
-    log(LOG_NORMAL, "I2C0beginTransmission (ADDRESS=%x)", address);
+    log(LOG_I2C, "I2C0beginTransmission (ADDRESS=%x)", address);
 //    I2C0_C1 |= I2C_C1_TX;
 //    I2C0_C1 |= I2C_C1_MST;
     uint8_t I2C0_C1_VALUE;
@@ -416,7 +416,7 @@ bool ARMKinetisDebug::I2C0beginTransmission(uint8_t address) {
 
 
 bool ARMKinetisDebug::I2C0endTransmission(bool stop) {
-    log(LOG_NORMAL, "I2C0endTransmission (STOP=%i)", stop);
+    log(LOG_I2C, "I2C0endTransmission (STOP=%i)", stop);
   
     if(stop) {
 //        I2C0_C1 &= ~(I2C_C1_MST);
@@ -424,15 +424,15 @@ bool ARMKinetisDebug::I2C0endTransmission(bool stop) {
         uint8_t I2C0_C1_VALUE;
         if(!memLoadByte(REG_I2C0_C1, I2C0_C1_VALUE))
             return false;
-        if(!memStoreByte(REG_I2C0_C1, I2C0_C1_VALUE | ~(REG_I2C_C1_MST)))
+        if(!memStoreByte(REG_I2C0_C1, I2C0_C1_VALUE & ~(REG_I2C_C1_MST)))
             return false;
-        if(!memStoreByte(REG_I2C0_C1, I2C0_C1_VALUE | ~(REG_I2C_C1_MST | REG_I2C_C1_TX)))
+        if(!memStoreByte(REG_I2C0_C1, I2C0_C1_VALUE & ~(REG_I2C_C1_MST | REG_I2C_C1_TX)))
             return false;
 
 //        while(I2C0_S & I2C_S_BUSY) {};
         uint8_t I2C0_S_VALUE;
         int counts = 0;
-        int timeout = 500;  // max time to wait before failing
+        const int timeout = 500;  // max time to wait before failing
         do{
           if(!memLoadByte(REG_I2C0_S, I2C0_S_VALUE))
               return false;
@@ -458,7 +458,7 @@ bool ARMKinetisDebug::I2C0endTransmission(bool stop) {
 
 
 bool ARMKinetisDebug::I2C0write(uint8_t data) {
-  log(LOG_NORMAL, "I2C0write (DATA=%x)", data);
+    log(LOG_I2C, "I2C0write (DATA=%x)", data);
 //    I2C0_D = data;
     if(!memStoreByte(REG_I2C0_D, data))
         return false;
@@ -468,6 +468,7 @@ bool ARMKinetisDebug::I2C0write(uint8_t data) {
 
 
 bool ARMKinetisDebug::I2C0requestFrom(uint8_t address, int length) {
+    log(LOG_I2C, "I2C0requestFrom (ADDRESS=%x, LENGTH=%i)", address, length);
     if(!I2C0write(address << 1 | 0x01))
         return false;
 
@@ -487,8 +488,9 @@ bool ARMKinetisDebug::I2C0requestFrom(uint8_t address, int length) {
 
 
 bool ARMKinetisDebug::I2C0receive(uint8_t& data) {
-    if(I2C0remaining == 0) {
-        return 0;
+    log(LOG_I2C, "I2C0receive (REMAINING=%i)", I2C0remaining);
+  if(I2C0remaining == 0) {
+        return false;
     }
 
     if(I2C0remaining <= 2) {           // On the last byte, don't ACK
@@ -496,7 +498,7 @@ bool ARMKinetisDebug::I2C0receive(uint8_t& data) {
         uint8_t I2C0_C1_VALUE;
         if(!memLoadByte(REG_I2C0_C1, I2C0_C1_VALUE))
             return false;
-        if(!memStoreByte(REG_I2C0_C1, I2C0_C1_VALUE |= I2C_C1_TXAK))
+        if(!memStoreByte(REG_I2C0_C1, I2C0_C1_VALUE | I2C_C1_TXAK))
             return false;
     }
 
@@ -506,24 +508,28 @@ bool ARMKinetisDebug::I2C0receive(uint8_t& data) {
         uint8_t I2C0_C1_VALUE;
         if(!memLoadByte(REG_I2C0_C1, I2C0_C1_VALUE))
             return false;
-        if(!memStoreByte(REG_I2C0_C1, I2C0_C1_VALUE |= I2C_C1_TXAK))
+        if(!memStoreByte(REG_I2C0_C1, I2C0_C1_VALUE & ~(REG_I2C_C1_TXAK)))
             return false;
     }
 
-    uint8_t read = I2C0_D;
+    if(!memLoadByte(REG_I2C0_D, data))
+        return false;
+    log(LOG_I2C, "I2C0receive (READ=%i)", data);
 
     if(I2C0remaining >1) {
-        I2C0waitForDone();
+        if(!(I2C0waitForDone()))
+            return false;
     }
 
     I2C0remaining--;
 
-    return read;
+    return true;
 }
 
 
 bool ARMKinetisDebug::I2C0available() {
-    return I2C0remaining > 0;
+    log(LOG_I2C, "I2C0available");
+  return I2C0remaining > 0;
 }
 
 

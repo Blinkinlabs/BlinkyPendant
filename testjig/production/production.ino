@@ -129,9 +129,9 @@ void loop()
 //    if (!remote.installFirmware())
 //        return;
 
-    // Boot the target
-    if (!remote.boot())
-        return;
+//    // Boot the target
+//    if (!remote.boot())
+//        return;
 
     testState = TEST_PASS;
     success();
