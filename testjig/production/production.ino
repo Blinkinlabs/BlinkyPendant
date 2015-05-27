@@ -88,18 +88,18 @@ void loop()
     testState = TEST_FAIL;
     digitalWrite(ledPassPin, HIGH);
     digitalWrite(ledFailPin, HIGH);
+    
+    // Force a reset during startup to be sure the test interface is available
+    pinMode(resetPin, OUTPUT);
+    digitalWrite(resetPin, LOW);
 
     // Turn on the target power supply
     if (!etest.powerOn())
         return;
     
-    // Force a reset during startup to be sure the test interface is available
-    pinMode(resetPin, OUTPUT);
-    digitalWrite(resetPin, LOW);
-    
-//    // Test the user button
-//    if (!etest.testUserButton())
-//        return;
+    // Test the user button
+    if (!etest.testUserButton())
+        return;
 
     
     // Start debugging the target
@@ -125,13 +125,13 @@ void loop()
     if (!remote.testLEDOutputs())
           return;
 
-//    // Program firmware, blinking both LEDs in unison for status.
-//    if (!remote.installFirmware())
-//        return;
+    // Program firmware, blinking both LEDs in unison for status.
+    if (!remote.installFirmware())
+        return;
 
-//    // Boot the target
-//    if (!remote.boot())
-//        return;
+    // Boot the target
+    if (!remote.boot())
+        return;
 
     testState = TEST_PASS;
     success();

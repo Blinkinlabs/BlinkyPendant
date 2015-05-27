@@ -216,7 +216,9 @@ bool FcRemote::showColor(int color)
     bool ledStates[15];
     
     for(int i = 0; i < 15; i++) {
-        if(color == i%3) {
+        if(((color & 0x1) && (i%3 == 0)) ||
+            ((color & 0x2) && (i%3 == 1)) ||
+            ((color & 0x4) && (i%3 == 2))) {
           ledStates[i] = true;
         }
         else {
@@ -266,13 +268,16 @@ bool FcRemote::testLEDOutputs()
     
     target.log(target.LOG_NORMAL, "LED driver test: colors");
 
-    showColor(0);
-    delay(500);
-
     showColor(1);
     delay(500);
-    
+
     showColor(2);
+    delay(500);
+    
+    showColor(4);
+    delay(500);
+
+    showColor(7);
     delay(500);
     // Measure the outputs
     

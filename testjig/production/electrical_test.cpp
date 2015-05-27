@@ -360,9 +360,11 @@ bool ElectricalTest::testUserButton() {
           return false;
       if(counts%400 == 0) {
           digitalWrite(ledPassPin, HIGH);
+          digitalWrite(ledFailPin, HIGH);
       }
       if(counts%400 == 200) {
           digitalWrite(ledPassPin, LOW);
+          digitalWrite(ledFailPin, LOW);
       }
     }
     
@@ -377,6 +379,7 @@ bool ElectricalTest::testUserButton() {
     }
     
     digitalWrite(ledPassPin, HIGH);
+    digitalWrite(ledFailPin, HIGH);
     return true;
 }
 
