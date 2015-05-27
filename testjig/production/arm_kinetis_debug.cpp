@@ -361,7 +361,7 @@ bool ARMKinetisDebug::I2C0begin() {
     log(LOG_NORMAL, "i2c0begin: enable i2c");
     
 //    I2C0_C1 = I2C_C1_IICEN;         // Enable I2C
-    if(!memStoreByte(REG_I2C0_C1, I2C_C1_IICEN))
+    if(!memStoreByte(REG_I2C0_C1, REG_I2C_C1_IICEN))
         return false;
 
     log(LOG_NORMAL, "i2c0begin: set muxes");  
@@ -383,8 +383,14 @@ bool ARMKinetisDebug::I2C0waitForDone() {
 //  while((I2C0_S & I2C_S_IICIF) == 0) {}
 //    I2C0_S |= I2C_S_IICIF;
     uint8_t I2C0_S_VALUE;
+    int counts = 0;
+    int timeout = 500;
     do{
       if(!memLoadByte(REG_I2C0_S, I2C0_S_VALUE))
+          return false;
+      delay(10);
+      counts+=10;
+      if(counts > timeout)
           return false;
     }
     while ((I2C0_S_VALUE & REG_I2C_S_IICIF) == 0);
@@ -394,7 +400,7 @@ bool ARMKinetisDebug::I2C0waitForDone() {
 
 
 bool ARMKinetisDebug::I2C0beginTransmission(uint8_t address) {
-    log(LOG_NORMAL, "I2C0beginTransmission");
+    log(LOG_NORMAL, "I2C0beginTransmission (ADDRESS=%x)", address);
 //    I2C0_C1 |= I2C_C1_TX;
 //    I2C0_C1 |= I2C_C1_MST;
     uint8_t I2C0_C1_VALUE;
@@ -410,7 +416,7 @@ bool ARMKinetisDebug::I2C0beginTransmission(uint8_t address) {
 
 
 bool ARMKinetisDebug::I2C0endTransmission(bool stop) {
-    log(LOG_NORMAL, "I2C0endTransmission");
+    log(LOG_NORMAL, "I2C0endTransmission (STOP=%i)", stop);
   
     if(stop) {
 //        I2C0_C1 &= ~(I2C_C1_MST);
@@ -425,8 +431,14 @@ bool ARMKinetisDebug::I2C0endTransmission(bool stop) {
 
 //        while(I2C0_S & I2C_S_BUSY) {};
         uint8_t I2C0_S_VALUE;
+        int counts = 0;
+        int timeout = 500;  // max time to wait before failing
         do{
           if(!memLoadByte(REG_I2C0_S, I2C0_S_VALUE))
+              return false;
+          delay(10);
+          counts+=10;
+          if(counts > timeout)
               return false;
         }
         while (I2C0_S_VALUE & REG_I2C_S_BUSY);
@@ -446,7 +458,7 @@ bool ARMKinetisDebug::I2C0endTransmission(bool stop) {
 
 
 bool ARMKinetisDebug::I2C0write(uint8_t data) {
-  log(LOG_NORMAL, "I2C0write");
+  log(LOG_NORMAL, "I2C0write (DATA=%x)", data);
 //    I2C0_D = data;
     if(!memStoreByte(REG_I2C0_D, data))
         return false;
