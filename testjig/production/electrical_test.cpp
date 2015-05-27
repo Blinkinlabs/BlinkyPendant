@@ -339,6 +339,47 @@ bool ElectricalTest::testRowSelects()
     return true;
 }
 
+bool ElectricalTest::testUserButton() {
+    // Note: this needs to be tested here instead of as a function test, because the user button is muxed with TMS...
+    pinMode(swdioPin, INPUT_PULLUP);
+    
+    // Wait for the input to go high
+    target.log(logLevel, "ETEST: Checking if user button is already low");
+    if(digitalRead(swdioPin) == LOW)
+        return false;
+    
+    // Wait for it to go low
+    target.log(logLevel, "ETEST: Press user button to continue...");
+    int counts = 0;
+    int timeout = 10000;  // max time to wait before failing
+    
+    while(digitalRead(swdioPin) == HIGH) {
+      delay(10);
+      counts+=10;
+      if(counts > timeout)
+          return false;
+      if(counts%400 == 0) {
+          digitalWrite(ledPassPin, HIGH);
+      }
+      if(counts%400 == 200) {
+          digitalWrite(ledPassPin, LOW);
+      }
+    }
+    
+    // Then wait for it to go high again...
+    target.log(logLevel, "ETEST: Release user button to continue...");
+    counts = 0;
+    while(digitalRead(swdioPin) == LOW) {
+      delay(10);
+      counts+=10;
+      if(counts > timeout)
+          return false;
+    }
+    
+    digitalWrite(ledPassPin, HIGH);
+    return true;
+}
+
 //bool ElectricalTest::testPinsForShort(int count, unsigned* pins) {
 //    // First set all the pins to input, pullup.
 //    for(int pin = 0; pin < count; pin++) {

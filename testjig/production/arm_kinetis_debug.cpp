@@ -346,33 +346,40 @@ bool ARMKinetisDebug::I2C0begin() {
 //        return false;
 //    if(!memStore(REG_SIM_SCGC4, SCGC4_VAL | REG_SIM_SCGC4_I2C0))
 //        return false;
+        
+//    log(LOG_NORMAL, "i2c0begin: disable i2c");
+//    
+////    I2C0_C1 = I2C_C1_IICEN;         // Enable I2C
+//    if(!memStoreByte(REG_I2C0_C1, 0))
+//        return false;
 
     log(LOG_NORMAL, "i2c0begin: set transmission speed");
 //    I2C0_F = 0x1B;                  // Set transmission speed (100KHz?)
     if(!memStoreByte(REG_I2C0_F, 0x1B))
         return false;
         
-//    log(LOG_NORMAL, "i2c0begin: enable i2c");
-//    
-////    I2C0_C1 = I2C_C1_IICEN;         // Enable I2C
-//    if(!memStoreByte(REG_I2C0_C1, I2C_C1_IICEN))
-//        return false;
-//
-//    log(LOG_NORMAL, "i2c0begin: set muxes");  
-//
-////    // TODO: Set pin muxes!
-////    PORTB_PCR0 = PORT_PCR_MUX(2);
-////    PORTB_PCR1 = PORT_PCR_MUX(2);
-//    if(!memStore(REG_PORTB_PCR0, REG_PORT_PCR_MUX(2)))
-//        return false;
-//    if(!memStore(REG_PORTB_PCR1, REG_PORT_PCR_MUX(2)))
-//        return false;
+    log(LOG_NORMAL, "i2c0begin: enable i2c");
+    
+//    I2C0_C1 = I2C_C1_IICEN;         // Enable I2C
+    if(!memStoreByte(REG_I2C0_C1, I2C_C1_IICEN))
+        return false;
 
-    return false;
+    log(LOG_NORMAL, "i2c0begin: set muxes");  
+
+//    // TODO: Set pin muxes!
+//    PORTB_PCR0 = PORT_PCR_MUX(2);
+//    PORTB_PCR1 = PORT_PCR_MUX(2);
+    if(!memStore(REG_PORTB_PCR0, REG_PORT_PCR_MUX(2)))
+        return false;
+    if(!memStore(REG_PORTB_PCR1, REG_PORT_PCR_MUX(2)))
+        return false;
+
+    return true;
 }
 
 
 bool ARMKinetisDebug::I2C0waitForDone() {
+    log(LOG_NORMAL, "I2C0waitForDone");
 //  while((I2C0_S & I2C_S_IICIF) == 0) {}
 //    I2C0_S |= I2C_S_IICIF;
     uint8_t I2C0_S_VALUE;
@@ -387,6 +394,7 @@ bool ARMKinetisDebug::I2C0waitForDone() {
 
 
 bool ARMKinetisDebug::I2C0beginTransmission(uint8_t address) {
+    log(LOG_NORMAL, "I2C0beginTransmission");
 //    I2C0_C1 |= I2C_C1_TX;
 //    I2C0_C1 |= I2C_C1_MST;
     uint8_t I2C0_C1_VALUE;
@@ -402,6 +410,8 @@ bool ARMKinetisDebug::I2C0beginTransmission(uint8_t address) {
 
 
 bool ARMKinetisDebug::I2C0endTransmission(bool stop) {
+    log(LOG_NORMAL, "I2C0endTransmission");
+  
     if(stop) {
 //        I2C0_C1 &= ~(I2C_C1_MST);
 //        I2C0_C1 &= ~(I2C_C1_TX);
@@ -436,8 +446,9 @@ bool ARMKinetisDebug::I2C0endTransmission(bool stop) {
 
 
 bool ARMKinetisDebug::I2C0write(uint8_t data) {
+  log(LOG_NORMAL, "I2C0write");
 //    I2C0_D = data;
-    if(!memStoreByte(I2C0_D, data))
+    if(!memStoreByte(REG_I2C0_D, data))
         return false;
 
     return I2C0waitForDone();

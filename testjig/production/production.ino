@@ -96,6 +96,10 @@ void loop()
     // Force a reset during startup to be sure the test interface is available
     pinMode(resetPin, OUTPUT);
     digitalWrite(resetPin, LOW);
+    
+//    // Test the user button
+//    if (!etest.testUserButton())
+//        return;
 
     
     // Start debugging the target
@@ -112,26 +116,22 @@ void loop()
     if (!etest.runAll())
         return;
 
-//    // Test that the accelerometer is present and can generate interrupts
-//    if (!remote.testAccelerometer())
-//          return;
+    // Test that the accelerometer is present and can generate interrupts
+    if (!remote.testAccelerometer())
+          return;
 
 
     // Test that the LED outputs work
     if (!remote.testLEDOutputs())
           return;
 
-    // Program firmware, blinking both LEDs in unison for status.
-    if (!remote.installFirmware())
-        return;
+//    // Program firmware, blinking both LEDs in unison for status.
+//    if (!remote.installFirmware())
+//        return;
 
     // Boot the target
     if (!remote.boot())
         return;
-        
-//    // Test that the user buttons work
-//    if (!remote.testUserButtons())
-//        return;
 
     testState = TEST_PASS;
     success();

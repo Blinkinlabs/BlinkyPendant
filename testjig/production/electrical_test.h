@@ -34,6 +34,8 @@ public:
     bool powerOn();     // Set target power supply to default voltage
 
     bool runAll();      // All normal electrical tests
+    
+    bool testUserButton();  // Special snowflake
 
 private:
     ARMKinetisDebug &target;
@@ -59,6 +61,7 @@ private:
     bool testBatteryPresent();
     bool testRowSelects();
     bool testRowSelectsStates(bool S0_state, bool S1_state);
+   
 
     bool testOutputPattern(uint8_t bits);
     bool testAllOutputPatterns();

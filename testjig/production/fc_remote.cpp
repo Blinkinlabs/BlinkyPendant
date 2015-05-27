@@ -34,7 +34,6 @@
 #define fw_pLUT 0x00FFFFFF
 #define fw_usbPacketBufOffset 0x00FFFFFF
 
-
 bool FcRemote::installFirmware()
 {
     // Install firmware, blinking both target and local LEDs in unison.
@@ -149,15 +148,65 @@ bool FcRemote::testAccelerometer()
     return false;
 }
 
+bool FcRemote::setLEDData(bool* data)
+{
+    const unsigned dataPin   = target.PTC6;
+    const unsigned clockPin  = target.PTC5;
+    const unsigned strobePin = target.PTD6;
+
+    // Bitbang some SPI out, hit strobe
+    for(int i = 0; i < 15; i++) {
+        if(!(
+            target.digitalWrite(dataPin, data[i]?HIGH:LOW) &&
+            target.digitalWrite(clockPin, HIGH) &&
+            target.digitalWrite(clockPin, LOW)))
+            return false;
+    }
+    
+    if(!(
+        target.digitalWrite(strobePin, HIGH) &&
+        target.digitalWrite(strobePin, LOW)))
+        return false;
+}
+
+bool FcRemote::showColor(int color)
+{
+    const unsigned oePin     = target.PTA4;
+  
+    bool ledStates[15];
+    
+    for(int i = 0; i < 15; i++) {
+        if(color == i%3) {
+          ledStates[i] = true;
+        }
+        else {
+          ledStates[i] = false;
+        }
+    }
+    
+    if(!(setLEDData(ledStates)))
+        return false;
+        
+    
+    // Enable OE
+    target.log(target.LOG_NORMAL, "LED driver test: setting /OE");
+    if(!(
+        target.digitalWrite(oePin, LOW)))
+        return false;
+}
+
 bool FcRemote::testLEDOutputs()
 {
-    target.log(target.LOG_NORMAL, "LED driver test: configuring pins");
     const unsigned dataPin   = target.PTC6;
     const unsigned clockPin  = target.PTC5;
     const unsigned strobePin = target.PTD6;
     const unsigned oePin     = target.PTA4;
     const unsigned S0Pin     = target.PTD4;
     const unsigned S1Pin     = target.PTD5;
+
+  
+    target.log(target.LOG_NORMAL, "LED driver test: configuring pins");
+
   
     // Set pinmodes for Data, Clock, Strobe, OE
     if(!(
@@ -170,36 +219,21 @@ bool FcRemote::testLEDOutputs()
         target.digitalWrite(strobePin, HIGH) &&
         target.digitalWrite(oePin,     HIGH) &&
         target.digitalWrite(clockPin,  LOW) &&
-        target.digitalWrite(S0Pin,     HIGH) &&
+        target.digitalWrite(S0Pin,     LOW) &&
         target.digitalWrite(S1Pin,     LOW)))
         return false;
-    
-    target.log(target.LOG_NORMAL, "LED driver test: setting all outputs on");
-    // Bitbang some SPI out, hit strobe
-    for(int i = 0; i < 15; i++) {
-        if(!(
-            target.digitalWrite(dataPin, LOW) &&
-            target.digitalWrite(clockPin, HIGH) &&
-            target.digitalWrite(clockPin, LOW)))
-            return false;
-    }
 
-    target.log(target.LOG_NORMAL, "LED driver test: strobing");
-    if(!(
-        target.digitalWrite(strobePin, HIGH) &&
-        target.digitalWrite(strobePin, LOW)))
-        return false;
-      
-    // Measure the outputs
     
-    // Enable OE
-    target.log(target.LOG_NORMAL, "LED driver test: setting /OE");
-    if(!(
-        target.digitalWrite(oePin, LOW)))
-        return false;
-    
-    delay(1000);
+    target.log(target.LOG_NORMAL, "LED driver test: colors");
 
+    showColor(0);
+    delay(500);
+
+    showColor(1);
+    delay(500);
+    
+    showColor(2);
+    delay(500);
     // Measure the outputs
     
     // Disable OE

@@ -41,6 +41,8 @@ public:
     // test if the accelerometer is present 
     bool testAccelerometer();
     
+    bool setLEDData(bool* data);
+    bool showColor(int color);
     bool testLEDOutputs();
 
     // Test that the flash chip works
