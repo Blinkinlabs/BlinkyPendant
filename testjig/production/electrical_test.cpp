@@ -174,6 +174,14 @@ void ElectricalTest::setPowerSupplyVoltage(float volts)
 
 void ElectricalTest::powerOff()
 {
+    pinMode(3, INPUT);  // TCLK
+    pinMode(4, INPUT);  // TMS
+    pinMode(5, INPUT);  // USB_D+
+    pinMode(6, INPUT);  // USB_D-
+    pinMode(7, INPUT);  // USB_SHIELD
+    pinMode(8, INPUT);  // USB_GND
+    pinMode(9, INPUT);  // RESET  
+
     setPowerSupplyVoltage(0);
 }
 

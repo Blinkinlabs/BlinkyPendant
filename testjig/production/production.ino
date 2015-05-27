@@ -24,9 +24,6 @@ void setup()
     pinMode(buttonPin, INPUT_PULLUP);
     analogReference(INTERNAL);
     Serial.begin(115200);
-
-    pinMode(resetPin, OUTPUT);
-    digitalWrite(resetPin, HIGH);
 }
 
 void waitForButton()
@@ -97,6 +94,7 @@ void loop()
         return;
     
     // Force a reset during startup to be sure the test interface is available
+    pinMode(resetPin, OUTPUT);
     digitalWrite(resetPin, LOW);
 
     
@@ -120,9 +118,14 @@ void loop()
 //    if (!remote.testAccelerometer())
 //          return;
 
+
+    // Test that the LED outputs work
+    if (!remote.testLEDOutputs())
+          return;
+
     // Program firmware, blinking both LEDs in unison for status.
-    if (!remote.installFirmware())
-        return;
+//    if (!remote.installFirmware())
+//        return;
 
     // Boot the target
     if (!remote.boot())

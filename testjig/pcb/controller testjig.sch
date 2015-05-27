@@ -8346,6 +8346,13 @@ Use a rail-to-rail opamp, &gt;30mA output.</text>
 <junction x="101.6" y="30.48"/>
 </segment>
 </net>
+<net name="POWER_RESET" class="0">
+<segment>
+<pinref part="U$1" gate="G$1" pin="9"/>
+<wire x1="-48.26" y1="20.32" x2="-78.74" y2="20.32" width="0.1524" layer="91"/>
+<label x="-78.74" y="20.32" size="1.778" layer="95"/>
+</segment>
+</net>
 </nets>
 </sheet>
 </sheets>

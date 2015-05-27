@@ -149,6 +149,68 @@ bool FcRemote::testAccelerometer()
     return false;
 }
 
+bool FcRemote::testLEDOutputs()
+{
+    target.log(target.LOG_NORMAL, "LED driver test: configuring pins");
+    const unsigned dataPin   = target.PTC6;
+    const unsigned clockPin  = target.PTC5;
+    const unsigned strobePin = target.PTD6;
+    const unsigned oePin     = target.PTA4;
+    const unsigned S0Pin     = target.PTD4;
+    const unsigned S1Pin     = target.PTD5;
+  
+    // Set pinmodes for Data, Clock, Strobe, OE
+    if(!(
+        target.pinMode(dataPin,   OUTPUT) &&
+        target.pinMode(clockPin,  OUTPUT) &&
+        target.pinMode(strobePin, OUTPUT) &&
+        target.pinMode(oePin,     OUTPUT) &&
+        target.pinMode(S0Pin,     OUTPUT) &&
+        target.pinMode(S1Pin,     OUTPUT) &&
+        target.digitalWrite(strobePin, HIGH) &&
+        target.digitalWrite(oePin,     HIGH) &&
+        target.digitalWrite(clockPin,  LOW) &&
+        target.digitalWrite(S0Pin,     HIGH) &&
+        target.digitalWrite(S1Pin,     LOW)))
+        return false;
+    
+    target.log(target.LOG_NORMAL, "LED driver test: setting all outputs on");
+    // Bitbang some SPI out, hit strobe
+    for(int i = 0; i < 15; i++) {
+        if(!(
+            target.digitalWrite(dataPin, LOW) &&
+            target.digitalWrite(clockPin, HIGH) &&
+            target.digitalWrite(clockPin, LOW)))
+            return false;
+    }
+
+    target.log(target.LOG_NORMAL, "LED driver test: strobing");
+    if(!(
+        target.digitalWrite(strobePin, HIGH) &&
+        target.digitalWrite(strobePin, LOW)))
+        return false;
+      
+    // Measure the outputs
+    
+    // Enable OE
+    target.log(target.LOG_NORMAL, "LED driver test: setting /OE");
+    if(!(
+        target.digitalWrite(oePin, LOW)))
+        return false;
+    
+    delay(1000);
+
+    // Measure the outputs
+    
+    // Disable OE
+    
+    // (and repeat)
+    
+    // Disable OE
+    target.log(target.LOG_NORMAL, "LED driver test: done");
+    return true;
+}
+
 //bool FcRemote::testUserButtons()
 //{
 //    // Button pins to test

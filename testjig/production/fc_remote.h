@@ -40,6 +40,8 @@ public:
 
     // test if the accelerometer is present 
     bool testAccelerometer();
+    
+    bool testLEDOutputs();
 
     // Test that the flash chip works
 //    bool testExternalFlash();

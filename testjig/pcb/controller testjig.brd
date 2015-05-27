@@ -1477,6 +1477,9 @@ Modified from Laen's PCB Order Design Rules</description>
 <wire x1="16.35" y1="60.5" x2="16.5" y2="60.65" width="0.254" layer="1"/>
 <wire x1="16.5" y1="58.85" x2="16.5" y2="60.65" width="0.254" layer="1"/>
 </signal>
+<signal name="POWER_RESET">
+<contactref element="U$1" pad="9"/>
+</signal>
 </signals>
 <errors>
 <approved hash="1,20,5fb2915296a05840"/>
