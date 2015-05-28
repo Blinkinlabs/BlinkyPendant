@@ -7,7 +7,7 @@
 
 #define BRIGHTNESS_STEPS 256
 
-uint16_t brightnessTable[BRIGHTNESS_STEPS] = {
+const uint16_t brightnessTable[BRIGHTNESS_STEPS] = {
          0, // 0
          0, // 1
          0, // 2

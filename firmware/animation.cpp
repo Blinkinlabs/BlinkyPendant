@@ -28,18 +28,18 @@ void Animation::init(uint16_t frameCount_,
     case ENCODING_RGB565_RLE:
       // Nothing to preload.
       break;
-    case ENCODING_INDEXED:
-    case ENCODING_INDEXED_RLE:
-      // Load the color table into memory
-      // TODO: Free this memory somewhere?
-      colorTableEntries = *(frameData);
-
-      for(int i = 0; i < colorTableEntries; i++) {
-        colorTable[i].R = *(frameData + 1 + i*3 + 0);
-        colorTable[i].G = *(frameData + 1 + i*3 + 1);
-        colorTable[i].B = *(frameData + 1 + i*3 + 2);
-      }
-      break;
+//    case ENCODING_INDEXED:
+//    case ENCODING_INDEXED_RLE:
+//      // Load the color table into memory
+//      // TODO: Free this memory somewhere?
+//      colorTableEntries = *(frameData);
+//
+//      for(int i = 0; i < colorTableEntries; i++) {
+//        colorTable[i].R = *(frameData + 1 + i*3 + 0);
+//        colorTable[i].G = *(frameData + 1 + i*3 + 1);
+//        colorTable[i].B = *(frameData + 1 + i*3 + 2);
+//      }
+//      break;
   }
 
   reset();
@@ -57,12 +57,12 @@ void Animation::draw(Pixel* pixels) {
     case ENCODING_RGB565_RLE:
       drawRgb16_RLE(pixels);
       break;
-    case ENCODING_INDEXED:
-      drawIndexed(pixels);
-      break;
-    case ENCODING_INDEXED_RLE:
-      drawIndexed_RLE(pixels);
-      break;
+//    case ENCODING_INDEXED:
+//      drawIndexed(pixels);
+//      break;
+//    case ENCODING_INDEXED_RLE:
+//      drawIndexed_RLE(pixels);
+//      break;
   }
 
   frameIndex = (frameIndex + 1)%frameCount;
@@ -109,33 +109,33 @@ void Animation::drawRgb16_RLE(Pixel* pixels) {
   }
 };
 
-void Animation::drawIndexed(Pixel* pixels) {
-  currentFrameData = frameData
-    + 1 + 3*colorTableEntries   // Offset for color table
-    + frameIndex*ledCount;      // Offset for current frame
-  
-  for(uint8_t i = 0; i < ledCount; i++) {
-    pixels[i] = colorTable[*(currentFrameData + i)];
-  }
-}
+//void Animation::drawIndexed(Pixel* pixels) {
+//  currentFrameData = frameData
+//    + 1 + 3*colorTableEntries   // Offset for color table
+//    + frameIndex*ledCount;      // Offset for current frame
+//  
+//  for(uint8_t i = 0; i < ledCount; i++) {
+//    pixels[i] = colorTable[*(currentFrameData + i)];
+//  }
+//}
 
-void Animation::drawIndexed_RLE(Pixel* pixels) {
-  if(frameIndex == 0) {
-    currentFrameData = frameData
-      + 1 + 3*colorTableEntries;   // Offset for color table
-  }
-
-  // Read runs of RLE data until we get enough data.
-  int count = 0;
-  while(count < ledCount) {
-    uint8_t run_length = *(currentFrameData++);
-    uint8_t colorIndex = *(currentFrameData++);
-    
-    for(uint8_t i = 0; i < run_length; i++) {
-      pixels[count++] = colorTable[colorIndex];
-    }
-  }
-};
+//void Animation::drawIndexed_RLE(Pixel* pixels) {
+//  if(frameIndex == 0) {
+//    currentFrameData = frameData
+//      + 1 + 3*colorTableEntries;   // Offset for color table
+//  }
+//
+//  // Read runs of RLE data until we get enough data.
+//  int count = 0;
+//  while(count < ledCount) {
+//    uint8_t run_length = *(currentFrameData++);
+//    uint8_t colorIndex = *(currentFrameData++);
+//    
+//    for(uint8_t i = 0; i < run_length; i++) {
+//      pixels[count++] = colorTable[colorIndex];
+//    }
+//  }
+//};
 
 uint8_t* Animation::getFrame(int frame) {
   switch(encoding) {
