@@ -13,6 +13,7 @@ MEMORY
     BOOT_FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 4K
     APP_FLASH (rx) : ORIGIN = 0x00001000, LENGTH = 60K
     RAM (rwx) : ORIGIN = 0x1FFFE000, LENGTH = 16K
+    FLEXRAM (rwx) : ORIGIN = 0x14000000, LENGTH = 2K
 }
 
 SECTIONS
@@ -45,6 +46,11 @@ SECTIONS
         . = ALIGN(4);
         *(.usbbuffers*)
     } > RAM
+
+    .flexram (NOLOAD) : {
+        . = ALIGN(4);
+        *(.flexram*)
+    } > FLEXRAM
 
     /* Combined data and text, after relocation */
     .dtext : AT (_eflash) {
