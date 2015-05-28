@@ -64,6 +64,9 @@ Animation* builtinAnimations[builtinAnimationCount] = {
 // 1-frame animation for showing serial data
 extern Animation serialAnimation;
 
+// Bad idea animation
+Animation flashAnimation(10, (const uint8_t*)0x8000,ENCODING_RGB24, LED_COUNT);
+
 // Reserved RAM area for signalling entry to bootloader
 extern uint32_t boot_token;
 
@@ -113,7 +116,8 @@ extern "C" int main()
 
     int currentAnimation = 0;
     pov.setup();
-    pov.setAnimation(builtinAnimations[currentAnimation]);
+//    pov.setAnimation(builtinAnimations[currentAnimation]);
+    pov.setAnimation(&flashAnimation);
 
     matrixSetup();
 

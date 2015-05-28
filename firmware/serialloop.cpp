@@ -178,8 +178,8 @@ bool commandStartWrite(uint8_t* buffer) {
     return true;
 }
 
-
-bool commandWrite(uint8_t* buffer) {
+// TODO: Cut down the critical sections here.
+RAM_FUNCTION bool commandWrite(uint8_t* buffer) {
     if(!writing) {
         buffer[0] = 0;
         buffer[1] = 250;
@@ -194,6 +194,8 @@ bool commandWrite(uint8_t* buffer) {
     int packetOffset = ((packetCount % PACKETS_PER_BLOCK) * BYTES_PER_PACKET);
     int packetLength = BYTES_PER_PACKET;
 
+    __disable_irq();
+
     if(!dfu_download(blockNum,
                     blockLength,
                     packetOffset,
@@ -204,17 +206,14 @@ bool commandWrite(uint8_t* buffer) {
 
         buffer[0] = 0;
         buffer[1] = 253;
+        __enable_irq();
         return false;
     }
 
     packetCount++;
 
     uint8_t status[6];
-    long startTime = millis();
-    const long timeout = 100;
     do {
-        delay(10);
-
         dfu_getstatus(status);
 
         if(status[0] != OK) {
@@ -225,13 +224,7 @@ bool commandWrite(uint8_t* buffer) {
             buffer[4] = FTFL_FPROT1;
             buffer[5] = FTFL_FPROT0;
             buffer[6] = FTFL_FDPROT;
-            return false;
-        }
-
-        // TODO: Detect errors here?
-        if(millis() > startTime + timeout) {
-            buffer[0] = 0;
-            buffer[1] = 254;
+            __enable_irq();
             return false;
         }
     }
@@ -239,6 +232,7 @@ bool commandWrite(uint8_t* buffer) {
           (status[4] != dfuIDLE));
 
     buffer[0] = 0;
+    __enable_irq();
     return true;
 }
 

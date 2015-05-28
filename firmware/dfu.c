@@ -22,10 +22,11 @@
  */
 
 #include <stdbool.h>
-//#include "mk20dx128.h"
 #include "mk20dn64.h"
 #include "usb_dev.h"
 #include "dfu.h"
+
+extern uint32_t _animations_flash_begin;
 
 // Internal flash-programming state machine
 static unsigned fl_current_addr = 0;
@@ -40,11 +41,9 @@ static dfu_status_t dfu_status = OK;
 static unsigned dfu_poll_timeout = 1;
 static unsigned dfu_program_index = 0;
 
-// Programming buffer in MK20DX128 FlexRAM, where the flash controller can quickly access it.
-//static __attribute__ ((section(".flexram"))) uint8_t dfu_buffer[DFU_TRANSFER_SIZE];
 static uint8_t dfu_buffer[DFU_TRANSFER_SIZE];
 
-static void *memcpy(void *dst, const void *src, size_t cnt) {
+RAM_FUNCTION void *memcpy(void *dst, const void *src, size_t cnt) {
     uint8_t *dst8 = dst;
     const uint8_t *src8 = src;
     while (cnt > 0) {
@@ -54,37 +53,20 @@ static void *memcpy(void *dst, const void *src, size_t cnt) {
     return dst;
 }
 
-static bool ftfl_busy()
+RAM_FUNCTION bool ftfl_busy()
 {
     // Is the flash memory controller busy?
     return 0 == (FTFL_FSTAT_CCIF & FTFL_FSTAT);
 }
 
-// static void ftfl_busy_wait()
-// {
-//     // Wait for the flash memory controller to finish any pending operation.
-//     while (ftfl_busy());
-// }
-
-static void ftfl_launch_command()
+RAM_FUNCTION void ftfl_launch_command()
 {
     // Begin a flash memory controller command
     FTFL_FSTAT = FTFL_FSTAT_ACCERR | FTFL_FSTAT_FPVIOL | FTFL_FSTAT_RDCOLERR;
     FTFL_FSTAT = FTFL_FSTAT_CCIF;
 }
 
-// static void ftfl_set_flexram_function(uint8_t control_code)
-// {
-//     // Issue a Set FlexRAM Function command. Busy-waits until the command is done.
-    
-//     ftfl_busy_wait();
-//     FTFL_FCCOB0 = 0x81;
-//     FTFL_FCCOB1 = control_code;
-//     ftfl_launch_command();
-//     ftfl_busy_wait();
-// }
-
-static void ftfl_begin_erase_sector(uint32_t address)
+RAM_FUNCTION void ftfl_begin_erase_sector(uint32_t address)
 {
     FTFL_FCCOB0 = 0x09;
     FTFL_FCCOB1 = address >> 16;
@@ -93,20 +75,7 @@ static void ftfl_begin_erase_sector(uint32_t address)
     ftfl_launch_command();
 }
 
-/*
-static void ftfl_begin_program_section(uint32_t address, uint32_t numLWords)
-{
-    FTFL_FCCOB0 = 0x0B;
-    FTFL_FCCOB1 = address >> 16;
-    FTFL_FCCOB2 = address >> 8;
-    FTFL_FCCOB3 = address;
-    FTFL_FCCOB4 = numLWords >> 8;
-    FTFL_FCCOB5 = numLWords;
-    ftfl_launch_command();
-}
-*/
-
-static void ftfl_begin_program_longword(uint32_t address, uint32_t* longword)
+RAM_FUNCTION void ftfl_begin_program_longword(uint32_t address, uint32_t* longword)
 {
     FTFL_FCCOB0 = 0x06;
     FTFL_FCCOB1 = address >> 16;
@@ -119,23 +88,23 @@ static void ftfl_begin_program_longword(uint32_t address, uint32_t* longword)
     ftfl_launch_command();
 }
 
-static uint32_t address_for_block(unsigned blockNum)
+RAM_FUNCTION
+uint32_t address_for_block(unsigned blockNum)
 {
-    return 0x1000 + (blockNum << 10);
+    return (uint32_t)0x8000 + (blockNum << 10);
 }
 
-void dfu_init()
+RAM_FUNCTION void dfu_init()
 {
-    // Use FlexRAM (dfu_buffer) as normal RAM.
-//    ftfl_set_flexram_function(0xFF);
+    
 }
 
-uint8_t dfu_getstate()
+RAM_FUNCTION uint8_t dfu_getstate()
 {
     return dfu_state;
 }
 
-bool dfu_download(unsigned blockNum, unsigned blockLength,
+RAM_FUNCTION bool dfu_download(unsigned blockNum, unsigned blockLength,
     unsigned packetOffset, unsigned packetLength, const uint8_t *data)
 {
     if (packetOffset + packetLength > DFU_TRANSFER_SIZE ||
@@ -186,7 +155,7 @@ bool dfu_download(unsigned blockNum, unsigned blockLength,
     return true;
 }
 
-static bool fl_handle_status(uint8_t fstat, unsigned specificError)
+RAM_FUNCTION bool fl_handle_status(uint8_t fstat, unsigned specificError)
 {
     /*
      * Handle common errors from an FSTAT register value.
@@ -229,7 +198,7 @@ static bool fl_handle_status(uint8_t fstat, unsigned specificError)
     return false;
 }
 
-void fl_state_poll()
+RAM_FUNCTION void fl_state_poll()
 {
     // Try to advance the state of our own flash programming state machine.
 
@@ -273,7 +242,7 @@ void fl_state_poll()
     }
 }
 
-bool dfu_getstatus(uint8_t *status)
+RAM_FUNCTION bool dfu_getstatus(uint8_t *status)
 {
     switch (dfu_state) {
 
@@ -312,7 +281,7 @@ bool dfu_getstatus(uint8_t *status)
     return true;
 }
 
-bool dfu_clrstatus()
+RAM_FUNCTION bool dfu_clrstatus()
 {
     switch (dfu_state) {
 
@@ -330,7 +299,7 @@ bool dfu_clrstatus()
     }
 }
 
-bool dfu_abort()
+RAM_FUNCTION bool dfu_abort()
 {
     dfu_state = dfuIDLE;
     dfu_status = OK;

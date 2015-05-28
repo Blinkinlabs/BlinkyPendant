@@ -35,8 +35,7 @@
 MEMORY
 {
     FLASH (rx) : ORIGIN = 0x00001000, LENGTH = 30K
-    ANIMATIONS_FLASH (rx) : ORIGIN = 0x00009000, LENGTH = 28K   /* For some reason turning off protection for the first 4k of data memory causes the programmer to fail, so skip it for now :-( */
-/*    ANIMATIONS_FLASH (rx) : ORIGIN = 0x00008000, LENGTH = 32K */ 
+    ANIMATIONS_FLASH (rx) : ORIGIN = 0x00008000, LENGTH = 32K
     RAM  (rwx) : ORIGIN = 0x1FFFE000, LENGTH = 16K
 }
 

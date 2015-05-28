@@ -122,14 +122,27 @@ if __name__ == "__main__":
         print "Error starting write"
         exit(1)
 
+    # Make a simple animation
     data = ''
-    for i in range(0,64):
-        data += chr(i)
+    for step in range(0,10):
+        for pixel in range(0,10):
+            if step == pixel:
+                data += chr(100);
+                data += chr(0);
+                data += chr(100);
+            else:
+                data += chr(0);
+                data += chr(20);
+                data += chr(20);
+   
+    # pad it out to a 1k sector
+    while(len(data)%1024 != 0):
+        data += chr(255)
 
-    for i in range(0,16):
-        print "writing", i
-        if not bt.write(data):
-            print "Error writing", i
+    print "writing"
+    for i in range(0, len(data)/64):
+        if not bt.write(data[i*64:(i+1)*64]):
+            print "Error writing"
             exit(1)
 
     print "stopping write"
