@@ -61,6 +61,9 @@ Animation* builtinAnimations[builtinAnimationCount] = {
 //    &ftfAnimation,
 };
 
+// 1-frame animation for showing serial data
+extern Animation serialAnimation;
+
 // Reserved RAM area for signalling entry to bootloader
 extern uint32_t boot_token;
 
@@ -129,6 +132,7 @@ extern "C" int main()
         // Check for serial data
         if(usb_serial_available() > 0) {
             while(usb_serial_available() > 0) {
+                pov.setAnimation(&serialAnimation);
                 serialLoop();
                 watchdog_refresh();
             }

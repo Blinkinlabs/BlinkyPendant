@@ -15,6 +15,11 @@ extern bool reloadAnimations;
 
 int serialMode;         // Serial protocol we are speaking
 
+
+uint8_t frameData[LED_COUNT*3];
+Animation serialAnimation(1, (const uint8_t*)frameData, ENCODING_RGB24, LED_COUNT);
+
+
 ///// Defines for the data mode
 void dataLoop();
 
@@ -31,6 +36,8 @@ uint8_t controlBuffer[CONTROL_BUFFER_SIZE];     // Buffer for receiving command 
 int controlBufferIndex;     // Current location in the buffer
 
 void serialReset() {
+    serialAnimation.reset();
+
     serialMode = SERIAL_MODE_DATA;
 
     bufferIndex = 0;
@@ -72,6 +79,9 @@ void dataLoop() {
             // Prevent overflow by ignoring any pixel data beyond LED_COUNT
             if(pixelIndex < LED_COUNT) {
 //                dmxSetPixel(pixelIndex, buffer[2], buffer[1], buffer[0]);
+                frameData[pixelIndex*3 + 0] = buffer[2];
+                frameData[pixelIndex*3 + 1] = buffer[1];
+                frameData[pixelIndex*3 + 2] = buffer[0];
                 pixelIndex++;
             }
         }
@@ -184,50 +194,52 @@ bool commandWrite(uint8_t* buffer) {
     int packetOffset = ((packetCount % PACKETS_PER_BLOCK) * BYTES_PER_PACKET);
     int packetLength = BYTES_PER_PACKET;
 
-    if(dfu_download(blockNum,
+    if(!dfu_download(blockNum,
                     blockLength,
                     packetOffset,
                     packetLength,
                     buffer)) {
 
-        packetCount++;
-
-        uint8_t status[6];
-        long startTime = millis();
-        const long timeout = 500;
-        do {
-            dfu_getstatus(status);
-
-            if(status[0] != OK) {
-                buffer[0] = 6-1;
-                buffer[1] = status[0];
-                buffer[2] = FTFL_FPROT3;
-                buffer[3] = FTFL_FPROT2;
-                buffer[4] = FTFL_FPROT1;
-                buffer[5] = FTFL_FPROT0;
-                buffer[6] = FTFL_FDPROT;
-                return false;
-            }
-
-            // TODO: Detect errors here?
-            if(millis() > startTime + timeout) {
-                buffer[0] = 0;
-                buffer[1] = 254;
-                return false;
-            }
-        }
-        while((status[4] != dfuDNLOAD_IDLE) &&
-              (status[4] != dfuIDLE));
+        writing = false;
 
         buffer[0] = 0;
-        return true;
+        buffer[1] = 253;
+        return false;
     }
 
-    writing = false;
+    packetCount++;
+
+    uint8_t status[6];
+    long startTime = millis();
+    const long timeout = 100;
+    do {
+        delay(10);
+
+        dfu_getstatus(status);
+
+        if(status[0] != OK) {
+            buffer[0] = 6-1;
+            buffer[1] = status[0];
+            buffer[2] = FTFL_FPROT3;
+            buffer[3] = FTFL_FPROT2;
+            buffer[4] = FTFL_FPROT1;
+            buffer[5] = FTFL_FPROT0;
+            buffer[6] = FTFL_FDPROT;
+            return false;
+        }
+
+        // TODO: Detect errors here?
+        if(millis() > startTime + timeout) {
+            buffer[0] = 0;
+            buffer[1] = 254;
+            return false;
+        }
+    }
+    while((status[4] != dfuDNLOAD_IDLE) &&
+          (status[4] != dfuIDLE));
 
     buffer[0] = 0;
-    buffer[1] = 253;
-    return false;
+    return true;
 }
 
 bool commandStopWrite(uint8_t* buffer) {
