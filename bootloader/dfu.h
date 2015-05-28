@@ -74,3 +74,6 @@ bool dfu_clrstatus();
 bool dfu_abort();
 bool dfu_download(unsigned blockNum, unsigned blockLength,
     unsigned packetOffset, unsigned packetLength, const uint8_t *data);
+
+// Sideways entrance?
+void fl_state_poll();
