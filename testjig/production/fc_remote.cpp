@@ -209,9 +209,11 @@ bool FcRemote::setLEDData(bool* data)
         return false;
 }
 
-bool FcRemote::showColor(int color)
+bool FcRemote::showColor(int color, int loops)
 {
     const unsigned oePin     = target.PTA4;
+    const unsigned S0Pin     = target.PTD4;
+    const unsigned S1Pin     = target.PTD5;
   
     bool ledStates[15];
     
@@ -228,13 +230,26 @@ bool FcRemote::showColor(int color)
     
     if(!(setLEDData(ledStates)))
         return false;
-        
-    
+
     // Enable OE
-    target.log(target.LOG_NORMAL, "LED driver test: setting /OE");
     if(!(
         target.digitalWrite(oePin, LOW)))
         return false;
+        
+    for(int i = 0; i < loops; i++) {
+        if(!(
+            target.digitalWrite(S0Pin, LOW) &&
+            target.digitalWrite(S0Pin, HIGH) &&
+            target.digitalWrite(S1Pin, LOW) &&
+            target.digitalWrite(S1Pin, HIGH)))
+            return false;
+    }
+    
+    // Disable OE
+    if(!(
+        target.digitalWrite(oePin, LOW)))
+        return false;
+
 }
 
 bool FcRemote::testLEDOutputs()
@@ -261,31 +276,19 @@ bool FcRemote::testLEDOutputs()
         target.digitalWrite(strobePin, HIGH) &&
         target.digitalWrite(oePin,     HIGH) &&
         target.digitalWrite(clockPin,  LOW) &&
-        target.digitalWrite(S0Pin,     LOW) &&
-        target.digitalWrite(S1Pin,     LOW)))
+        target.digitalWrite(S0Pin,     HIGH) &&
+        target.digitalWrite(S1Pin,     HIGH)))
         return false;
 
     
     target.log(target.LOG_NORMAL, "LED driver test: colors");
 
-    showColor(1);
-    delay(500);
+    showColor(1,200);
+    showColor(2,200);
+    showColor(4,200);
+    showColor(1|2|4,400);
+    
 
-    showColor(2);
-    delay(500);
-    
-    showColor(4);
-    delay(500);
-
-    showColor(7);
-    delay(500);
-    // Measure the outputs
-    
-    // Disable OE
-    
-    // (and repeat)
-    
-    // Disable OE
     target.log(target.LOG_NORMAL, "LED driver test: done");
     return true;
 }

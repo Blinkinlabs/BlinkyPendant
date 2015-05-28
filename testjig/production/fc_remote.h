@@ -42,7 +42,7 @@ public:
     bool testAccelerometer();
     
     bool setLEDData(bool* data);
-    bool showColor(int color);
+    bool showColor(int color, int loops);
     bool testLEDOutputs();
 
     // Test that the flash chip works
