@@ -51,6 +51,9 @@ struct Pixel {
 // Set up the matrix and start running it's display loop
 extern void matrixSetup();
 
+// Re-start a paused matrix
+extern void matrixStart();
+
 // Change the system brightness
 // @param brightness Display brightness scale, from 0 (off) to 1 (fully on)
 extern void setBrightness(float brightness);

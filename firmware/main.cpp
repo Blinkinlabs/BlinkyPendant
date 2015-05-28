@@ -27,7 +27,6 @@
 #include <algorithm>
 #include <stdlib.h>
 #include <stdio.h>
-//#include "fc_usb.h"
 #include "WProgram.h"
 #include "usb_serial.h"
 #include "usb_dev.h"
@@ -40,32 +39,30 @@
 #include "matrix.h"
 
 #include "animations/kinetisconnects.h"
-//#include "animations/freescale.h"
-//#include "animations/ftf2015.h"
-//#include "animations/squiggle.h"
-//#include "animations/dots.h"
-//#include "animations/blink.h"
+#include "animations/freescale.h"
+#include "animations/ftf2015.h"
+#include "animations/squiggle.h"
+#include "animations/dots.h"
 
 
 // Button inputs
 Buttons userButtons;
 
 // built-in animations
-#define builtinAnimationCount 1
+#define builtinAnimationCount 5
 Animation* builtinAnimations[builtinAnimationCount] = {
     &kinetisAnimation,
-//    &freescaleAnimation,
-//    &dotsAnimation,
-//    &squiggleAnimation,
-//    &blinkAnimation,
-//    &ftfAnimation,
+    &freescaleAnimation,
+    &dotsAnimation,
+    &squiggleAnimation,
+    &ftfAnimation,
 };
 
 // 1-frame animation for showing serial data
 extern Animation serialAnimation;
 
 // Bad idea animation
-Animation flashAnimation(10, (const uint8_t*)0x8000,ENCODING_RGB24, LED_COUNT);
+Animation flashAnimation(10, (const uint8_t*)0x9000,ENCODING_RGB24, LED_COUNT);
 
 // Reserved RAM area for signalling entry to bootloader
 extern uint32_t boot_token;

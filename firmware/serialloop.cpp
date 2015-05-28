@@ -3,6 +3,7 @@
 #include "serialloop.h"
 #include "usb_serial.h"
 #include "animation.h"
+#include "matrix.h"
 #include "dfu.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -179,20 +180,9 @@ bool commandStartWrite(uint8_t* buffer) {
 }
 
 // TODO: Cut down the critical sections here.
-RAM_FUNCTION bool commandWrite(uint8_t* buffer) {
-    if(!writing) {
-        buffer[0] = 0;
-        buffer[1] = 250;
-        return false;
-    }
-
-    #define BYTES_PER_PACKET 64
-    #define PACKETS_PER_BLOCK (DFU_TRANSFER_SIZE / BYTES_PER_PACKET)
-
-    int blockNum = packetCount / PACKETS_PER_BLOCK;
-    int blockLength = DFU_TRANSFER_SIZE;
-    int packetOffset = ((packetCount % PACKETS_PER_BLOCK) * BYTES_PER_PACKET);
-    int packetLength = BYTES_PER_PACKET;
+RAM_FUNCTION bool doWrite(uint8_t* buffer, int blockNum, int blockLength, int packetOffset, int packetLength) {
+    bool result = false;
+    buffer[0] = 0;
 
     __disable_irq();
 
@@ -203,11 +193,7 @@ RAM_FUNCTION bool commandWrite(uint8_t* buffer) {
                     buffer)) {
 
         writing = false;
-
-        buffer[0] = 0;
-        buffer[1] = 253;
-        __enable_irq();
-        return false;
+        goto FAIL;
     }
 
     packetCount++;
@@ -224,16 +210,38 @@ RAM_FUNCTION bool commandWrite(uint8_t* buffer) {
             buffer[4] = FTFL_FPROT1;
             buffer[5] = FTFL_FPROT0;
             buffer[6] = FTFL_FDPROT;
-            __enable_irq();
-            return false;
+            goto FAIL;
         }
     }
     while((status[4] != dfuDNLOAD_IDLE) &&
           (status[4] != dfuIDLE));
 
-    buffer[0] = 0;
+    result = true;
+
+FAIL:
     __enable_irq();
-    return true;
+    return result;
+}
+
+bool commandWrite(uint8_t* buffer) {
+    if(!writing) {
+        buffer[0] = 0;
+        return false;
+    }
+
+    #define BYTES_PER_PACKET 64
+    #define PACKETS_PER_BLOCK (DFU_TRANSFER_SIZE / BYTES_PER_PACKET)
+
+    int blockNum = packetCount / PACKETS_PER_BLOCK;
+    int blockLength = DFU_TRANSFER_SIZE;
+    int packetOffset = ((packetCount % PACKETS_PER_BLOCK) * BYTES_PER_PACKET);
+    int packetLength = BYTES_PER_PACKET;
+
+    bool result = doWrite(buffer, blockNum, blockLength, packetOffset, packetLength);
+
+    // restart the matrix
+    matrixSetup();
+    return result;
 }
 
 bool commandStopWrite(uint8_t* buffer) {

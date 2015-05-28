@@ -117,6 +117,10 @@ void dma_ch2_isr(void);
 void setupTCDs();
 void setupFTM0();
 
+void matrixStart() {
+    setupTCDs();
+}
+
 void matrixSetup() {
   // Set all the pins to outputs
   pinMode(S0, OUTPUT);

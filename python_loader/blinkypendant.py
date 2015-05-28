@@ -128,7 +128,7 @@ if __name__ == "__main__":
         for pixel in range(0,10):
             if step == pixel:
                 data += chr(100);
-                data += chr(0);
+                data += chr(100);
                 data += chr(100);
             else:
                 data += chr(0);

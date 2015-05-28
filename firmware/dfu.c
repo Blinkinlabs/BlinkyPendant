@@ -26,8 +26,6 @@
 #include "usb_dev.h"
 #include "dfu.h"
 
-extern uint32_t _animations_flash_begin;
-
 // Internal flash-programming state machine
 static unsigned fl_current_addr = 0;
 static enum {
@@ -91,7 +89,7 @@ RAM_FUNCTION void ftfl_begin_program_longword(uint32_t address, uint32_t* longwo
 RAM_FUNCTION
 uint32_t address_for_block(unsigned blockNum)
 {
-    return (uint32_t)0x8000 + (blockNum << 10);
+    return (uint32_t)0x9000 + (blockNum << 10);
 }
 
 RAM_FUNCTION void dfu_init()
