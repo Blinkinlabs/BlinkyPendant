@@ -27,10 +27,10 @@
 #include <algorithm>
 #include <stdlib.h>
 #include <stdio.h>
-#include "fc_usb.h"
-#include "arm_math.h"
-#include "HardwareSerial.h"
+//#include "fc_usb.h"
+#include "WProgram.h"
 #include "usb_serial.h"
+#include "usb_dev.h"
 
 #include "blinkytile.h"
 #include "animation.h"
@@ -46,10 +46,6 @@
 #include "animations/dots.h"
 #include "animations/blink.h"
 
-
-// USB data buffers
-static fcBuffers buffers;
-fcLinearLUT fcBuffers::lutCurrent;
 
 // Button inputs
 Buttons userButtons;
@@ -86,12 +82,6 @@ static void dfu_reboot()
     __disable_irq();
     USB0_CONTROL = 0;
     while (1);
-}
-
-extern "C" int usb_fc_rx_handler()
-{
-    // USB packet interrupt handler. Invoked by the ISR dispatch code in usb_dev.c
-    return buffers.handleUSB();
 }
 
 

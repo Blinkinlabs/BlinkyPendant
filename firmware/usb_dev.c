@@ -31,7 +31,6 @@
 #if F_CPU >= 20000000
 
 #include "mk20dn64.h"
-//#include "HardwareSerial.h"
 #include "usb_dev.h"
 #include "usb_mem.h"
 
@@ -536,12 +535,6 @@ static void usb_control(uint32_t stat)
 	USB0_CTL = USB_CTL_USBENSOFEN; // clear TXSUSPENDTOKENBUSY bit
 }
 
-#ifdef FC_INTERFACE
-void process_fc_buffer() {
-	while(usb_rx_available(FC_OUT_ENDPOINT) && usb_fc_rx_handler()) {
-	}
-}
-#endif
 
 bool usb_rx_available(uint32_t endpoint)
 {
@@ -876,19 +869,7 @@ void usb_isr(void)
 				} else {
 					b->desc = BDT_DESC(64, ((uint32_t)b & 8) ? DATA1 : DATA0);
 				}
-
-#ifdef FC_INTERFACE
-				//if(endpoint == FC_OUT_ENDPOINT) {
-      					// Handle as many FC packets as possible
-					// TODO: Do this asyncronously?
-//                                        process_fc_buffer();
-				//}
-#endif
 			}
-
-
-
-
 		}
 		USB0_ISTAT = USB_ISTAT_TOKDNE;
 		goto restart;

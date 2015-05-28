@@ -31,7 +31,6 @@
 #if F_CPU >= 20000000
 
 #include "mk20dn64.h"
-//#include "HardwareSerial.h"
 #include "usb_dev.h"
 #include "usb_mem.h"
 

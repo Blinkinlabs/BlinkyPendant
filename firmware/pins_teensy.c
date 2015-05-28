@@ -30,7 +30,6 @@
 
 #include "core_pins.h"
 #include "pins_arduino.h"
-#include "HardwareSerial.h"
 
 #if 0
 // moved to pins_arduino.h

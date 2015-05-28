@@ -31,7 +31,6 @@
 #include "usb_dev.h"
 #include "usb_serial.h"
 #include "core_pins.h" // for yield()
-//#include "HardwareSerial.h"
 #include <string.h> // for memcpy()
 
 // defined by usb_dev.h -> usb_desc.h

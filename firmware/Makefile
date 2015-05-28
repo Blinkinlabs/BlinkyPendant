@@ -32,7 +32,6 @@ C_FILES = \
 	usb_dev.c \
 	usb_mem.c \
 	usb_serial.c \
-	nonstd.c \
 	SampleFilter.c \
 	yield.c
 
@@ -45,7 +44,6 @@ CPP_FILES = \
 	buttons.cpp \
         animation.cpp \
         matrix.cpp \
-	fc_usb.cpp \
 	mma8653.cpp 
 
 # Headers
