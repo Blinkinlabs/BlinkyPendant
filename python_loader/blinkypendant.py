@@ -85,9 +85,33 @@ class BlinkyPendant(object):
         return status
 
     def stopWrite(self):
-        """Stope pattern write
+        """Stop pattern write
         """
         command = chr(0x03)
+
+        status, returnData = self.sendCommand(command)
+        return status
+
+    def startRead(self):
+        """Initiate pattern read
+        """
+        command = chr(0x04)
+
+        status, returnData = self.sendCommand(command)
+        return status
+
+    def read(self):
+        """Read one packet (64 bytes) of pattern data
+        """
+        command = chr(0x05)
+
+        status, returnData = self.sendCommand(command)
+        return status, returnData
+
+    def stopRead(self):
+        """Stop pattern read
+        """
+        command = chr(0x06)
 
         status, returnData = self.sendCommand(command)
         return status
@@ -149,3 +173,22 @@ if __name__ == "__main__":
     if not bt.stopWrite():
         print "Error stopping write"
         exit(1)
+
+    print "starting read"
+    if not bt.startRead():
+        print "Error starting read"
+        exit(1)
+
+    print "reading"
+    for i in range(0, len(data)/64):
+        result, data = bt.read()
+        if not result:
+            print "Error reading"
+            exit(1)
+        print data
+
+    print "stopping read"
+    if not bt.stopRead():
+        print "Error stopping read"
+        exit(1)
+

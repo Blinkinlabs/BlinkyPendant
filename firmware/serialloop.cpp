@@ -111,6 +111,9 @@ void dataLoop() {
 bool commandStartWrite(uint8_t* buffer);
 bool commandWrite(uint8_t* buffer);
 bool commandStopWrite(uint8_t* buffer);
+bool commandStartRead(uint8_t* buffer);
+bool commandRead(uint8_t* buffer);
+bool commandStopRead(uint8_t* buffer);
 
 struct Command {
     uint8_t name;   // Command identifier
@@ -120,8 +123,11 @@ struct Command {
 
 Command commands[] = {
     {0x01,   1,   commandStartWrite},   // Start writing an animation
-    {0x02,   65,  commandWrite},        // Add 64(?) bytes of data to the write
-    {0x03,   1,   commandStopWrite},    // Add 64(?) bytes of data to the write
+    {0x02,   65,  commandWrite},        // Write 64 bytes of data
+    {0x03,   1,   commandStopWrite},    // Stop writing
+    {0x04,   1,   commandStartRead},    // Start reading back the animation
+    {0x05,   1,   commandRead},         // Read 64 bytes of data
+    {0x06,   1,   commandStopRead},     // Stop reading
     {0xFF,   0,   NULL}
 };
 
@@ -168,9 +174,13 @@ void commandLoop() {
 static bool writing = false;
 static int packetCount;         // Count of packets we have written so far
 
-bool commandStartWrite(uint8_t* buffer) {
-    dfu_init();
+static bool reading = false;
+static int readPacketCount;         // Count of packets we have written so far
 
+#define BYTES_PER_PACKET 64
+#define PACKETS_PER_BLOCK (DFU_TRANSFER_SIZE / BYTES_PER_PACKET)
+
+bool commandStartWrite(uint8_t* buffer) {
     // Reset the write state machine
     writing = true;
     packetCount = 0;
@@ -229,9 +239,6 @@ bool commandWrite(uint8_t* buffer) {
         return false;
     }
 
-    #define BYTES_PER_PACKET 64
-    #define PACKETS_PER_BLOCK (DFU_TRANSFER_SIZE / BYTES_PER_PACKET)
-
     int blockNum = packetCount / PACKETS_PER_BLOCK;
     int blockLength = DFU_TRANSFER_SIZE;
     int packetOffset = ((packetCount % PACKETS_PER_BLOCK) * BYTES_PER_PACKET);
@@ -247,7 +254,32 @@ bool commandWrite(uint8_t* buffer) {
 bool commandStopWrite(uint8_t* buffer) {
     writing = false;
 
-    // Reload animation list?
+    buffer[0] = 0;
+    return true;
+}
+
+bool commandStartRead(uint8_t* buffer) {
+    // Reset the write state machine
+    reading = true;
+    readPacketCount = 0;
+
+    buffer[0] = 0;
+    return true;
+}
+
+bool commandRead(uint8_t* buffer) {
+    if(!reading) {
+        buffer[0] = 0;
+        return false;
+    }
+
+    dfu_upload(readPacketCount*BYTES_PER_PACKET, BYTES_PER_PACKET, &(buffer[1]));
+    buffer[0] = BYTES_PER_PACKET;
+    return true;
+}
+
+bool commandStopRead(uint8_t* buffer) {
+    reading = false;
 
     buffer[0] = 0;
     return true;

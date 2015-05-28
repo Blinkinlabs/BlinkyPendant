@@ -61,7 +61,6 @@ typedef enum {
     errSTALLEDPKT,
 } dfu_status_t;
 
-#define DFU_DETACH_TIMEOUT        10000     // 10 second timer
 #define DFU_TRANSFER_SIZE         1024      // Flash sector size
 
 
@@ -69,16 +68,11 @@ typedef enum {
 extern "C" {
 #endif
 
-// Main thread
-void dfu_init();
-
-// USB entry points. Always successful.
-uint8_t dfu_getstate();
-
 // USB entry points. True on success, false for stall.
 bool dfu_getstatus(uint8_t *status);
 bool dfu_clrstatus();
 bool dfu_abort();
+bool dfu_upload(unsigned offset, unsigned length, const uint8_t *data);
 bool dfu_download(unsigned blockNum, unsigned blockLength,
     unsigned packetOffset, unsigned packetLength, const uint8_t *data);
 

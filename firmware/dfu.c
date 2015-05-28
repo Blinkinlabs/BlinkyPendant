@@ -92,14 +92,12 @@ uint32_t address_for_block(unsigned blockNum)
     return (uint32_t)0x9000 + (blockNum << 10);
 }
 
-RAM_FUNCTION void dfu_init()
+bool dfu_upload(unsigned offset, unsigned length, const uint8_t *data)
 {
-    
-}
+    uint8_t* address = (uint8_t*)(address_for_block(0) + offset);
+    memcpy(address, data, length);
 
-RAM_FUNCTION uint8_t dfu_getstate()
-{
-    return dfu_state;
+    return true;
 }
 
 RAM_FUNCTION bool dfu_download(unsigned blockNum, unsigned blockLength,
