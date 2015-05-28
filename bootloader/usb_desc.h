@@ -39,11 +39,11 @@
 #define NUM_USB_BUFFERS           8
 #define VENDOR_ID                 0x1209
 #define PRODUCT_ID                0x8889
-#define DEVICE_VER                0x0100    // BCD device version
+#define DEVICE_VER                0x0110    // BCD device version
 #define MANUFACTURER_NAME         {'B','l','i','n','k','i','n','l','a','b','s'}
 #define MANUFACTURER_NAME_LEN     11
-#define PRODUCT_NAME              {'P','O','V','P','e','n','d','a','n','t',' ','B','o','o','t','l','o','a','d','e','r'}
-#define PRODUCT_NAME_LEN          21
+#define PRODUCT_NAME              {'B','l','i','n','k','y','P','e','n','d','a','n','t',' ','B','o','o','t','l','o','a','d','e','r'}
+#define PRODUCT_NAME_LEN          24
 #define EP0_SIZE                  64
 #define NUM_INTERFACE             1
 #define CONFIG_DESC_SIZE          (9+9+9)
