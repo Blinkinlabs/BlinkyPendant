@@ -11,7 +11,8 @@ OBJDUMP = arm-none-eabi-objdump
 SIZE = arm-none-eabi-size
 
 # Bootloader to include in whole-chip .hex image
-FCBOOT_IMAGE = ../bin/pendant-boot-v100.hex
+#FCBOOT_IMAGE = ../bin/pendant-boot-v100.hex
+FCBOOT_IMAGE = ../bootloader/blinky-boot.hex
 
 # Configuration options
 OPTIONS += -DF_CPU=48000000 -D__MK20DN64__ -DUSB_SERIAL_FC_DFU
@@ -33,7 +34,8 @@ C_FILES = \
 	usb_mem.c \
 	usb_serial.c \
 	SampleFilter.c \
-	yield.c
+	yield.c \
+	dfu.c
 
 CPP_FILES = \
 	main.cpp \

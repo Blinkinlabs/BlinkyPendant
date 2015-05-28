@@ -10,8 +10,6 @@
 # Firmware image to deploy
 HEX_FILE = "../firmware/pendant-firmware.hex"
 ELF_FILE = "../firmware/pendant-firmware.elf"
-#HEX_FILE = "../bootloader/blinky-boot.hex"
-#ELF_FILE = "../bootloader/blinky-boot.elf"
 
 # Which GDB to use for the firmware image
 GDB_COMMAND = "arm-none-eabi-gdb"

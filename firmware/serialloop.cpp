@@ -3,6 +3,7 @@
 #include "serialloop.h"
 #include "usb_serial.h"
 #include "animation.h"
+#include "dfu.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -25,7 +26,7 @@ int pixelIndex;         // Pixel we are currently writing to
 ///// Defines for the control mode
 void commandLoop();
 
-#define CONTROL_BUFFER_SIZE 256
+#define CONTROL_BUFFER_SIZE 100
 uint8_t controlBuffer[CONTROL_BUFFER_SIZE];     // Buffer for receiving command data
 int controlBufferIndex;     // Current location in the buffer
 
@@ -96,8 +97,9 @@ void dataLoop() {
     }
 }
 
-//bool commandEraseAnimations(uint8_t* buffer);
-//bool commandWriteAnimations(uint8_t* buffer);
+bool commandStartWrite(uint8_t* buffer);
+bool commandWrite(uint8_t* buffer);
+bool commandStopWrite(uint8_t* buffer);
 
 struct Command {
     uint8_t name;   // Command identifier
@@ -106,9 +108,10 @@ struct Command {
 };
 
 Command commands[] = {
-//    {0x01,   3, commandProgramAddress},     // LED routines
-//    {0x02,   1, commandReloadAnimations},
-    {0xFF,   0, NULL}
+    {0x01,   1,   commandStartWrite},   // Start writing an animation
+    {0x02,   65,  commandWrite},        // Add 64(?) bytes of data to the write
+    {0x03,   1,   commandStopWrite},    // Add 64(?) bytes of data to the write
+    {0xFF,   0,   NULL}
 };
 
 
@@ -137,17 +140,100 @@ void commandLoop() {
             if(command->function(controlBuffer + 1)) {
                 usb_serial_putchar('P');
                 usb_serial_putchar((char)controlBuffer[1]);
-
                 usb_serial_write(controlBuffer + 2, controlBuffer[1] + 1);
             }
             else {
                 usb_serial_putchar('F');
-                usb_serial_putchar(char(0x00));
-                usb_serial_putchar(char(0x00));
+                usb_serial_putchar((char)controlBuffer[1]);
+                usb_serial_write(controlBuffer + 2, controlBuffer[1] + 1);
             }
 
             serialReset();
         }
         break;
     }
+}
+
+static bool writing = false;
+static int packetCount;         // Count of packets we have written so far
+
+bool commandStartWrite(uint8_t* buffer) {
+    dfu_init();
+
+    // Reset the write state machine
+    writing = true;
+    packetCount = 0;
+
+    buffer[0] = 0;
+    return true;
+}
+
+
+bool commandWrite(uint8_t* buffer) {
+    if(!writing)
+        buffer[0] = 0;
+        buffer[1] = 250;
+        return false;
+
+    #define BYTES_PER_PACKET 64
+    #define PACKETS_PER_BLOCK (DFU_TRANSFER_SIZE / BYTES_PER_PACKET)
+
+    int blockNum = packetCount / PACKETS_PER_BLOCK;
+    int blockLength = DFU_TRANSFER_SIZE;
+    int packetOffset = ((packetCount % PACKETS_PER_BLOCK) * BYTES_PER_PACKET);
+    int packetLength = BYTES_PER_PACKET;
+
+    if(dfu_download(blockNum,
+                    blockLength,
+                    packetOffset,
+                    packetLength,
+                    buffer)) {
+
+        packetCount++;
+
+        uint8_t status[6];
+        long startTime = millis();
+        const long timeout = 500;
+        do {
+            dfu_getstatus(status);
+
+            if(status[0] != OK) {
+                buffer[0] = 6-1;
+                buffer[1] = status[0];
+                buffer[2] = FTFL_FPROT3;
+                buffer[3] = FTFL_FPROT2;
+                buffer[4] = FTFL_FPROT1;
+                buffer[5] = FTFL_FPROT0;
+                buffer[6] = FTFL_FDPROT;
+                return false;
+            }
+
+            // TODO: Detect errors here?
+            if(millis() > startTime + timeout) {
+                buffer[0] = 0;
+                buffer[1] = 254;
+                return false;
+            }
+        }
+        while((status[4] != dfuDNLOAD_IDLE) &&
+            (status[4] != dfuIDLE));
+
+        buffer[0] = 0;
+        return true;
+    }
+
+    writing = false;
+
+    buffer[0] = 0;
+    buffer[1] = 253;
+    return false;
+}
+
+bool commandStopWrite(uint8_t* buffer) {
+    writing = false;
+
+    // Reload animation list?
+
+    buffer[0] = 0;
+    return true;
 }

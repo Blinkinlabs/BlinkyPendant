@@ -31,32 +31,15 @@
  * SOFTWARE.
  */
 
-/* For 128k variant */
-/*
-MEMORY
-{
-    FLASH (rx) : ORIGIN = 0x00001000, LENGTH = 124K
-    RAM  (rwx) : ORIGIN = 0x1FFFE000, LENGTH = 16K
-    FLEXRAM (rwx) : ORIGIN = 0x14000000, LENGTH = 2K
-}
-*/
-
 /* For 64k variant, 2kb flexram */
 MEMORY
 {
-    FLASH (rx) : ORIGIN = 0x00001000, LENGTH = 60K
+    FLASH (rx) : ORIGIN = 0x00001000, LENGTH = 30K
+    ANIMATIONS_FLASH (rx) : ORIGIN = 0x00009000, LENGTH = 28K   /* For some reason turning off protection for the first 4k of data memory causes the programmer to fail, so skip it for now :-( */
+/*    ANIMATIONS_FLASH (rx) : ORIGIN = 0x00008000, LENGTH = 32K */ 
     RAM  (rwx) : ORIGIN = 0x1FFFE000, LENGTH = 16K
     FLEXRAM (rwx) : ORIGIN = 0x14000000, LENGTH = 2K
 }
-
-/* For 64k variant, no flexram */
-/*
-MEMORY
-{
-    FLASH (rx) : ORIGIN = 0x00001000, LENGTH = 60K
-    RAM  (rwx) : ORIGIN = 0x1FFFE000, LENGTH = 16K
-}
-*/
 
 SECTIONS
 {
@@ -84,12 +67,10 @@ SECTIONS
     } > FLASH
     _etext = .;
 
-/*
     .flexram (NOLOAD) : {
         . = ALIGN(4);
         *(.flexram*)
     } > FLEXRAM
-*/
 
     .usbdescriptortable (NOLOAD) : {
         /* . = ORIGIN(RAM); */
@@ -128,10 +109,8 @@ SECTIONS
     _estack = ORIGIN(RAM) + LENGTH(RAM) - 4;
     boot_token = _estack;
 
-/*
-    _flexram_begin = ORIGIN(FLEXRAM);
-    _flexram_end = ORIGIN(FLEXRAM) + LENGTH(FLEXRAM);
-*/
+    _animations_flash_begin = ORIGIN(ANIMATIONS_FLASH);
+    _animations_flash_length = LENGTH(ANIMATIONS_FLASH);
 }
 
 

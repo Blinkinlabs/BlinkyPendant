@@ -40,25 +40,25 @@
 #include "matrix.h"
 
 #include "animations/kinetisconnects.h"
-#include "animations/freescale.h"
-#include "animations/ftf2015.h"
-#include "animations/squiggle.h"
-#include "animations/dots.h"
-#include "animations/blink.h"
+//#include "animations/freescale.h"
+//#include "animations/ftf2015.h"
+//#include "animations/squiggle.h"
+//#include "animations/dots.h"
+//#include "animations/blink.h"
 
 
 // Button inputs
 Buttons userButtons;
 
 // built-in animations
-#define builtinAnimationCount 6
+#define builtinAnimationCount 1
 Animation* builtinAnimations[builtinAnimationCount] = {
-    &dotsAnimation,
-    &squiggleAnimation,
-    &blinkAnimation,
-    &ftfAnimation,
-    &freescaleAnimation,
-    &kinetisAnimation
+    &kinetisAnimation,
+//    &freescaleAnimation,
+//    &dotsAnimation,
+//    &squiggleAnimation,
+//    &blinkAnimation,
+//    &ftfAnimation,
 };
 
 // Reserved RAM area for signalling entry to bootloader
@@ -116,11 +116,6 @@ extern "C" int main()
 
     serialReset();
 
-//    uint32_t nextTime = 0;        // Time to display next frame
-
-//    uint32_t thisTime = millis();
-//    uint32_t lastTime = millis();
-
     // Application main loop
     while (usb_dfu_state == DFU_appIDLE) {
         watchdog_refresh();
@@ -131,12 +126,13 @@ extern "C" int main()
         pov.computeStep(0);
         show();
 
-/*
-        thisTime = millis();
-        pov.computeStep((thisTime - lastTime)/1000);
-        show();
-        lastTime = thisTime;
-*/
+        // Check for serial data
+        if(usb_serial_available() > 0) {
+            while(usb_serial_available() > 0) {
+                serialLoop();
+                watchdog_refresh();
+            }
+        }
 
         if(userButtons.isPressed()) {
             uint8_t button = userButtons.getPressed();
