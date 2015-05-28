@@ -170,15 +170,16 @@ bool commandStartWrite(uint8_t* buffer) {
 
 
 bool commandWrite(uint8_t* buffer) {
-    if(!writing)
+    if(!writing) {
         buffer[0] = 0;
         buffer[1] = 250;
         return false;
+    }
 
     #define BYTES_PER_PACKET 64
     #define PACKETS_PER_BLOCK (DFU_TRANSFER_SIZE / BYTES_PER_PACKET)
 
-    int blockNum = packetCount / PACKETS_PER_BLOCK;
+    int blockNum = 0;//packetCount / PACKETS_PER_BLOCK;
     int blockLength = DFU_TRANSFER_SIZE;
     int packetOffset = ((packetCount % PACKETS_PER_BLOCK) * BYTES_PER_PACKET);
     int packetLength = BYTES_PER_PACKET;

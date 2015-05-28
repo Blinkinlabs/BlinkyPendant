@@ -105,7 +105,8 @@ static void ftfl_begin_program_section(uint32_t address, uint32_t numLWords)
 
 static uint32_t address_for_block(unsigned blockNum)
 {
-    return _animations_flash_begin + (blockNum << 10);
+//    return (uint32_t)_animations_flash_begin + (blockNum << 10);
+    return (uint32_t)0x9000 + (blockNum << 10);
 }
 
 void dfu_init()
