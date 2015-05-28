@@ -87,7 +87,8 @@ $(TARGET).elf: $(OBJS) $(LDSCRIPT)
 	(grep -v :00000001FF $(FCBOOT_IMAGE); cat $(APP_HEX)) > $@
 
 install: $(TARGET).dfu
-	$(DFU_UTIL) -d 1d50 -D $<
+#	$(DFU_UTIL) -d 1d50 -D $<
+	$(DFU_UTIL) -d 1209 -D $<
 
 benchmark: install
 	python benchmark.py
