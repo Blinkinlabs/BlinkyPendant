@@ -90,15 +90,11 @@ SECTIONS
         *(.flexram*)
     } > FLEXRAM
 */
+
     .usbdescriptortable (NOLOAD) : {
         /* . = ORIGIN(RAM); */
         . = ALIGN(512);
         *(.usbdescriptortable*)
-    } > RAM
-
-    .dmabuffers (NOLOAD) : {
-        . = ALIGN(4);
-        *(.dmabuffers*)
     } > RAM
 
     .usbbuffers (NOLOAD) : {

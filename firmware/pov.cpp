@@ -19,21 +19,21 @@ POV pov;
 
 SampleFilter filter;
 
-struct systemStep {
-    float accX;
-    float velocityX;
-    float posX;
-    int playbackPos;
-    float dir;
-    float accXavg;
-};
+//struct systemStep {
+//    float accX;
+//    float velocityX;
+//    float posX;
+//    int playbackPos;
+//    float dir;
+//    float accXavg;
+//};
 
 #define playbackScale 120
 
 // Data block for debugging
-#define currentStepMax 100
-systemStep steps[currentStepMax];
-int currentStep;
+//#define currentStepMax 100
+//systemStep steps[currentStepMax];
+//int currentStep;
 
 
 
@@ -53,7 +53,7 @@ void POV::setAnimation(Animation *newAnimation) {
 }
 
 void POV::setup() {
-    currentStep = 0;
+//    currentStep = 0;
     velocityX = 0;
     posX = 0;
 
