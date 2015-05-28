@@ -179,7 +179,7 @@ bool commandWrite(uint8_t* buffer) {
     #define BYTES_PER_PACKET 64
     #define PACKETS_PER_BLOCK (DFU_TRANSFER_SIZE / BYTES_PER_PACKET)
 
-    int blockNum = 0;//packetCount / PACKETS_PER_BLOCK;
+    int blockNum = packetCount / PACKETS_PER_BLOCK;
     int blockLength = DFU_TRANSFER_SIZE;
     int packetOffset = ((packetCount % PACKETS_PER_BLOCK) * BYTES_PER_PACKET);
     int packetLength = BYTES_PER_PACKET;
@@ -217,7 +217,7 @@ bool commandWrite(uint8_t* buffer) {
             }
         }
         while((status[4] != dfuDNLOAD_IDLE) &&
-            (status[4] != dfuIDLE));
+              (status[4] != dfuIDLE));
 
         buffer[0] = 0;
         return true;

@@ -40,7 +40,7 @@ typedef enum {
 } dfu_state_t;
 
 typedef enum {
-    OK,
+    OK = 0,
     errTARGET,
     errFILE,
     errWRITE,
@@ -58,7 +58,9 @@ typedef enum {
     errSTALLEDPKT,
 } dfu_status_t;
 
+#define DFU_DETACH_TIMEOUT        10000     // 10 second timer
 #define DFU_TRANSFER_SIZE         1024      // Flash sector size
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -76,6 +78,9 @@ bool dfu_clrstatus();
 bool dfu_abort();
 bool dfu_download(unsigned blockNum, unsigned blockLength,
     unsigned packetOffset, unsigned packetLength, const uint8_t *data);
+
+// Sideways entrance?
+void fl_state_poll();
 
 #ifdef __cplusplus
 }

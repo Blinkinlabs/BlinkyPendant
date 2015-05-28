@@ -198,7 +198,7 @@ const uint8_t flashconfigbytes[16] =
      * dap_syssec_kinetis_mdmap() in arm_adi_v5.c to always mass-erase, and I run that version of openocd
      * when necessary :(
      */
-    0xfc, 0xff, 0xff, 0xff, // TODO: Is this correct?
+    0xfc, 0xff, 0xff, 0xff,
 
     0xfe,       // Data flash protection (FDPROT)       // TODO: Why can't we make this 0xFF?
     0xff,       // EEPROM protection (FEPROT)

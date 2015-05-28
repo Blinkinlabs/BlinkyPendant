@@ -22,11 +22,10 @@
  */
 
 #include <stdbool.h>
+//#include "mk20dx128.h"
 #include "mk20dn64.h"
 #include "usb_dev.h"
 #include "dfu.h"
-
-extern unsigned long _animations_flash_begin;
 
 // Internal flash-programming state machine
 static unsigned fl_current_addr = 0;
@@ -39,9 +38,11 @@ static enum {
 static dfu_state_t dfu_state = dfuIDLE;
 static dfu_status_t dfu_status = OK;
 static unsigned dfu_poll_timeout = 1;
+static unsigned dfu_program_index = 0;
 
 // Programming buffer in MK20DX128 FlexRAM, where the flash controller can quickly access it.
-static __attribute__ ((section(".flexram"))) uint8_t dfu_buffer[DFU_TRANSFER_SIZE];
+//static __attribute__ ((section(".flexram"))) uint8_t dfu_buffer[DFU_TRANSFER_SIZE];
+static uint8_t dfu_buffer[DFU_TRANSFER_SIZE];
 
 static void *memcpy(void *dst, const void *src, size_t cnt) {
     uint8_t *dst8 = dst;
@@ -59,11 +60,11 @@ static bool ftfl_busy()
     return 0 == (FTFL_FSTAT_CCIF & FTFL_FSTAT);
 }
 
-static void ftfl_busy_wait()
-{
-    // Wait for the flash memory controller to finish any pending operation.
-    while (ftfl_busy());
-}
+// static void ftfl_busy_wait()
+// {
+//     // Wait for the flash memory controller to finish any pending operation.
+//     while (ftfl_busy());
+// }
 
 static void ftfl_launch_command()
 {
@@ -72,16 +73,16 @@ static void ftfl_launch_command()
     FTFL_FSTAT = FTFL_FSTAT_CCIF;
 }
 
-static void ftfl_set_flexram_function(uint8_t control_code)
-{
-    // Issue a Set FlexRAM Function command. Busy-waits until the command is done.
+// static void ftfl_set_flexram_function(uint8_t control_code)
+// {
+//     // Issue a Set FlexRAM Function command. Busy-waits until the command is done.
     
-    ftfl_busy_wait();
-    FTFL_FCCOB0 = 0x81;
-    FTFL_FCCOB1 = control_code;
-    ftfl_launch_command();
-    ftfl_busy_wait();
-}
+//     ftfl_busy_wait();
+//     FTFL_FCCOB0 = 0x81;
+//     FTFL_FCCOB1 = control_code;
+//     ftfl_launch_command();
+//     ftfl_busy_wait();
+// }
 
 static void ftfl_begin_erase_sector(uint32_t address)
 {
@@ -92,6 +93,7 @@ static void ftfl_begin_erase_sector(uint32_t address)
     ftfl_launch_command();
 }
 
+/*
 static void ftfl_begin_program_section(uint32_t address, uint32_t numLWords)
 {
     FTFL_FCCOB0 = 0x0B;
@@ -102,17 +104,30 @@ static void ftfl_begin_program_section(uint32_t address, uint32_t numLWords)
     FTFL_FCCOB5 = numLWords;
     ftfl_launch_command();
 }
+*/
+
+static void ftfl_begin_program_longword(uint32_t address, uint32_t* longword)
+{
+    FTFL_FCCOB0 = 0x06;
+    FTFL_FCCOB1 = address >> 16;
+    FTFL_FCCOB2 = address >> 8;
+    FTFL_FCCOB3 = address;
+    FTFL_FCCOB4 = (*longword) >> 24;
+    FTFL_FCCOB5 = (*longword) >> 16;
+    FTFL_FCCOB6 = (*longword) >> 8;
+    FTFL_FCCOB7 = (*longword);
+    ftfl_launch_command();
+}
 
 static uint32_t address_for_block(unsigned blockNum)
 {
-//    return (uint32_t)_animations_flash_begin + (blockNum << 10);
-    return (uint32_t)0x9000 + (blockNum << 10);
+    return 0x1000 + (blockNum << 10);
 }
 
 void dfu_init()
 {
     // Use FlexRAM (dfu_buffer) as normal RAM.
-    ftfl_set_flexram_function(0xFF);
+//    ftfl_set_flexram_function(0xFF);
 }
 
 uint8_t dfu_getstate()
@@ -214,7 +229,7 @@ static bool fl_handle_status(uint8_t fstat, unsigned specificError)
     return false;
 }
 
-static void fl_state_poll()
+void fl_state_poll()
 {
     // Try to advance the state of our own flash programming state machine.
 
@@ -228,14 +243,31 @@ static void fl_state_poll()
             if (!fl_handle_status(fstat, errERASE)) {
                 // Done! Move on to programming the sector.
                 fl_state = flsPROGRAMMING;
-                ftfl_begin_program_section(fl_current_addr, DFU_TRANSFER_SIZE/4);
+                // ftfl_begin_program_section(fl_current_addr, DFU_TRANSFER_SIZE/4);
+
+                dfu_program_index = 0;
+                ftfl_begin_program_longword(
+                    fl_current_addr + dfu_program_index,
+                    (uint32_t*)(dfu_buffer + dfu_program_index)
+                    );
             }
             break;
 
         case flsPROGRAMMING:
             if (!fl_handle_status(fstat, errVERIFY)) {
-                // Done!
-                fl_state = flsIDLE;
+                // // Done!
+                // fl_state = flsIDLE;
+
+                if (dfu_program_index < DFU_TRANSFER_SIZE) {
+                    ftfl_begin_program_longword(
+                        fl_current_addr + dfu_program_index,
+                        (uint32_t*)(dfu_buffer + dfu_program_index)
+                        );
+                    dfu_program_index += 4;
+                }
+                else {
+                    fl_state = flsIDLE;
+                }
             }
             break;
     }
