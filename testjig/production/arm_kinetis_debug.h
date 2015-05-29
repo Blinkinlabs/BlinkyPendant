@@ -68,11 +68,11 @@ public:
     // Flash mass-erase operation. Works even on protected devices.
     bool flashMassErase();
 
-    // Initialize the FlexRAM buffer for flash sector programming
-    bool flashSectorBufferInit();
-
-    // Write a chunk of data to the flash sector buffer
-    bool flashSectorBufferWrite(uint32_t bufferOffset, const uint32_t *data, unsigned count);
+//    // Initialize the FlexRAM buffer for flash sector programming
+//    bool flashSectorBufferInit();
+//
+//    // Write a chunk of data to the flash sector buffer
+//    bool flashSectorBufferWrite(uint32_t bufferOffset, const uint32_t *data, unsigned count);
 
     // Write one flash sector from the buffer
     bool flashSectorProgram(uint32_t address);
@@ -93,9 +93,11 @@ public:
             const uint32_t *image;
             unsigned numSectors;
             unsigned nextSector;
+            unsigned numLongwords;
+            unsigned nextLongword;
             bool isVerifying;
     };
-
+    
     static const uint32_t FLASH_SECTOR_SIZE = 1024;
 
     // Port constants. (Corresponds to PCR address base)
@@ -162,7 +164,8 @@ protected:
     // Low-level flash interface
     bool ftfl_busyWait();
     bool ftfl_launchCommand();
-    bool ftfl_setFlexRAMFunction(uint8_t controlCode);
-    bool ftfl_programSection(uint32_t address, uint32_t numLWords);
+//    bool ftfl_setFlexRAMFunction(uint8_t controlCode);
+//    bool ftfl_programSection(uint32_t address, uint32_t numLWords);
+    bool ftfl_programLongword(uint32_t address, const uint32_t& longWord);
     bool ftfl_handleCommandStatus(const char *cmdSpecificError = 0);
 };

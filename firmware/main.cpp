@@ -144,9 +144,9 @@ extern "C" int main()
             uint8_t length = *LENGTH_PTR;
 
             // If there isn't a valid header, set the length to 0
-            if((*MAGIC_0_PTR != MAGIC_0) || (*MAGIC_1_PTR != MAGIC_1)) {
-                length = 0;
-            }
+//            if((*MAGIC_0_PTR != MAGIC_0) || (*MAGIC_1_PTR != MAGIC_1)) {
+//                length = 0;
+//            }
 
             flashAnimation.init(
                 length,

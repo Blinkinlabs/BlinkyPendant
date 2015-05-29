@@ -120,7 +120,6 @@ void loop()
     if (!remote.testAccelerometer())
           return;
 
-
     // Test that the LED outputs work
     if (!remote.testLEDOutputs())
           return;

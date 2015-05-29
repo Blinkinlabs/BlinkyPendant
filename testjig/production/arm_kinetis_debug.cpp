@@ -313,30 +313,41 @@ bool ARMKinetisDebug::flashMassErase()
     return true;
 }
 
-bool ARMKinetisDebug::flashSectorBufferInit()
-{
-    // Use FlexRAM as normal RAM, and erase it. Test to make sure it's working.
-    return
-        ftfl_setFlexRAMFunction(0xFF) &&
-        memStoreAndVerify(REG_FLEXRAM_BASE, 0x12345678) &&
-        memStoreAndVerify(REG_FLEXRAM_BASE, 0xFFFFFFFF) &&
-        memStoreAndVerify(REG_FLEXRAM_BASE + FLASH_SECTOR_SIZE - 4, 0xA5559872) &&
-        memStoreAndVerify(REG_FLEXRAM_BASE + FLASH_SECTOR_SIZE - 4, 0xFFFFFFFF);
-}
+//bool ARMKinetisDebug::flashSectorBufferInit()
+//{
+//    // Use FlexRAM as normal RAM, and erase it. Test to make sure it's working.
+//    return
+//        ftfl_setFlexRAMFunction(0xFF) &&
+//        memStoreAndVerify(REG_FLEXRAM_BASE, 0x12345678) &&
+//        memStoreAndVerify(REG_FLEXRAM_BASE, 0xFFFFFFFF) &&
+//        memStoreAndVerify(REG_FLEXRAM_BASE + FLASH_SECTOR_SIZE - 4, 0xA5559872) &&
+//        memStoreAndVerify(REG_FLEXRAM_BASE + FLASH_SECTOR_SIZE - 4, 0xFFFFFFFF);
+//}
+//
+//bool ARMKinetisDebug::flashSectorBufferWrite(uint32_t bufferOffset, const uint32_t *data, unsigned count)
+//{
+//    if (bufferOffset & 3) {
+//        log(LOG_ERROR, "ARMKinetisDebug::flashSectorBufferWrite alignment error");
+//        return false;
+//    }
+//    if (bufferOffset + (count * sizeof *data) > FLASH_SECTOR_SIZE) {
+//        log(LOG_ERROR, "ARMKinetisDebug::flashSectorBufferWrite overrun");
+//        return false;
+//    }
+//
+//    return memStore(REG_FLEXRAM_BASE + bufferOffset, data, count);
+//}
 
-bool ARMKinetisDebug::flashSectorBufferWrite(uint32_t bufferOffset, const uint32_t *data, unsigned count)
-{
-    if (bufferOffset & 3) {
-        log(LOG_ERROR, "ARMKinetisDebug::flashSectorBufferWrite alignment error");
-        return false;
-    }
-    if (bufferOffset + (count * sizeof *data) > FLASH_SECTOR_SIZE) {
-        log(LOG_ERROR, "ARMKinetisDebug::flashSectorBufferWrite overrun");
-        return false;
-    }
+//bool ARMKinetisDebug::flashSectorProgram(uint32_t address)
+//{
+//    if (address & (FLASH_SECTOR_SIZE-1)) {
+//        log(LOG_ERROR, "ARMKinetisDebug::flashSectorProgram alignment error");
+//        return false;
+//    }
+//
+//    return ftfl_programSection(address, FLASH_SECTOR_SIZE/4);
+//}
 
-    return memStore(REG_FLEXRAM_BASE + bufferOffset, data, count);
-}
 
 bool ARMKinetisDebug::I2C0begin() {
 //    SIM_SCGC4 |= SIM_SCGC4_I2C0;    // Enable the I2C0 clock
@@ -532,18 +543,6 @@ bool ARMKinetisDebug::I2C0available() {
   return I2C0remaining > 0;
 }
 
-
-
-bool ARMKinetisDebug::flashSectorProgram(uint32_t address)
-{
-    if (address & (FLASH_SECTOR_SIZE-1)) {
-        log(LOG_ERROR, "ARMKinetisDebug::flashSectorProgram alignment error");
-        return false;
-    }
-
-    return ftfl_programSection(address, FLASH_SECTOR_SIZE/4);
-}
-
 bool ARMKinetisDebug::ftfl_busyWait()
 {
     const unsigned retries = 1000;
@@ -565,30 +564,51 @@ bool ARMKinetisDebug::ftfl_launchCommand()
         memStoreByte(REG_FTFL_FSTAT, REG_FTFL_FSTAT_CCIF);
 }
 
-bool ARMKinetisDebug::ftfl_setFlexRAMFunction(uint8_t controlCode)
-{
-    return
-        ftfl_busyWait() &&
-        memStoreByte(REG_FTFL_FCCOB0, 0x81) &&
-        memStoreByte(REG_FTFL_FCCOB1, controlCode) &&
-        ftfl_launchCommand() &&
-        ftfl_busyWait() &&
-        ftfl_handleCommandStatus();
-}
+//bool ARMKinetisDebug::ftfl_setFlexRAMFunction(uint8_t controlCode)
+//{
+//    return
+//        ftfl_busyWait() &&
+//        memStoreByte(REG_FTFL_FCCOB0, 0x81) &&
+//        memStoreByte(REG_FTFL_FCCOB1, controlCode) &&
+//        ftfl_launchCommand() &&
+//        ftfl_busyWait() &&
+//        ftfl_handleCommandStatus();
+//}
 
-bool ARMKinetisDebug::ftfl_programSection(uint32_t address, uint32_t numLWords)
+//bool ARMKinetisDebug::ftfl_programSection(uint32_t address, uint32_t numLWords)
+//{
+//    return
+//        ftfl_busyWait() &&
+//        memStoreByte(REG_FTFL_FCCOB0, 0x0B) &&
+//        memStoreByte(REG_FTFL_FCCOB1, address >> 16) &&
+//        memStoreByte(REG_FTFL_FCCOB2, address >> 8) &&
+//        memStoreByte(REG_FTFL_FCCOB3, address) &&
+//        memStoreByte(REG_FTFL_FCCOB4, numLWords >> 8) &&
+//        memStoreByte(REG_FTFL_FCCOB5, numLWords) &&
+//        ftfl_launchCommand() &&
+//        ftfl_busyWait() &&
+//        ftfl_handleCommandStatus("FLASH: Error verifying sector! (FSTAT: %08x)");
+//}
+
+bool ARMKinetisDebug::ftfl_programLongword(uint32_t address, const uint32_t& longWord)
 {
+    // TODO: Write this byte-by-byte
+    // Note: Since some devices won't have flexram, we have to program in 4-byte chunks instead. Sucks a little...
+    
     return
         ftfl_busyWait() &&
-        memStoreByte(REG_FTFL_FCCOB0, 0x0B) &&
+        memStoreByte(REG_FTFL_FCCOB0, 0x06) &&
         memStoreByte(REG_FTFL_FCCOB1, address >> 16) &&
         memStoreByte(REG_FTFL_FCCOB2, address >> 8) &&
         memStoreByte(REG_FTFL_FCCOB3, address) &&
-        memStoreByte(REG_FTFL_FCCOB4, numLWords >> 8) &&
-        memStoreByte(REG_FTFL_FCCOB5, numLWords) &&
-        ftfl_launchCommand() &&
-        ftfl_busyWait() &&
-        ftfl_handleCommandStatus("FLASH: Error verifying sector! (FSTAT: %08x)");
+        memStoreByte(REG_FTFL_FCCOB4, longWord >> 24) &&
+        memStoreByte(REG_FTFL_FCCOB5, longWord >> 16) &&
+        memStoreByte(REG_FTFL_FCCOB6, longWord >> 8) &&
+        memStoreByte(REG_FTFL_FCCOB7, longWord) &&
+        ftfl_launchCommand();
+//        ftfl_launchCommand() &&
+//        ftfl_busyWait() &&
+//        ftfl_handleCommandStatus("FLASH: Error writing longword! (FSTAT: %08x)");
 }
 
 bool ARMKinetisDebug::ftfl_handleCommandStatus(const char *cmdSpecificError)
@@ -622,6 +642,7 @@ bool ARMKinetisDebug::ftfl_handleCommandStatus(const char *cmdSpecificError)
     return true;
 }
 
+
 ARMKinetisDebug::FlashProgrammer::FlashProgrammer(
     ARMKinetisDebug &target, const uint32_t *image, unsigned numSectors)
     : target(target), image(image), numSectors(numSectors)
@@ -629,7 +650,8 @@ ARMKinetisDebug::FlashProgrammer::FlashProgrammer(
 
 bool ARMKinetisDebug::FlashProgrammer::begin()
 {
-    nextSector = 0;
+    nextLongword = 0;
+    numLongwords = numSectors*FLASH_SECTOR_SIZE / 4;
     isVerifying = false;
 
     // Start with a mass-erase
@@ -640,9 +662,9 @@ bool ARMKinetisDebug::FlashProgrammer::begin()
     if (!(target.reset() && target.debugHalt() && target.peripheralInit()))
         return false;
 
-    // Use FlexRAM as normal RAM, for buffering flash sectors
-    if (!target.flashSectorBufferInit())
-        return false;
+//    // Use FlexRAM as normal RAM, for buffering flash sectors
+//    if (!target.flashSectorBufferInit())
+//        return false;
 
     return true;
 }
@@ -654,10 +676,10 @@ bool ARMKinetisDebug::FlashProgrammer::isComplete()
 
 bool ARMKinetisDebug::FlashProgrammer::next()
 {
-    uint32_t address = nextSector * FLASH_SECTOR_SIZE;
-    const uint32_t *ptr = image + (nextSector * FLASH_SECTOR_SIZE/4);
+    if (isVerifying) {       
+        uint32_t address = nextSector * FLASH_SECTOR_SIZE;
+        const uint32_t *ptr = image + (nextSector * FLASH_SECTOR_SIZE/4);
 
-    if (isVerifying) {
         target.log(LOG_NORMAL, "FLASH: Verifying sector at %08x", address);
 
         uint32_t buffer[FLASH_SECTOR_SIZE/4];
@@ -683,21 +705,44 @@ bool ARMKinetisDebug::FlashProgrammer::next()
         }
 
     } else {
-        target.log(LOG_NORMAL, "FLASH: Programming sector at %08x", address);
+        // TODO: This doesn't help make things faster.
+        int maxSteps = 10;
+        do {
+          uint32_t address = nextLongword * 4;
+      
+          if(address%FLASH_SECTOR_SIZE == 0)
+              target.log(LOG_NORMAL, "FLASH: Programming longword at %08x", address);
 
-        if (!target.flashSectorBufferWrite(0, ptr, FLASH_SECTOR_SIZE/4))
-            return false;
-        if (!target.flashSectorProgram(address))
-            return false;
-
-        if (++nextSector == numSectors) {
-            // Done programming. Another reset! Load new protection flags.
-            if (!(target.reset() && target.debugHalt() && target.peripheralInit()))
-                return false;
-
-            nextSector = 0;
-            isVerifying = true;
+          
+          if (!target. ftfl_programLongword(address, image[nextLongword]))
+              return false;
+            
+            
+          if (++nextLongword == numLongwords) {
+              // Done programming. Another reset! Load new protection flags.
+              if (!(target.reset() && target.debugHalt() && target.peripheralInit()))
+                  return false;
+                
+              nextSector = 0;
+              isVerifying = true;
+          }
         }
+        while ((--maxSteps > 0) && !isVerifying);
+      
+//        target.log(LOG_NORMAL, "FLASH: Programming sector at %08x", address);
+//
+//        if (!target.flashSectorBufferWrite(0, ptr, FLASH_SECTOR_SIZE/4))
+//            return false;
+//        if (!target.flashSectorProgram(address))
+//            return false;
+//        if (++nextSector == numSectors) {
+//            // Done programming. Another reset! Load new protection flags.
+//            if (!(target.reset() && target.debugHalt() && target.peripheralInit()))
+//                return false;
+//
+//            nextSector = 0;
+//            isVerifying = true;
+//        }
     }
 
     return true;
