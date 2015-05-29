@@ -144,7 +144,7 @@ extern "C" int main()
             uint8_t length = *LENGTH_PTR;
 
             // If there isn't a valid header, set the length to 0
-//            if((*MAGIC_0_PTR != MAGIC_0) || (*MAGIC_1_PTR != MAGIC_1)) {
+//            if((*(MAGIC_0_PTR) != MAGIC_0) || (*(MAGIC_1_PTR) != MAGIC_1)) {
 //                length = 0;
 //            }
 
@@ -155,10 +155,11 @@ extern "C" int main()
                 LED_COUNT);
 
             // If we just invalidated our animation, choose a new one
-            //while(builtinAnimations[currentAnimation]->frameCount == 0) {
-            //    currentAnimation = (currentAnimation+1)%builtinAnimationCount;
-            //}
-            //pov.setAnimation(builtinAnimations[currentAnimation]);
+//            currentAnimation = 0;
+//            while(builtinAnimations[currentAnimation]->frameCount == 0) {
+//                currentAnimation = (currentAnimation+1)%builtinAnimationCount;
+//            }
+//            pov.setAnimation(builtinAnimations[currentAnimation]);
         }
 
         userButtons.buttonTask();

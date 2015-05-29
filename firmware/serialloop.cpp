@@ -253,7 +253,7 @@ bool commandWrite(uint8_t* buffer) {
 bool commandStopWrite(uint8_t* buffer) {
     writing = false;
 
-    //reloadAnimations = true;
+    reloadAnimations = true;
 
     buffer[0] = 0;
     return true;

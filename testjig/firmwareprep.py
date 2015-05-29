@@ -8,8 +8,10 @@
 ########################### Configuration ###########################
 
 # Firmware image to deploy
-HEX_FILE = "../firmware/pendant-firmware.hex"
-ELF_FILE = "../firmware/pendant-firmware.elf"
+#HEX_FILE = "../firmware/pendant-firmware.hex"
+#ELF_FILE = "../firmware/pendant-firmware.elf"
+HEX_FILE = "../bin/pendant-image-v100.hex"
+ELF_FILE = "../bin/pendant-image-v100.elf"
 
 # Which GDB to use for the firmware image
 GDB_COMMAND = "arm-none-eabi-gdb"
