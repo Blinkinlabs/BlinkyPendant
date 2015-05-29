@@ -41,28 +41,34 @@
 #include "animations/kinetisconnects.h"
 #include "animations/freescale.h"
 #include "animations/ftf2015.h"
+#include "animations/blinkinlabs.h"
 #include "animations/squiggle.h"
 #include "animations/dots.h"
+#include "animations/nyan-cat.h"
 
 
 // Button inputs
 Buttons userButtons;
 
-// built-in animations
-#define builtinAnimationCount 5
-Animation* builtinAnimations[builtinAnimationCount] = {
-    &kinetisAnimation,
-    &freescaleAnimation,
-    &dotsAnimation,
-    &squiggleAnimation,
-    &ftfAnimation,
-};
-
 // 1-frame animation for showing serial data
 extern Animation serialAnimation;
 
 // Bad idea animation
-Animation flashAnimation(10, (const uint8_t*)0x9000,ENCODING_RGB24, LED_COUNT);
+//Animation flashAnimation(10, (const uint8_t*)0x9000,ENCODING_RGB24, LED_COUNT);
+Animation flashAnimation;
+
+// built-in animations
+#define builtinAnimationCount 8
+Animation* builtinAnimations[builtinAnimationCount] = {
+    &ftfAnimation,
+    &squiggleAnimation,
+    &kinetisAnimation,
+    &dotsAnimation,
+    &freescaleAnimation,
+    &nyancatAnimation,
+    &blinkinlabsAnimation,
+    &flashAnimation,
+};
 
 // Reserved RAM area for signalling entry to bootloader
 extern uint32_t boot_token;
@@ -113,17 +119,50 @@ extern "C" int main()
 
     int currentAnimation = 0;
     pov.setup();
-//    pov.setAnimation(builtinAnimations[currentAnimation]);
-    pov.setAnimation(&flashAnimation);
+    pov.setAnimation(builtinAnimations[currentAnimation]);
 
     matrixSetup();
 
     serialReset();
 
+    reloadAnimations = true;
+
+
     // Application main loop
     while (usb_dfu_state == DFU_appIDLE) {
         watchdog_refresh();
        
+        if(reloadAnimations) {
+            reloadAnimations = false;
+
+            #define MAGIC_0_PTR ((uint8_t*)0x9000)
+            #define MAGIC_1_PTR ((uint8_t*)0x9001)
+            #define LENGTH_PTR  ((uint8_t*)0x9002)
+            #define DATA_PTR    ((uint8_t*)0x9002)
+
+            uint8_t length = *LENGTH_PTR;
+
+/*
+            // If there isn't a valid header, set the length to 0
+            if((*MAGIC_0_PTR != 0x13) || (*MAGIC_1_PTR != 0x37)) {
+                length = 0;
+            }
+ */
+
+            flashAnimation.init(
+                length,
+                DATA_PTR,
+                ENCODING_RGB24,
+                LED_COUNT);
+
+            currentAnimation = 0;
+            // Choose the next valid animiation
+            do {
+                currentAnimation = (currentAnimation+1)%builtinAnimationCount;
+                pov.setAnimation(builtinAnimations[currentAnimation]);
+            } while(builtinAnimations[currentAnimation]->frameCount > 0);
+        }
+
         userButtons.buttonTask();
 
         // Hit the accelerometer every 
@@ -143,8 +182,11 @@ extern "C" int main()
             uint8_t button = userButtons.getPressed();
     
             if(button == BUTTON_A) {
-                currentAnimation = (currentAnimation+1)%builtinAnimationCount;
-                pov.setAnimation(builtinAnimations[currentAnimation]);
+                // Choose the next valid animiation
+                do {
+                    currentAnimation = (currentAnimation+1)%builtinAnimationCount;
+                    pov.setAnimation(builtinAnimations[currentAnimation]);
+                } while(builtinAnimations[currentAnimation]->frameCount > 0);
             }
         }
 

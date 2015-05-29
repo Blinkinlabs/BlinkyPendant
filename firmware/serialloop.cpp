@@ -16,10 +16,11 @@ extern bool reloadAnimations;
 
 int serialMode;         // Serial protocol we are speaking
 
-
+// 1-frame animation to show incoming serial data
 uint8_t frameData[LED_COUNT*3];
 Animation serialAnimation(1, (const uint8_t*)frameData, ENCODING_RGB24, LED_COUNT);
 
+extern bool reloadAnimations;
 
 ///// Defines for the data mode
 void dataLoop();
@@ -80,9 +81,9 @@ void dataLoop() {
             // Prevent overflow by ignoring any pixel data beyond LED_COUNT
             if(pixelIndex < LED_COUNT) {
 //                dmxSetPixel(pixelIndex, buffer[2], buffer[1], buffer[0]);
-                frameData[pixelIndex*3 + 0] = buffer[2];
+                frameData[pixelIndex*3 + 0] = buffer[0];
                 frameData[pixelIndex*3 + 1] = buffer[1];
-                frameData[pixelIndex*3 + 2] = buffer[0];
+                frameData[pixelIndex*3 + 2] = buffer[2];
                 pixelIndex++;
             }
         }
@@ -246,13 +247,13 @@ bool commandWrite(uint8_t* buffer) {
 
     bool result = doWrite(buffer, blockNum, blockLength, packetOffset, packetLength);
 
-    // restart the matrix
-    matrixSetup();
     return result;
 }
 
 bool commandStopWrite(uint8_t* buffer) {
     writing = false;
+
+    reloadAnimations = true;
 
     buffer[0] = 0;
     return true;

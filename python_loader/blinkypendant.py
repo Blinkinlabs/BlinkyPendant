@@ -146,9 +146,15 @@ if __name__ == "__main__":
         print "Error starting write"
         exit(1)
 
+    length = 10
+
     # Make a simple animation
     data = ''
-    for step in range(0,10):
+    data += chr(0x13)
+    data += chr(0x37)
+    data += chr(length)
+
+    for step in range(0,legth):
         for pixel in range(0,10):
             if step == pixel:
                 data += chr(100);
