@@ -27,6 +27,10 @@
 #include "arm_kinetis_reg.h"
 
 
+//TODO: Not a global?
+bool rewriteFlashCommand;
+
+
 ARMKinetisDebug::ARMKinetisDebug(unsigned clockPin, unsigned dataPin, LogLevel logLevel)
     : ARMDebug(clockPin, dataPin, logLevel)
 {}
@@ -592,23 +596,90 @@ bool ARMKinetisDebug::ftfl_launchCommand()
 
 bool ARMKinetisDebug::ftfl_programLongword(uint32_t address, const uint32_t& longWord)
 {
-    // TODO: Write this byte-by-byte
+    // TODO: Clean me!
     // Note: Since some devices won't have flexram, we have to program in 4-byte chunks instead. Sucks a little...
     
+    //Only update register bytes that we need to, to save a little time.
+    static uint8_t lastAddr16 = 0;
+    static uint8_t lastAddr8 = 0;
+    static uint8_t lastAddr0 = 0;
+
+    static uint8_t lastData24 = 0;
+    static uint8_t lastData16 = 0;
+    static uint8_t lastData8 = 0;
+    static uint8_t lastData0 = 0;
+
+    if(lastAddr16 != (address >> 16)&0xFF) {
+        lastAddr16 = (address >> 16)&0xFF;
+        if(!memStoreByte(REG_FTFL_FCCOB1, lastAddr16))
+            return false;
+    }
+    
+    if(lastAddr8 != (address >> 8)&0xFF) {
+        lastAddr8 = (address >> 8)&0xFF;
+        if(!memStoreByte(REG_FTFL_FCCOB2, lastAddr8))
+            return false;
+    }
+    
+    if(lastAddr0 != (address >> 0)&0xFF) {
+        lastAddr0 = (address >> 0)&0xFF;
+        if(!memStoreByte(REG_FTFL_FCCOB3, lastAddr0))
+            return false;
+    }
+
+    
+    if(lastData24 != (longWord >> 24)&0xFF) {
+        lastData24 = (longWord >> 24)&0xFF;
+        if(!memStoreByte(REG_FTFL_FCCOB4, lastData24))
+            return false;
+    }
+
+    if(lastData16 != (longWord >> 16)&0xFF) {
+        lastData16 = (longWord >> 16)&0xFF;
+        if(!memStoreByte(REG_FTFL_FCCOB5, lastData16))
+            return false;
+    }
+    
+    if(lastData8 != (longWord >> 8)&0xFF) {
+        lastData8 = (longWord >> 8)&0xFF;
+        if(!memStoreByte(REG_FTFL_FCCOB6, lastData8))
+            return false;
+    }
+    
+    if(lastData0 != (longWord >> 0)&0xFF) {
+        lastData0 = (longWord >> 0)&0xFF;
+        if(!memStoreByte(REG_FTFL_FCCOB7, lastData0))
+            return false;
+    }
+
+    // Make sure we write each byte at least once.
+    if(rewriteFlashCommand) {
+        rewriteFlashCommand = false;
+        
+        return
+            ftfl_busyWait() &&  // We are so slow, don't bother.
+            memStoreByte(REG_FTFL_FCCOB0, 0x06) &&
+            memStoreByte(REG_FTFL_FCCOB1, address >> 16) &&
+            memStoreByte(REG_FTFL_FCCOB2, address >> 8) &&
+            memStoreByte(REG_FTFL_FCCOB3, address) &&
+            memStoreByte(REG_FTFL_FCCOB4, longWord >> 24) &&
+            memStoreByte(REG_FTFL_FCCOB5, longWord >> 16) &&
+            memStoreByte(REG_FTFL_FCCOB6, longWord >> 8) &&
+            memStoreByte(REG_FTFL_FCCOB7, longWord) &&
+            ftfl_launchCommand();
+    }
+    
     return
-        ftfl_busyWait() &&
-        memStoreByte(REG_FTFL_FCCOB0, 0x06) &&
-        memStoreByte(REG_FTFL_FCCOB1, address >> 16) &&
-        memStoreByte(REG_FTFL_FCCOB2, address >> 8) &&
-        memStoreByte(REG_FTFL_FCCOB3, address) &&
-        memStoreByte(REG_FTFL_FCCOB4, longWord >> 24) &&
-        memStoreByte(REG_FTFL_FCCOB5, longWord >> 16) &&
-        memStoreByte(REG_FTFL_FCCOB6, longWord >> 8) &&
-        memStoreByte(REG_FTFL_FCCOB7, longWord) &&
+//        ftfl_busyWait() &&  // We are so slow, don't bother.
+//        memStoreByte(REG_FTFL_FCCOB0, 0x06) &&
+//        memStoreByte(REG_FTFL_FCCOB1, address >> 16) &&
+//        memStoreByte(REG_FTFL_FCCOB2, address >> 8) &&
+//        memStoreByte(REG_FTFL_FCCOB3, address) &&
+//        memStoreByte(REG_FTFL_FCCOB4, longWord >> 24) &&
+//        memStoreByte(REG_FTFL_FCCOB5, longWord >> 16) &&
+//        memStoreByte(REG_FTFL_FCCOB6, longWord >> 8) &&
+//        memStoreByte(REG_FTFL_FCCOB7, longWord) &&
         ftfl_launchCommand();
-//        ftfl_launchCommand() &&
-//        ftfl_busyWait() &&
-//        ftfl_handleCommandStatus("FLASH: Error writing longword! (FSTAT: %08x)");
 }
 
 bool ARMKinetisDebug::ftfl_handleCommandStatus(const char *cmdSpecificError)
@@ -653,6 +724,8 @@ bool ARMKinetisDebug::FlashProgrammer::begin()
     nextLongword = 0;
     numLongwords = numSectors*FLASH_SECTOR_SIZE / 4;
     isVerifying = false;
+    
+    rewriteFlashCommand = true;  // Set this to true to force loading all registers before programming flash.
 
     // Start with a mass-erase
     if (!target.flashMassErase())
