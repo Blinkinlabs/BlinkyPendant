@@ -54,7 +54,6 @@ Buttons userButtons;
 extern Animation serialAnimation;
 
 // Bad idea animation
-//Animation flashAnimation(10, (const uint8_t*)0x9000,ENCODING_RGB24, LED_COUNT);
 Animation flashAnimation;
 
 // built-in animations
@@ -135,19 +134,19 @@ extern "C" int main()
         if(reloadAnimations) {
             reloadAnimations = false;
 
-            #define MAGIC_0_PTR ((uint8_t*)0x9000)
-            #define MAGIC_1_PTR ((uint8_t*)0x9001)
-            #define LENGTH_PTR  ((uint8_t*)0x9002)
-            #define DATA_PTR    ((uint8_t*)0x9002)
+            #define MAGIC_0     (0x13)
+            #define MAGIC_1     (0x37)
+            #define MAGIC_0_PTR ((uint8_t*)0xA000)
+            #define MAGIC_1_PTR ((uint8_t*)0xA001)
+            #define LENGTH_PTR  ((uint8_t*)0xA002)
+            #define DATA_PTR    ((uint8_t*)0xA003)
 
             uint8_t length = *LENGTH_PTR;
 
-/*
             // If there isn't a valid header, set the length to 0
-            if((*MAGIC_0_PTR != 0x13) || (*MAGIC_1_PTR != 0x37)) {
+            if((*MAGIC_0_PTR != MAGIC_0) || (*MAGIC_1_PTR != MAGIC_1)) {
                 length = 0;
             }
- */
 
             flashAnimation.init(
                 length,
@@ -155,12 +154,11 @@ extern "C" int main()
                 ENCODING_RGB24,
                 LED_COUNT);
 
-            currentAnimation = 0;
-            // Choose the next valid animiation
-            do {
-                currentAnimation = (currentAnimation+1)%builtinAnimationCount;
-                pov.setAnimation(builtinAnimations[currentAnimation]);
-            } while(builtinAnimations[currentAnimation]->frameCount > 0);
+            // If we just invalidated our animation, choose a new one
+            //while(builtinAnimations[currentAnimation]->frameCount == 0) {
+            //    currentAnimation = (currentAnimation+1)%builtinAnimationCount;
+            //}
+            //pov.setAnimation(builtinAnimations[currentAnimation]);
         }
 
         userButtons.buttonTask();
@@ -185,8 +183,8 @@ extern "C" int main()
                 // Choose the next valid animiation
                 do {
                     currentAnimation = (currentAnimation+1)%builtinAnimationCount;
-                    pov.setAnimation(builtinAnimations[currentAnimation]);
-                } while(builtinAnimations[currentAnimation]->frameCount > 0);
+                } while(builtinAnimations[currentAnimation]->frameCount == 0);
+                pov.setAnimation(builtinAnimations[currentAnimation]);
             }
         }
 

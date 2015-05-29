@@ -253,7 +253,7 @@ bool commandWrite(uint8_t* buffer) {
 bool commandStopWrite(uint8_t* buffer) {
     writing = false;
 
-    reloadAnimations = true;
+    //reloadAnimations = true;
 
     buffer[0] = 0;
     return true;
@@ -274,8 +274,11 @@ bool commandRead(uint8_t* buffer) {
         return false;
     }
 
-    dfu_upload(readPacketCount*BYTES_PER_PACKET, BYTES_PER_PACKET, &(buffer[1]));
-    buffer[0] = BYTES_PER_PACKET;
+    // TODO: Fixme
+    //dfu_upload(readPacketCount*BYTES_PER_PACKET, BYTES_PER_PACKET, buffer+1);
+    //buffer[0] = BYTES_PER_PACKET;
+
+    buffer[0]=0;
     return true;
 }
 

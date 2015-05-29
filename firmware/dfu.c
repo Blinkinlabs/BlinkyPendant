@@ -86,10 +86,9 @@ RAM_FUNCTION void ftfl_begin_program_longword(uint32_t address, uint32_t* longwo
     ftfl_launch_command();
 }
 
-RAM_FUNCTION
-uint32_t address_for_block(unsigned blockNum)
+RAM_FUNCTION uint32_t address_for_block(unsigned blockNum)
 {
-    return (uint32_t)0x9000 + (blockNum << 10);
+    return (uint32_t)0xA000 + (blockNum << 10);
 }
 
 bool dfu_upload(unsigned offset, unsigned length, const uint8_t *data)

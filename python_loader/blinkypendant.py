@@ -150,11 +150,11 @@ if __name__ == "__main__":
 
     # Make a simple animation
     data = ''
-    data += chr(0x13)
+    data += chr(0x13)       # header
     data += chr(0x37)
     data += chr(length)
 
-    for step in range(0,legth):
+    for step in range(0,length):
         for pixel in range(0,10):
             if step == pixel:
                 data += chr(100);
@@ -162,8 +162,8 @@ if __name__ == "__main__":
                 data += chr(100);
             else:
                 data += chr(0);
-                data += chr(20);
-                data += chr(20);
+                data += chr(0);
+                data += chr(0);
    
     # pad it out to a 1k sector
     while(len(data)%1024 != 0):
@@ -179,6 +179,8 @@ if __name__ == "__main__":
     if not bt.stopWrite():
         print "Error stopping write"
         exit(1)
+
+    exit(0)
 
     print "starting read"
     if not bt.startRead():
