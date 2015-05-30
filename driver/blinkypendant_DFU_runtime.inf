@@ -45,7 +45,7 @@
 DeviceName = "BlinkyPendant Bootloader"
 ; Make sure "VID_" and "PID_" are always part of the strings below
 VendorID = "VID_1209"
-ProductID = "PID_8889"
+ProductID = "PID_8888"
 InterfaceID = "MI_03"
 DeviceGUID = "{94B4868C-D15F-46ED-A41B-86C5388A08DF}"
 DeviceClassGUID = "{78a1c341-4539-11d3-b88d-00c04fad5171}"
