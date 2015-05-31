@@ -10,3 +10,4 @@ bootloader/*.elf
 bootloader/*.hex
 bootloader/*.bin
 *.pyc
+driver/*crt

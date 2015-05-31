@@ -32,7 +32,7 @@ def listPorts():
     # TODO: Windows ?
 
     else:
-        match = "*"
+        match = '.'
 
     for port in allPorts:
         # If the port name is acceptable, add it to the list
