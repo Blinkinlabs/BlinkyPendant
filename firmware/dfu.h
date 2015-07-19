@@ -25,7 +25,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define RAM_FUNCTION __attribute__( ( long_call, section(".data") ) ) 
+#define RAM_FUNCTION __attribute__( ( long_call, section(".data#") ) ) 
 
 
 typedef enum {
