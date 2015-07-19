@@ -108,6 +108,86 @@ void setupWatchdog() {
     WDOG_TOVALL = (watchdog_timeout)       & 0xFFFF;
 }
 
+// TODO: Move me to a separate class
+#define ANIMATION_START 0xA000
+
+#define MAGIC_0     (0x31)
+#define MAGIC_1     (0x23)
+
+#define MAGIC_0_PTR ((uint8_t*)(ANIMATION_START+0x0000))
+#define MAGIC_1_PTR ((uint8_t*)(ANIMATION_START+0x0001))
+
+#define PATTERN_TABLE_ADDRESS  ((uint8_t*)(ANIMATION_START+0x0002))   // Location of the pattern table in the flash memory
+
+// TODO: Merge this with patternplayer_sketch?
+#define PATTERN_TABLE_HEADER_LENGTH     2        // Length of the header, in bytes
+#define PATTERN_TABLE_ENTRY_LENGTH      9        // Length of each entry, in bytes
+  
+#define PATTERN_COUNT_OFFSET    0    // Number of patterns in the pattern table (1 byte)
+#define LED_COUNT_OFFSET        1    // Number of LEDs in the pattern (1 byte)
+ 
+#define ENCODING_TYPE_OFFSET    0    // Encoding (1 byte)
+#define FRAME_DATA_OFFSET       1    // Memory location (4 bytes)
+#define FRAME_COUNT_OFFSET      5    // Frame count (2 bytes)
+#define FRAME_DELAY_OFFSET      7    // Frame delay (2 bytes)
+
+/// Get the number of animations stored in the flash
+/// @return animation count, or 0 if no animations present
+unsigned int getAnimationCount() {
+    // If there isn't a valid header, set the length to 0
+//    if((*(MAGIC_0_PTR) != MAGIC_0) || (*(MAGIC_1_PTR) != MAGIC_1)) {
+//        return 0;
+//    }
+
+    return *(PATTERN_TABLE_ADDRESS + PATTERN_COUNT_OFFSET);
+}
+
+unsigned int getLedCount() {
+    // TODO
+    return LED_COUNT;
+
+    // If there isn't a valid header, set the length to 0
+    if((*(MAGIC_0_PTR) != MAGIC_0) || (*(MAGIC_1_PTR) != MAGIC_1)) {
+        return 0;
+    }
+
+    return *(PATTERN_TABLE_ADDRESS + LED_COUNT_OFFSET);
+}
+
+bool loadAnimation(unsigned int index, Animation* animation) {
+    if(index > getAnimationCount()) {
+        return false;
+    }
+
+    uint8_t* patternEntryAddress =
+            PATTERN_TABLE_ADDRESS
+            + PATTERN_TABLE_HEADER_LENGTH
+            + index * PATTERN_TABLE_ENTRY_LENGTH;
+
+    uint8_t encodingType = *(patternEntryAddress + ENCODING_TYPE_OFFSET);
+    
+    uint8_t *frameData  = PATTERN_TABLE_ADDRESS
+                        + PATTERN_TABLE_HEADER_LENGTH
+                        + getAnimationCount() * PATTERN_TABLE_ENTRY_LENGTH
+                        + (*(patternEntryAddress + FRAME_DATA_OFFSET + 0) << 24)
+                        + (*(patternEntryAddress + FRAME_DATA_OFFSET + 1) << 16)
+                        + (*(patternEntryAddress + FRAME_DATA_OFFSET + 2) << 8)
+                        + (*(patternEntryAddress + FRAME_DATA_OFFSET + 3) << 0);
+ 
+    uint16_t frameCount = (*(patternEntryAddress + FRAME_COUNT_OFFSET    ) << 8)
+                        + (*(patternEntryAddress + FRAME_COUNT_OFFSET + 1) << 0);
+
+    // TODO: Validation, here or in Animation.init()
+
+//  Frame delay not used currently!
+//    frameDelay  = (*(patternEntryAddress + FRAME_DELAY_OFFSET    ) << 8)
+//                + (*(patternEntryAddress + FRAME_DELAY_OFFSET + 1) << 0);
+ 
+    animation->init(frameCount, frameData, encodingType, getLedCount());
+
+    return true;
+}
+
 extern "C" int main()
 {
     setupWatchdog();
@@ -116,8 +196,9 @@ extern "C" int main()
 
     userButtons.setup();
 
-    int currentAnimation = 0;
     pov.setup();
+
+    int currentAnimation = 0;
     pov.setAnimation(builtinAnimations[currentAnimation]);
 
     matrixSetup();
@@ -133,33 +214,12 @@ extern "C" int main()
        
         if(reloadAnimations) {
             reloadAnimations = false;
+            currentAnimation = 0;
 
-            #define MAGIC_0     (0x13)
-            #define MAGIC_1     (0x37)
-            #define MAGIC_0_PTR ((uint8_t*)0xA000)
-            #define MAGIC_1_PTR ((uint8_t*)0xA001)
-            #define LENGTH_PTR  ((uint8_t*)0xA002)
-            #define DATA_PTR    ((uint8_t*)0xA003)
-
-            uint8_t length = *LENGTH_PTR;
-
-            // If there isn't a valid header, set the length to 0
-//            if((*(MAGIC_0_PTR) != MAGIC_0) || (*(MAGIC_1_PTR) != MAGIC_1)) {
-//                length = 0;
-//            }
-
-            flashAnimation.init(
-                length,
-                DATA_PTR,
-                ENCODING_RGB24,
-                LED_COUNT);
-
-            // If we just invalidated our animation, choose a new one
-//            currentAnimation = 0;
-//            while(builtinAnimations[currentAnimation]->frameCount == 0) {
-//                currentAnimation = (currentAnimation+1)%builtinAnimationCount;
-//            }
-//            pov.setAnimation(builtinAnimations[currentAnimation]);
+            if(getAnimationCount() > currentAnimation) {
+                loadAnimation(currentAnimation, &flashAnimation);
+                pov.setAnimation(&flashAnimation);
+            }
         }
 
         userButtons.buttonTask();
@@ -181,11 +241,16 @@ extern "C" int main()
             uint8_t button = userButtons.getPressed();
     
             if(button == BUTTON_A) {
+                currentAnimation = (currentAnimation+1)%getAnimationCount();
+
+                loadAnimation(currentAnimation, &flashAnimation);
+                pov.setAnimation(&flashAnimation);
+
                 // Choose the next valid animiation
-                do {
-                    currentAnimation = (currentAnimation+1)%builtinAnimationCount;
-                } while(builtinAnimations[currentAnimation]->frameCount == 0);
-                pov.setAnimation(builtinAnimations[currentAnimation]);
+//                do {
+//                    currentAnimation = (currentAnimation+1)%builtinAnimationCount;
+//                } while(builtinAnimations[currentAnimation]->frameCount == 0);
+//                pov.setAnimation(builtinAnimations[currentAnimation]);
             }
         }
 
