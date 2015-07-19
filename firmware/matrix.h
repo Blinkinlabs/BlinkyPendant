@@ -34,12 +34,12 @@
 // Output assignments
 // Note: These can't be changed arbitrarily- the GPIOs are actually
 // referred to in the library by their port assignments.
-#define LED_DAT  11   // Port C, output 6
-#define LED_CLK  13   // Port C, output 5
-#define LED_STB  21   // Port D, output 6
-#define LED_OE   33   // FTM0 channel 1 / Port A, output 4
-#define S0        6   // Port D, output 4
-#define S1       20   // Port D, output 5
+#define LED_DATA_PIN  12   // Port C, output 6
+#define LED_CLOCK_PIN  11   // Port C, output 5
+#define LED_STROBE_PIN  16   // Port D, output 6
+#define LED_OE_PIN    4   // FTM0 channel 1 / Port A, output 4
+#define S0       14   // Port D, output 4
+#define S1       15   // Port D, output 5
 
 // RGB pixel type
 struct Pixel {

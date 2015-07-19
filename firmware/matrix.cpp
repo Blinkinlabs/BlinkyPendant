@@ -126,10 +126,10 @@ void matrixSetup() {
   pinMode(S0, OUTPUT);
   pinMode(S1, OUTPUT);
 
-  pinMode(LED_DAT, OUTPUT);
-  pinMode(LED_CLK, OUTPUT);
-  pinMode(LED_STB, OUTPUT);
-  pinMode(LED_OE, OUTPUT);
+  pinMode(LED_DATA_PIN, OUTPUT);
+  pinMode(LED_CLOCK_PIN, OUTPUT);
+  pinMode(LED_STROBE_PIN, OUTPUT);
+  pinMode(LED_OE_PIN, OUTPUT);
 
   // Fill the address table
   // To make the DMA engine easier to program, we store a copy of the address table for each output page.
@@ -460,6 +460,6 @@ void setupFTM0(){
   FTM0_SYNC |= 0x80;        // set PWM value update
 
 
-  // Configure LED_OE pinmux (LED_OE is on PORTA-4 / FTM0_CH1)
+  // Configure LED_OE_PIN pinmux (LED_OE_PIN is on PORTA-4 / FTM0_CH1)
   PORTA_PCR4 = PORT_PCR_MUX(3) | PORT_PCR_DSE | PORT_PCR_SRE; 
 }

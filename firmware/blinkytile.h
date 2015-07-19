@@ -34,8 +34,7 @@
 #define BUTTON_COUNT        1   // One input button
 #define BUTTON_A            0   // First button
 
-#define BUTTON_A_PIN        0   // Button A: Port A3  //TODO
-
+#define BUTTON_A_PIN        3   // Button A: Port A3
 #define ACCELEROMETER_INT   9   // Accelerometer input, PTC3. Note this interrupt bank needs to be set to low priority.
 
 

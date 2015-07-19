@@ -39,7 +39,6 @@ C_FILES = \
 
 CPP_FILES = \
 	main.cpp \
-	spi4teensy3.cpp \
 	blinkytile.cpp \
 	pov.cpp \
 	serialloop.cpp \

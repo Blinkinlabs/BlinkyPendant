@@ -30,6 +30,7 @@
 
 #include "core_pins.h"
 #include "pins_arduino.h"
+//#include "HardwareSerial.h"
 
 #if 0
 // moved to pins_arduino.h
@@ -77,23 +78,7 @@ const struct digital_pin_bitband_and_config_table_struct digital_pin_to_info_PGM
 	{GPIO_BITBAND_PTR(CORE_PIN14_PORTREG, CORE_PIN14_BIT), &CORE_PIN14_CONFIG},
 	{GPIO_BITBAND_PTR(CORE_PIN15_PORTREG, CORE_PIN15_BIT), &CORE_PIN15_CONFIG},
 	{GPIO_BITBAND_PTR(CORE_PIN16_PORTREG, CORE_PIN16_BIT), &CORE_PIN16_CONFIG},
-	{GPIO_BITBAND_PTR(CORE_PIN17_PORTREG, CORE_PIN17_BIT), &CORE_PIN17_CONFIG},
-	{GPIO_BITBAND_PTR(CORE_PIN18_PORTREG, CORE_PIN18_BIT), &CORE_PIN18_CONFIG},
-	{GPIO_BITBAND_PTR(CORE_PIN19_PORTREG, CORE_PIN19_BIT), &CORE_PIN19_CONFIG},
-	{GPIO_BITBAND_PTR(CORE_PIN20_PORTREG, CORE_PIN20_BIT), &CORE_PIN20_CONFIG},
-	{GPIO_BITBAND_PTR(CORE_PIN21_PORTREG, CORE_PIN21_BIT), &CORE_PIN21_CONFIG},
-	{GPIO_BITBAND_PTR(CORE_PIN22_PORTREG, CORE_PIN22_BIT), &CORE_PIN22_CONFIG},
-	{GPIO_BITBAND_PTR(CORE_PIN23_PORTREG, CORE_PIN23_BIT), &CORE_PIN23_CONFIG},
-	{GPIO_BITBAND_PTR(CORE_PIN24_PORTREG, CORE_PIN24_BIT), &CORE_PIN24_CONFIG},
-	{GPIO_BITBAND_PTR(CORE_PIN25_PORTREG, CORE_PIN25_BIT), &CORE_PIN25_CONFIG},
-	{GPIO_BITBAND_PTR(CORE_PIN26_PORTREG, CORE_PIN26_BIT), &CORE_PIN26_CONFIG},
-	{GPIO_BITBAND_PTR(CORE_PIN27_PORTREG, CORE_PIN27_BIT), &CORE_PIN27_CONFIG},
-	{GPIO_BITBAND_PTR(CORE_PIN28_PORTREG, CORE_PIN28_BIT), &CORE_PIN28_CONFIG},
-	{GPIO_BITBAND_PTR(CORE_PIN29_PORTREG, CORE_PIN29_BIT), &CORE_PIN29_CONFIG},
-	{GPIO_BITBAND_PTR(CORE_PIN30_PORTREG, CORE_PIN30_BIT), &CORE_PIN30_CONFIG},
-	{GPIO_BITBAND_PTR(CORE_PIN31_PORTREG, CORE_PIN31_BIT), &CORE_PIN31_CONFIG},
-	{GPIO_BITBAND_PTR(CORE_PIN32_PORTREG, CORE_PIN32_BIT), &CORE_PIN32_CONFIG},
-	{GPIO_BITBAND_PTR(CORE_PIN33_PORTREG, CORE_PIN33_BIT), &CORE_PIN33_CONFIG}
+	{GPIO_BITBAND_PTR(CORE_PIN17_PORTREG, CORE_PIN17_BIT), &CORE_PIN17_CONFIG}
 };
 
 
@@ -158,24 +143,19 @@ void porta_isr(void)
 {
 	uint32_t isfr = PORTA_ISFR;
 	PORTA_ISFR = isfr;
+	if ((isfr & CORE_PIN0_BITMASK) && intFunc[0]) intFunc[0]();
+	if ((isfr & CORE_PIN1_BITMASK) && intFunc[1]) intFunc[1]();
+	if ((isfr & CORE_PIN2_BITMASK) && intFunc[2]) intFunc[2]();
 	if ((isfr & CORE_PIN3_BITMASK) && intFunc[3]) intFunc[3]();
 	if ((isfr & CORE_PIN4_BITMASK) && intFunc[4]) intFunc[4]();
-	if ((isfr & CORE_PIN24_BITMASK) && intFunc[24]) intFunc[24]();
-	if ((isfr & CORE_PIN33_BITMASK) && intFunc[33]) intFunc[33]();
 }
 
 void portb_isr(void)
 {
 	uint32_t isfr = PORTB_ISFR;
 	PORTB_ISFR = isfr;
-	if ((isfr & CORE_PIN0_BITMASK) && intFunc[0]) intFunc[0]();
-	if ((isfr & CORE_PIN1_BITMASK) && intFunc[1]) intFunc[1]();
-	if ((isfr & CORE_PIN16_BITMASK) && intFunc[16]) intFunc[16]();
-	if ((isfr & CORE_PIN17_BITMASK) && intFunc[17]) intFunc[17]();
-	if ((isfr & CORE_PIN18_BITMASK) && intFunc[18]) intFunc[18]();
-	if ((isfr & CORE_PIN19_BITMASK) && intFunc[19]) intFunc[19]();
-	if ((isfr & CORE_PIN25_BITMASK) && intFunc[25]) intFunc[25]();
-	if ((isfr & CORE_PIN32_BITMASK) && intFunc[32]) intFunc[32]();
+	if ((isfr & CORE_PIN5_BITMASK) && intFunc[5]) intFunc[5]();
+	if ((isfr & CORE_PIN6_BITMASK) && intFunc[6]) intFunc[6]();
 }
 
 void portc_isr(void)
@@ -183,40 +163,29 @@ void portc_isr(void)
 	// TODO: these are inefficent.  Use CLZ somehow....
 	uint32_t isfr = PORTC_ISFR;
 	PORTC_ISFR = isfr;
+	if ((isfr & CORE_PIN7_BITMASK) && intFunc[7]) intFunc[7]();
+	if ((isfr & CORE_PIN8_BITMASK) && intFunc[8]) intFunc[8]();
 	if ((isfr & CORE_PIN9_BITMASK) && intFunc[9]) intFunc[9]();
 	if ((isfr & CORE_PIN10_BITMASK) && intFunc[10]) intFunc[10]();
 	if ((isfr & CORE_PIN11_BITMASK) && intFunc[11]) intFunc[11]();
 	if ((isfr & CORE_PIN12_BITMASK) && intFunc[12]) intFunc[12]();
 	if ((isfr & CORE_PIN13_BITMASK) && intFunc[13]) intFunc[13]();
-	if ((isfr & CORE_PIN15_BITMASK) && intFunc[15]) intFunc[15]();
-	if ((isfr & CORE_PIN22_BITMASK) && intFunc[22]) intFunc[22]();
-	if ((isfr & CORE_PIN23_BITMASK) && intFunc[23]) intFunc[23]();
-	if ((isfr & CORE_PIN27_BITMASK) && intFunc[27]) intFunc[27]();
-	if ((isfr & CORE_PIN28_BITMASK) && intFunc[28]) intFunc[28]();
-	if ((isfr & CORE_PIN29_BITMASK) && intFunc[29]) intFunc[29]();
-	if ((isfr & CORE_PIN30_BITMASK) && intFunc[30]) intFunc[30]();
 }
 
 void portd_isr(void)
 {
 	uint32_t isfr = PORTD_ISFR;
 	PORTD_ISFR = isfr;
-	if ((isfr & CORE_PIN2_BITMASK) && intFunc[2]) intFunc[2]();
-	if ((isfr & CORE_PIN5_BITMASK) && intFunc[5]) intFunc[5]();
-	if ((isfr & CORE_PIN6_BITMASK) && intFunc[6]) intFunc[6]();
-	if ((isfr & CORE_PIN7_BITMASK) && intFunc[7]) intFunc[7]();
-	if ((isfr & CORE_PIN8_BITMASK) && intFunc[8]) intFunc[8]();
 	if ((isfr & CORE_PIN14_BITMASK) && intFunc[14]) intFunc[14]();
-	if ((isfr & CORE_PIN20_BITMASK) && intFunc[20]) intFunc[20]();
-	if ((isfr & CORE_PIN21_BITMASK) && intFunc[21]) intFunc[21]();
+	if ((isfr & CORE_PIN15_BITMASK) && intFunc[15]) intFunc[15]();
+	if ((isfr & CORE_PIN16_BITMASK) && intFunc[16]) intFunc[16]();
+	if ((isfr & CORE_PIN17_BITMASK) && intFunc[17]) intFunc[17]();
 }
 
 void porte_isr(void)
 {
 	uint32_t isfr = PORTE_ISFR;
 	PORTE_ISFR = isfr;
-	if ((isfr & CORE_PIN26_BITMASK) && intFunc[26]) intFunc[26]();
-	if ((isfr & CORE_PIN31_BITMASK) && intFunc[31]) intFunc[31]();
 }
 
 
@@ -402,6 +371,11 @@ static uint8_t analog_write_res = 8;
 
 void analogWrite(uint8_t pin, int val)
 {
+    // TODO: Port this
+    digitalWrite(pin, (val > 127) ? HIGH : LOW);
+    pinMode(pin, OUTPUT);
+
+#if 0
 	uint32_t cval, max;
 
 #if defined(__MK20DX256__)
@@ -488,20 +462,11 @@ void analogWrite(uint8_t pin, int val)
 		FTM0_C1V = cval;
 		CORE_PIN23_CONFIG = PORT_PCR_MUX(4) | PORT_PCR_DSE | PORT_PCR_SRE;
 		break;
-#if defined(__MK20DX256__)
-	  case 32: // PTB18, FTM2_CH0
-		FTM2_C0V = cval;
-		CORE_PIN32_CONFIG = PORT_PCR_MUX(3) | PORT_PCR_DSE | PORT_PCR_SRE;
-		break;
-	  case 25: // PTB19, FTM1_CH1
-		FTM2_C1V = cval;
-		CORE_PIN25_CONFIG = PORT_PCR_MUX(3) | PORT_PCR_DSE | PORT_PCR_SRE;
-		break;
-#endif
 	  default:
 		digitalWrite(pin, (val > 127) ? HIGH : LOW);
 		pinMode(pin, OUTPUT);
 	}
+#endif
 }
 
 void analogWriteRes(uint32_t bits)
