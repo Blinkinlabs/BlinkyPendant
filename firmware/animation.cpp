@@ -1,4 +1,4 @@
-#include "Animation.h"
+#include "animation.h"
 
 Animation::Animation() {
   init(0, NULL, ENCODING_RGB24, 0);
