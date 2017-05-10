@@ -41,8 +41,7 @@ public:
     void setAnimation(Animation *newAnimation);
 
     // Calculate the next step based on accelerometer data
-    // delta: Time from the previous step, in s
-    void computeStep(float delta);
+    void computeStep();
 };
 
 extern POV pov;

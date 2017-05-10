@@ -71,12 +71,11 @@ static float accXavgLast;
 static int dirLast;
 
 
-void POV::computeStep(float delta) {
+void POV::computeStep() {
 
     // TODO: fix the units here...
-    delta = FTM1_CNT * (0.00000417);
+    float delta = FTM1_CNT * (0.00000417);
     FTM1_CNT = 0;   // reset the counter
-
 
     if(newAcc) {
         accX = newAccX;

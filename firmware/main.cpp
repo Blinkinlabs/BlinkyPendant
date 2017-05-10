@@ -51,88 +51,127 @@ extern Animation serialAnimation;
 // Bad idea animation
 Animation flashAnimation;
 
-
-// Reserved RAM area for signalling entry to bootloader
-extern uint32_t boot_token;
+uint8_t displayMode;
 
 // Token to signal that the animation loop should be restarted
 volatile bool reloadAnimations;
 
-static void dfu_reboot()
-{
-    // Reboot to the Fadecandy Bootloader
-    boot_token = 0x74624346;
+int currentAnimation;
 
-    // Short delay to allow the host to receive the response to DFU_DETACH.
-    uint32_t deadline = millis() + 10;
-    while (millis() < deadline) {
-        watchdog_refresh();
+class TimedPlayer {
+private:
+    Animation* animation;
+
+    uint32_t nextTime;           // Time to display next frame
+    int frame;
+
+public:
+    void setup();
+
+    void setAnimation(Animation *newAnimation);
+
+    // Calculate the next step based on accelerometer data
+    void computeStep();
+};
+
+void TimedPlayer::setup() {
+}
+
+void TimedPlayer::setAnimation(Animation *newAnimation) {
+    animation = newAnimation;
+    nextTime = millis();
+    frame = 0;
+}
+
+void TimedPlayer::computeStep() {
+    if(millis() < nextTime) {
+        return;
     }
 
-    // Detach from USB, and use the watchdog to time out a 10ms USB disconnect.
-    __disable_irq();
-    USB0_CONTROL = 0;
-    while (1);
+    uint8_t* frameData = animation->getFrame(frame);
+
+    for (uint16_t col = 0; col < LED_COLS; col++) {
+        for (uint16_t row = 0; row < LED_ROWS; row++) {
+            setPixel(col, row,
+                frameData[(row*LED_COLS + col)*3 + 0],
+                frameData[(row*LED_COLS + col)*3 + 1],
+                frameData[(row*LED_COLS + col)*3 + 2]);
+        }
+    }
+
+    frame = (frame + 1) % animation->frameCount;
+    
+    nextTime += animation->frameDelay;
+    
+    // If we've gotten too far ahead of ourselves, reset the counter
+    if(millis() > nextTime) {
+        nextTime = millis() + animation->frameDelay;
+    }
+    
+    show();
 }
 
 
-void setupWatchdog() {
-    // Change the watchdog timeout because the SPI access is too slow.
-    const uint32_t watchdog_timeout = F_BUS / 2;  // 500ms
+TimedPlayer timedPlayer;
 
-    WDOG_UNLOCK = WDOG_UNLOCK_SEQ1;
-    WDOG_UNLOCK = WDOG_UNLOCK_SEQ2;
-    asm volatile ("nop");
-    asm volatile ("nop");
-    WDOG_STCTRLH = WDOG_STCTRLH_ALLOWUPDATE | WDOG_STCTRLH_WDOGEN |
-        WDOG_STCTRLH_WAITEN | WDOG_STCTRLH_STOPEN | WDOG_STCTRLH_CLKSRC;
-    WDOG_PRESC = 0;
-    WDOG_TOVALH = (watchdog_timeout >> 16) & 0xFFFF;
-    WDOG_TOVALL = (watchdog_timeout)       & 0xFFFF;
+void setAnimation(unsigned int newAnimation) {
+    Animation* animation;
+
+    if(getAnimationCount() == 0) {
+        animation = &blinkinlabsAnimation;
+    }
+    else {
+        currentAnimation = newAnimation%getAnimationCount();
+
+        loadAnimation(currentAnimation, &flashAnimation);
+        animation = &flashAnimation;
+    }
+
+    pov.setAnimation(animation);
+    timedPlayer.setAnimation(animation);
 }
-
-
-
 
 extern "C" int main()
 {
-    setupWatchdog();
 
     initBoard();
 
     userButtons.setup();
 
-    pov.setup();
+    serialReset();
 
-    int currentAnimation = 0;
-    pov.setAnimation(&blinkinlabsAnimation);
+    pov.setup();
+    timedPlayer.setup();
 
     matrixSetup();
 
-    serialReset();
-
     reloadAnimations = true;
-
 
     // Application main loop
     while (usb_dfu_state == DFU_appIDLE) {
         watchdog_refresh();
        
         if(reloadAnimations) {
-            reloadAnimations = false;
-            currentAnimation = 0;
+            displayMode = getDisplayMode();
 
-            if(getAnimationCount() > currentAnimation) {
-                loadAnimation(currentAnimation, &flashAnimation);
-                pov.setAnimation(&flashAnimation);
-            }
+            reloadAnimations = false;
+            setAnimation(0);
         }
 
         userButtons.buttonTask();
 
-        // Hit the accelerometer every 
-        pov.computeStep(0);
-        show();
+        switch(displayMode) {
+        case DISPLAYMODE_TIMED:
+            timedPlayer.computeStep();
+            break;
+
+        case DISPLAYMODE_POV:
+        default:
+            // Use the POV engine to determine the current mode
+            pov.computeStep();
+            show();
+            break;
+        }
 
         // Check for serial data
         if(usb_serial_available() > 0) {
@@ -143,17 +182,12 @@ extern "C" int main()
             }
         }
 
+        // Finally, check for 
         if(userButtons.isPressed()) {
             uint8_t button = userButtons.getPressed();
     
             if(button == BUTTON_A) {
-                // if animation count is 0, we are stuck with the default animation.
-                if(getAnimationCount() > 0) {
-                    currentAnimation = (currentAnimation+1)%getAnimationCount();
-
-                    loadAnimation(currentAnimation, &flashAnimation);
-                    pov.setAnimation(&flashAnimation);
-                }
+                setAnimation(currentAnimation+1);
             }
         }
 

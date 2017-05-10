@@ -21,9 +21,10 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef BLINKYTILE_H
-#define BLINKYTILE_H
+#ifndef BLINKYPENDANT_H
+#define BLINKYPENDANT_H
 
+#include "buttons.h"
 
 #define LED_COLS 5          // Number of columns that the LED matrix has
 #define LED_ROWS 2          // Number of rows that the LED matrix has
@@ -38,21 +39,13 @@
 #define ACCELEROMETER_INT   9   // Accelerometer input, PTC3. Note this interrupt bank needs to be set to low priority.
 
 
-// File types
-#define FILETYPE_ANIMATION      0x12
+#define DISPLAYMODE_POV     10  // POV mode- use acelerometer to display image
+#define DISPLAYMODE_TIMED   11  // Timed mode- play back at the pattern speed
 
 
-// Fadecandy interface defines
-//#define LUT_CH_SIZE             257
-//#define LUT_TOTAL_SIZE          (LUT_CH_SIZE * 3)
+// Fadecandy interface defines (stubs)
 #define LUT_CH_SIZE             1
 #define LUT_TOTAL_SIZE          1
-
-// USB packet layout
-//#define PIXELS_PER_PACKET       21  // 63 / 3
-//#define LUTENTRIES_PER_PACKET   31
-//#define PACKETS_PER_FRAME        9  // 170 / 21
-//#define PACKETS_PER_LUT          1  // originally 25
 #define PIXELS_PER_PACKET        1  // 63 / 3
 #define LUTENTRIES_PER_PACKET    1
 #define PACKETS_PER_FRAME        1  // 170 / 21
@@ -62,7 +55,9 @@
 // Initialize the board hardware (buttons, status led, LED control pins)
 extern void initBoard();
 
-extern bool readButton();
+extern void setupWatchdog();
+
+extern void dfu_reboot();
 
 // Refresh the watchdog, so that the board doesn't reset
 static inline void watchdog_refresh(void)
