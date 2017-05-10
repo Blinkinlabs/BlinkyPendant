@@ -1,33 +1,30 @@
 #include "animation.h"
 
 Animation::Animation() {
-  init(0, NULL, ENCODING_RGB24, 0);
+  init(0, NULL, ENCODING_RGB24, 0, 0);
 }
 
-Animation::Animation(uint16_t frameCount_,
+Animation::Animation(const uint16_t frameCount_,
                      const uint8_t* frameData_,
                      const uint8_t encoding_,
-                     const uint8_t ledCount_)
+                     const uint8_t ledCount_,
+                     const uint16_t frameDelay_)
 {
-  init(frameCount_, frameData_, encoding_, ledCount_);
+  init(frameCount_, frameData_, encoding_, ledCount_, frameDelay_);
   reset();
 }
 
-void Animation::init(uint16_t frameCount_,
+void Animation::init(const uint16_t frameCount_,
                      const uint8_t* frameData_,
                      const uint8_t encoding_,
-                     const uint8_t ledCount_)
+                     const uint8_t ledCount_,
+                     const uint16_t frameDelay_)
 {
   frameCount = frameCount_;
   frameData = (uint8_t*)frameData_;
   encoding = encoding_;
   ledCount = ledCount_;
-
-  switch(encoding) {
-    case ENCODING_RGB24:
-      // Nothing to preload.
-      break;
-  }
+  frameDelay = frameDelay_;
 
   reset();
 }
@@ -45,7 +42,7 @@ void Animation::draw(Pixel* pixels) {
 
   frameIndex = (frameIndex + 1)%frameCount;
 
-  if(frameIndex > 0) {frameIndex = 0;}
+  if(frameIndex > frameCount) {frameIndex = 0;}
 };
 
 void Animation::drawRgb24(Pixel* pixels) {

@@ -18,7 +18,7 @@ int serialMode;         // Serial protocol we are speaking
 
 // 1-frame animation to show incoming serial data
 uint8_t frameData[LED_COUNT*3];
-Animation serialAnimation(1, (const uint8_t*)frameData, ENCODING_RGB24, LED_COUNT);
+Animation serialAnimation(1, (const uint8_t*)frameData, ENCODING_RGB24, LED_COUNT, 50);
 
 extern bool reloadAnimations;
 

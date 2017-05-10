@@ -691,4 +691,4 @@ const uint8_t blinkinlabsData[]  = {
     0, 0, 0, // 9
 };
 
-Animation blinkinlabsAnimation(69, blinkinlabsData, ENCODING_RGB24, 10);
+Animation blinkinlabsAnimation(69, blinkinlabsData, ENCODING_RGB24, 10, 50);

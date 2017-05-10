@@ -9,7 +9,7 @@
 #define MAGIC_0_PTR       (ANIMATION_START+0x0000)   // Magic byte 0
 #define MAGIC_1_PTR       (ANIMATION_START+0x0001)   // Magic byte 1
 #define PATTERN_COUNT_PTR (ANIMATION_START+0x0002)   // Number of patterns in the pattern table (1 byte)
-#define LED_COUNT_PTR     (ANIMATION_START+0x0003)   // Number of LEDs in the pattern (1 byte)
+#define DISPLAY_MODE_PTR  (ANIMATION_START+0x0003)   // Playback mode (1 byte)
 #define PATTERN_TABLE_PTR (ANIMATION_START+0x0004)   // Location of the pattern table in the flash memory
 
 #define PATTERN_TABLE_ENTRY_LENGTH      9        // Length of each entry, in bytes
@@ -19,16 +19,16 @@
 #define FRAME_COUNT_OFFSET      5    // Frame count (2 bytes)
 #define FRAME_DELAY_OFFSET      7    // Frame delay (2 bytes)
 
+
+#define DISPLAY_MODE_POV       10   // Play back in POV mode
+#define DISPLAY_MODE_TIMED     11   // Play back in timed mode
+
 bool checkHeader() {
     if(*MAGIC_0_PTR != MAGIC_0) {
        return false;
     }
 
     if(*MAGIC_1_PTR != MAGIC_1) {
-       return false;
-    }
-
-    if(*LED_COUNT_PTR != LED_COUNT) {
        return false;
     }
 
@@ -43,6 +43,14 @@ unsigned int getAnimationCount() {
     }
 
     return *PATTERN_COUNT_PTR;
+}
+
+uint8_t getDisplayMode() {
+    if(!checkHeader()) {
+        return 0;
+    }
+
+    return *DISPLAY_MODE_PTR;
 }
 
 bool loadAnimation(unsigned int index, Animation* animation) {
@@ -66,14 +74,12 @@ bool loadAnimation(unsigned int index, Animation* animation) {
     uint16_t frameCount = (*(patternEntryAddress + FRAME_COUNT_OFFSET    ) << 8)
                         + (*(patternEntryAddress + FRAME_COUNT_OFFSET + 1) << 0);
 
-
-//  Frame delay not used currently!
-//    frameDelay  = (*(patternEntryAddress + FRAME_DELAY_OFFSET    ) << 8)
-//                + (*(patternEntryAddress + FRAME_DELAY_OFFSET + 1) << 0);
+    uint16_t frameDelay = (*(patternEntryAddress + FRAME_DELAY_OFFSET    ) << 8)
+                        + (*(patternEntryAddress + FRAME_DELAY_OFFSET + 1) << 0);
  
     // TODO: Validation, here or in Animation.init()
 
-    animation->init(frameCount, frameData, encodingType, LED_COUNT);
+    animation->init(frameCount, frameData, encodingType, LED_COUNT, frameDelay);
 
     return true;
 }

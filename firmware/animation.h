@@ -9,13 +9,14 @@
 class Animation {
  public:
   uint8_t* frameData;             // Pointer to the begining of the frame data
-  int ledCount;               // Number of LEDs in the strip (max 254)
-  int frameCount;            // Number of frames in this animation (max 65535)
+  uint8_t ledCount;               // Number of LEDs in the strip (max 254)
+  uint16_t frameCount;            // Number of frames in this animation (max 65535)
+  uint16_t frameDelay;            // Delay between frames, in ms (max 65535)
 
  private:
   uint8_t encoding;               // Encoding type
   
-  int frameIndex;            // Current animation frame
+  int frameIndex;                 // Current animation frame
   uint8_t* currentFrameData;      // Pointer to the current position in the frame data
 
   void drawRgb24(Pixel* pixels);
@@ -32,10 +33,11 @@ class Animation {
   // @param frameData Pointer to the frame data. Format of this data is encoding-specficic
   // @param encoding Method used to encode the animation data
   // @param ledCount Number of LEDs in the strip
-  Animation(uint16_t frameCount,
+  Animation(const uint16_t frameCount,
             const uint8_t* frameData,
             const uint8_t encoding,
-            const uint8_t ledCount);
+            const uint8_t ledCount,
+            const uint16_t frameDelay);
 
   // Re-initialize the animation with new information
   // @param frameCount Number of frames in this animation
@@ -45,7 +47,8 @@ class Animation {
   void init(uint16_t frameCount,
             const uint8_t* frameData,
             const uint8_t encoding,
-            const uint8_t ledCount);
+            const uint8_t ledCount,
+            const uint16_t frameDelay);
  
   // Reset the animation, causing it to start over from frame 0.
   void reset();
