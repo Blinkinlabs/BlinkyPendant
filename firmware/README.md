@@ -1,21 +1,23 @@
-# LightBuddy LED controller
+# Blinky Pendant Firmware
 
-## Firmware development
+## Development
 
-The ARM toolchain 'arm-none-eabi-gcc' is used to compile this project. Specifically, the 4.8-2014-q2-update version. Get it here:
+The ARM toolchain 'arm-none-eabi-gcc' is used to compile this project. Specifically, the gcc-arm-none-eabi-5_4-2016q3 version. Get it here:
 
-https://launchpad.net/gcc-arm-embedded/4.8/4.8-2014-q2-update
+	https://launchpad.net/gcc-arm-embedded/5.0/5-2016-q3-update
+
 
 You'll also need dfu-util. Homebrew is possibly the easiest way to get this.
 
 You'll also need GNU Make, which probably requires Xcode on OS/X, or similar developer tools on Linux. The version is probably not as important.
 
-Note: For windows, try following steps 1 and 2 from this site to get up and running:
-http://thehackerworkshop.com/?p=391
+Set the path to include the dev tools:
 
-Once you have the toolchain installed, change to the firmware-gcc directory:
+    export PATH=$PATH:~/gcc-arm-none-eabi-5_4-2016q3/bin
 
-    cd firmware-gcc
+Once you have the toolchain installed, change to the firmware directory:
+
+    cd firmware
 
 and run make to compile:
 
