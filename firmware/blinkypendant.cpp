@@ -1,6 +1,6 @@
 #include "WProgram.h"
 #include "pins_arduino.h"
-#include "blinkytile.h"
+#include "blinkypendant.h"
 
 const uint32_t button_1_bit = 1 << 3;  // Button 1 on A3
 

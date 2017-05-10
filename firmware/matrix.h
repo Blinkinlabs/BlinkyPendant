@@ -26,7 +26,7 @@
 
 #include "WProgram.h"
 #include "pins_arduino.h"
-#include "blinkytile.h"
+#include "blinkypendant.h"
 
 //Display Geometry
 #define BIT_DEPTH 8       // Color bits per channel (Note: input is always 8 bit)

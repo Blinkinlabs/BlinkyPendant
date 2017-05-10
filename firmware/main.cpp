@@ -31,7 +31,7 @@
 #include "usb_serial.h"
 #include "usb_dev.h"
 
-#include "blinkytile.h"
+#include "blinkypendant.h"
 #include "animation.h"
 #include "animations.h"
 #include "pov.h"

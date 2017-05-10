@@ -39,7 +39,7 @@ C_FILES = \
 
 CPP_FILES = \
 	main.cpp \
-	blinkytile.cpp \
+	blinkypendant.cpp \
 	pov.cpp \
 	serialloop.cpp \
 	buttons.cpp \

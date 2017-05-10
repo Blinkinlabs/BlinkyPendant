@@ -1,5 +1,5 @@
 #include "WProgram.h"
-#include "blinkytile.h"
+#include "blinkypendant.h"
 #include "serialloop.h"
 #include "usb_serial.h"
 #include "animation.h"

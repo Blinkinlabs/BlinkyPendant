@@ -1,5 +1,5 @@
 #include "WProgram.h"
-#include "blinkytile.h"
+#include "blinkypendant.h"
 #include "pov.h"
 #include "matrix.h"
 #include "mma8653.h"

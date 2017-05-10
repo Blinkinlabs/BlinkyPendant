@@ -1,7 +1,7 @@
 #include "WProgram.h"
 #include "pins_arduino.h"
 #include "buttons.h"
-#include "blinkytile.h"
+#include "blinkypendant.h"
 
 // Button definitions
 button buttons[BUTTON_COUNT] = {
