@@ -194,9 +194,6 @@ bool commandStartWrite(uint8_t* buffer) {
 RAM_FUNCTION bool doWrite(uint8_t* buffer, int blockNum, int blockLength, int packetOffset, int packetLength) {
     bool result = false;
 
-//    uint8_t blockData[BYTES_PER_PACKET];
-//    memset(blockData, 10, BYTES_PER_PACKET];
-
     __disable_irq();
 
     if(!dfu_download(blockNum,

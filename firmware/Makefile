@@ -44,6 +44,7 @@ CPP_FILES = \
 	serialloop.cpp \
 	buttons.cpp \
         animation.cpp \
+        animations.cpp \
         matrix.cpp \
 	mma8653.cpp 
 
