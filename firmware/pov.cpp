@@ -19,22 +19,8 @@ POV pov;
 
 SampleFilter filter;
 
-//struct systemStep {
-//    float accX;
-//    float velocityX;
-//    float posX;
-//    int playbackPos;
-//    float dir;
-//    float accXavg;
-//};
 
 #define playbackScale 120
-
-// Data block for debugging
-//#define currentStepMax 100
-//systemStep steps[currentStepMax];
-//int currentStep;
-
 
 
 float newAccX, newAccY, newAccZ;
@@ -53,7 +39,6 @@ void POV::setAnimation(Animation *newAnimation) {
 }
 
 void POV::setup() {
-//    currentStep = 0;
     velocityX = 0;
     posX = 0;
 
@@ -150,36 +135,4 @@ void POV::computeStep(float delta) {
             }
         }
     }
-
-
-/*
-    // Record the system state
-    steps[currentStep].accX = accX;
-    steps[currentStep].velocityX = velocityX;
-    steps[currentStep].posX = posX;
-    steps[currentStep].playbackPos = playbackPos;
-    steps[currentStep].dir = dir;
-    steps[currentStep].accXavg = accXavg;
-
-    currentStep++;
-    if(currentStep > currentStepMax) {
-        char dataBuffer[80];
-
-        usb_serial_write("count, accX (m/s^2), velocityX (m/s), posX (m)\n", 47);
-        for(int step = 0; step < currentStepMax; step++) {
-            int len = snprintf(dataBuffer, 80, "%i,%i,%i,%i,%i,%i,%i\n",
-                step,
-                (int)(steps[step].accX*1000),
-                (int)(steps[step].velocityX*100000),
-                (int)(steps[step].posX*100000),
-                steps[step].playbackPos,
-                (int)(steps[step].dir),
-                (int)(steps[step].accXavg)
-                );
-    
-            usb_serial_write(dataBuffer, len);
-        }
-        currentStep = 0;
-    }
-*/
 }

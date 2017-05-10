@@ -5,9 +5,6 @@
 #include "matrix.h"
 
 #define ENCODING_RGB24       0
-#define ENCODING_RGB565_RLE  1
-//#define ENCODING_INDEXED     2
-//#define ENCODING_INDEXED_RLE 3
 
 class Animation {
  public:
@@ -21,14 +18,8 @@ class Animation {
   int frameIndex;            // Current animation frame
   uint8_t* currentFrameData;      // Pointer to the current position in the frame data
 
-  // TODO: Reduce memory usage here and re-enable
-  //int colorTableEntries;      // Number of entries in the color table, minus 1 (max 255)
-  //Pixel colorTable[256];        // Pointer to color table, if used by the encoder
-
   void drawRgb24(Pixel* pixels);
   void drawRgb16_RLE(Pixel* pixels);
-//  void drawIndexed(Pixel* pixels);
-//  void drawIndexed_RLE(Pixel* pixels);
 
  public:
   // Initialize the animation with no data. This is intended for the case
