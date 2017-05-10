@@ -38,13 +38,7 @@
 #include "buttons.h"
 #include "matrix.h"
 
-#include "animations/kinetisconnects.h"
-#include "animations/freescale.h"
-#include "animations/ftf2015.h"
 #include "animations/blinkinlabs.h"
-#include "animations/squiggle.h"
-#include "animations/dots.h"
-#include "animations/nyan-cat.h"
 
 
 // Button inputs
@@ -57,16 +51,9 @@ extern Animation serialAnimation;
 Animation flashAnimation;
 
 // built-in animations
-#define builtinAnimationCount 8
+#define builtinAnimationCount 1
 Animation* builtinAnimations[builtinAnimationCount] = {
-    &ftfAnimation,
-    &squiggleAnimation,
-    &kinetisAnimation,
-    &dotsAnimation,
-    &freescaleAnimation,
-    &nyancatAnimation,
     &blinkinlabsAnimation,
-    &flashAnimation,
 };
 
 // Reserved RAM area for signalling entry to bootloader
@@ -135,9 +122,9 @@ void setupWatchdog() {
 /// @return animation count, or 0 if no animations present
 unsigned int getAnimationCount() {
     // If there isn't a valid header, set the length to 0
-//    if((*(MAGIC_0_PTR) != MAGIC_0) || (*(MAGIC_1_PTR) != MAGIC_1)) {
-//        return 0;
-//    }
+    if((*(MAGIC_0_PTR) != MAGIC_1) || (*(MAGIC_1_PTR) != MAGIC_0)) {
+        return 0;
+    }
 
     return *(PATTERN_TABLE_ADDRESS + PATTERN_COUNT_OFFSET);
 }
@@ -241,16 +228,13 @@ extern "C" int main()
             uint8_t button = userButtons.getPressed();
     
             if(button == BUTTON_A) {
-                currentAnimation = (currentAnimation+1)%getAnimationCount();
+                // if animation count is 0, we are stuck with the default animation.
+                if(getAnimationCount() > 0) {
+                    currentAnimation = (currentAnimation+1)%getAnimationCount();
 
-                loadAnimation(currentAnimation, &flashAnimation);
-                pov.setAnimation(&flashAnimation);
-
-                // Choose the next valid animiation
-//                do {
-//                    currentAnimation = (currentAnimation+1)%builtinAnimationCount;
-//                } while(builtinAnimations[currentAnimation]->frameCount == 0);
-//                pov.setAnimation(builtinAnimations[currentAnimation]);
+                    loadAnimation(currentAnimation, &flashAnimation);
+                    pov.setAnimation(&flashAnimation);
+                }
             }
         }
 
