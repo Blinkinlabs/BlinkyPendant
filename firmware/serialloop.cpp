@@ -193,7 +193,9 @@ bool commandStartWrite(uint8_t* buffer) {
 // TODO: Cut down the critical sections here.
 RAM_FUNCTION bool doWrite(uint8_t* buffer, int blockNum, int blockLength, int packetOffset, int packetLength) {
     bool result = false;
-    buffer[0] = 0;
+
+//    uint8_t blockData[BYTES_PER_PACKET];
+//    memset(blockData, 10, BYTES_PER_PACKET];
 
     __disable_irq();
 
@@ -231,6 +233,8 @@ RAM_FUNCTION bool doWrite(uint8_t* buffer, int blockNum, int blockLength, int pa
 
 FAIL:
     __enable_irq();
+
+    buffer[0] = 0;
     return result;
 }
 
