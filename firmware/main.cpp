@@ -152,6 +152,10 @@ extern "C" int main()
         watchdog_refresh();
        
         if(reloadAnimations) {
+            // If this was called after writing, the matrix refresh might
+            // have been interrupted- call setup again to reset it.
+            matrixSetup();
+
             displayMode = getDisplayMode();
 
             reloadAnimations = false;
@@ -185,7 +189,7 @@ extern "C" int main()
             }
         }
 
-        // Finally, check for 
+        // Finally, check for user button change
         if(userButtons.isPressed()) {
             uint8_t button = userButtons.getPressed();
     

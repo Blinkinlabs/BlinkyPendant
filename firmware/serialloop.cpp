@@ -188,7 +188,6 @@ bool commandStartWrite(uint8_t* buffer) {
     return true;
 }
 
-// TODO: Cut down the critical sections here.
 RAM_FUNCTION bool doWrite(uint8_t* buffer, int blockNum, int blockLength, int packetOffset, int packetLength) {
     bool result = false;
 
