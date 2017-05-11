@@ -54,7 +54,7 @@ Animation flashAnimation;
 uint8_t displayMode;
 
 // Token to signal that the animation loop should be restarted
-volatile bool reloadAnimations;
+bool reloadAnimations;
 
 int currentAnimation;
 
@@ -161,6 +161,9 @@ extern "C" int main()
         userButtons.buttonTask();
 
         switch(displayMode) {
+        case DISPLAYMODE_SERIALLOOP:
+            break;
+
         case DISPLAYMODE_TIMED:
             timedPlayer.computeStep();
             break;
@@ -175,8 +178,8 @@ extern "C" int main()
 
         // Check for serial data
         if(usb_serial_available() > 0) {
+            displayMode = DISPLAYMODE_SERIALLOOP;
             while(usb_serial_available() > 0) {
-                pov.setAnimation(&serialAnimation);
                 serialLoop();
                 watchdog_refresh();
             }

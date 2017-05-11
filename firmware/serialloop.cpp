@@ -20,8 +20,6 @@ int serialMode;         // Serial protocol we are speaking
 uint8_t frameData[LED_COUNT*3];
 Animation serialAnimation(1, (const uint8_t*)frameData, ENCODING_RGB24, LED_COUNT, 50);
 
-extern bool reloadAnimations;
-
 ///// Defines for the data mode
 void dataLoop();
 
@@ -80,10 +78,10 @@ void dataLoop() {
 
             // Prevent overflow by ignoring any pixel data beyond LED_COUNT
             if(pixelIndex < LED_COUNT) {
-//                dmxSetPixel(pixelIndex, buffer[2], buffer[1], buffer[0]);
-                frameData[pixelIndex*3 + 0] = buffer[0];
-                frameData[pixelIndex*3 + 1] = buffer[1];
-                frameData[pixelIndex*3 + 2] = buffer[2];
+                uint16_t row = pixelIndex / LED_COLS;
+                uint16_t col = pixelIndex % LED_COLS;
+
+                setPixel(col, row, buffer[0], buffer[1], buffer[2]);
                 pixelIndex++;
             }
         }
@@ -99,7 +97,7 @@ void dataLoop() {
 
         // If this is the first escape character, refresh the output
         if(escapeRunCount == 1) {
-//            dmxShow();
+            show();
         }
         
         if(escapeRunCount > 8) {

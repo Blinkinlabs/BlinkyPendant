@@ -41,6 +41,7 @@
 
 #define DISPLAYMODE_POV     10  // POV mode- use acelerometer to display image
 #define DISPLAYMODE_TIMED   11  // Timed mode- play back at the pattern speed
+#define DISPLAYMODE_SERIALLOOP 255  // Serial mode- stream data from computer
 
 
 // Fadecandy interface defines (stubs)
